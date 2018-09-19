@@ -545,6 +545,39 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
         }
         return array_keys($triggers);
     }
+
+   /**
+    * Makes the container itself and all its child elements non-required
+    * by removing any required rules that may have been added.
+    *
+    * @see HTML_QuickForm2_Node::makeOptional()
+    */
+    public function makeOptional()
+    {
+        parent::makeOptional();
+        foreach ($this as $child) {
+            $child->makeOptional();
+        }
+    }
+    
+   /**
+    * Whether the element or any of its children have errors.
+    * @see HTML_QuickForm2_Node::hasErrors()
+    */
+    public function hasErrors()
+    {
+        if (parent::hasErrors()) {
+            return true;
+        }
+        
+        foreach ($this as $child) {
+            if ($child->hasErrors()) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
 }
 
 /**

@@ -252,9 +252,28 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
         }
         $element->setContainer($this);
         $this->elements[] = $element;
+        
+        $this->invalidateLookup();
+        
         return $element;
     }
-
+    
+   /**
+    * Invalidates (clears) the internal elements lookup
+    * table, which is used to keep track of all elements
+    * available in the container.
+    * 
+    * @see HTML_QuickForm2_Container::getLookup()
+    */
+    public function invalidateLookup()
+    {
+        $this->lookup = null;
+        
+        if($this->container) {
+            $this->container->invalidateLookup();
+        }
+    }
+    
    /**
     * Appends an element to the container (possibly creating it first)
     *
@@ -328,14 +347,66 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
     */
     public function getElementById($id)
     {
-        foreach ($this->getRecursiveIterator() as $element) {
-            if ($id == $element->getId()) {
-                return $element;
-            }
+        // Replaced the recursive iterator implementation
+        // with a lookup table that indexes the container's
+        // own elements as well as all subelements. It is reset
+        // when an element is added to the container, or one of
+        // its sub-containers.
+        
+        if(!isset($this->lookup)) {
+            $this->getLookup();
         }
+        
+        if(isset($this->lookup[$id])) {
+            return $this->lookup[$id];
+        }
+        
         return null;
     }
-
+    
+   /**
+    * Stores the elements lookup table.
+    * @var HTML_QuickForm2_Node[]
+    * @see HTML_QuickForm2_Container::getLookup()
+    */
+    protected $lookup;
+    
+   /**
+    * Retrieves the elements lookup table, which
+    * keeps track of all elements in the container.
+    * It is used cache element instances by their
+    * ID to be able to access them easily without
+    * recursively traversing all childen each time.
+    * 
+    * @see HTML_QuickForm2_Container::getElementById()
+    * @see HTML_QuickForm2_Container::invalidateLookup()
+    */
+    public function getLookup()
+    {
+        if(isset($this->lookup)) {
+            return $this->lookup;
+        }
+        
+        $this->lookup = array();
+        
+        $total = count($this->elements);
+        for($i=0; $i < $total; $i++) 
+        {
+            $element = $this->elements[$i];
+            
+            $this->lookup[$element->getId()] = $element;
+            
+            if($element instanceof HTML_QuickForm2_Container) {
+                $els = $element->getLookup();
+                foreach($els as $id => $el) {
+                    $this->lookup[$id] = $el;
+                }
+            }
+        }
+        
+        return $this->lookup;
+    }
+    
    /**
     * Returns an array of elements which name corresponds to element
     *

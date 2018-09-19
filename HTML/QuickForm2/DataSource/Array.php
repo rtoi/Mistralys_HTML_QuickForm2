@@ -81,6 +81,7 @@ class HTML_QuickForm2_DataSource_Array implements HTML_QuickForm2_DataSource_Nul
         if (empty($this->values)) {
             return null;
         }
+        
         if (strpos($name, '[')) {
             $tokens = explode('[', str_replace(']', '', $name));
             $value = $this->values;
@@ -94,9 +95,9 @@ class HTML_QuickForm2_DataSource_Array implements HTML_QuickForm2_DataSource_Nul
             return $value;
         } elseif (isset($this->values[$name])) {
             return $this->values[$name];
-        } else {
-            return null;
-        }
+        } 
+        
+        return null;
     }
 
     public function hasValue($name)
@@ -120,5 +121,15 @@ class HTML_QuickForm2_DataSource_Array implements HTML_QuickForm2_DataSource_Nul
             return true;
         }
     }
+    
+   /**
+    * Sets the values by merging them with the existing
+    * values, if any. 
+    * 
+    * @param array $values
+    */
+    public function setValues($values)
+    {
+        $this->values = array_merge($this->values, $values);
+    }
 }
-?>

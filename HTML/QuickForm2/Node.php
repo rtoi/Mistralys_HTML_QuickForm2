@@ -806,5 +806,102 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2
     * @return   HTML_QuickForm2_Renderer
     */
     abstract public function render(HTML_QuickForm2_Renderer $renderer);
+
+    /**
+     * Makes the element optional by removing any required
+     * rules that may have been added to the element.
+     *
+     * @author Sebastian Mordziol <s.mordziol@mistralys.eu>
+     * @custom
+     */
+    public function makeOptional()
+    {
+        $keep = array();
+        foreach ($this->rules as $rule) {
+            if ($rule[0] instanceof HTML_QuickForm2_Rule_Required) {
+                continue;
+            }
+            
+            $keep[] = $rule;
+        }
+        
+        $this->rules = $keep;
+    }
+    
+    /**
+     * Whether the element has errors. Obviously, this only makes sense
+     * to call after the form has been validated.
+     *
+     * @author Sebastian Mordziol <s.mordziol@mistralys.eu>
+     * @return boolean
+     */
+    public function hasErrors()
+    {
+        if ($this->getError()) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+   /**
+    * Stores custom runtime properties for the element.
+    *
+    * @var array
+    * @see setRuntimeProperty()
+    * @see getRuntimeProperty()
+    */
+    protected $runtimeProperties = array();
+    
+   /**
+    * Sets a runtime property for the node, which can be retrieved
+    * again anytime. It is not used in the element in any way, but
+    * can be helpful attaching related data to an element.
+    *
+    * @param string $name
+    * @param mixed $value
+    * @return HTML_QuickForm2_Node
+    */
+    public function setRuntimeProperty($name, $value)
+    {
+        $this->runtimeProperties[$name] = $value;
+        
+        return $this;
+    }
+    
+   /**
+    * Retrieves the value of a previously set runtime property.
+    * If it does not exist, returns the default value which can
+    * optionally be specified as well.
+    *
+    * @param string $name
+    * @param mixed $default
+    * @return mixed
+    */
+    public function getRuntimeProperty($name, $default = null)
+    {
+        if (isset($this->runtimeProperties[$name])) {
+            return $this->runtimeProperties[$name];
+        }
+        
+        return $default;
+    }
+    
+   /**
+    * Retrieves any rules that may have been added to the element.
+    * @return HTML_QuickForm2_Rule[]
+    */
+    public function getRules()
+    {
+        return $this->rules;
+    }
+    
+   /**
+    * Checks whether the element has any rules set.
+    * @return bool
+    */
+    public function hasRules()
+    {
+        return !empty($this->rules);
+    }
 }
-?>

@@ -911,4 +911,28 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2
     {
         return !empty($this->rules);
     }
+    
+   /**
+    * Retrieves the parent form of the node.
+    * @throws Exception
+    * @return HTML_QuickForm2
+    */
+    public function getForm()
+    {
+        $container = $this->getContainer();
+        
+        if($container instanceof HTML_QuickForm2) {
+            return $container;
+        }
+        
+        if($container instanceof HTML_QuickForm2_Node) {
+            return $container->getForm();
+        }
+        
+        if($this instanceof HTML_QuickForm2) {
+            return $this;
+        }
+        
+        throw new Exception('The node has no form.');
+    }
 }

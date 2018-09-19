@@ -88,7 +88,12 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
     */
     protected $elements = array();
 
-
+    /**
+     * The event handler instance for the form
+     * @var HTML_QuickForm2_EventHandler
+     */
+    protected $eventHandler;
+    
     public function setName($name)
     {
         $this->attributes['name'] = (string)$name;
@@ -255,6 +260,8 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
         
         $this->invalidateLookup();
         
+        $this->getForm()->getEventHandler()->triggerNodeAdded($element);
+        
         return $element;
     }
     
@@ -269,8 +276,9 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
     {
         $this->lookup = null;
         
-        if($this->container) {
-            $this->container->invalidateLookup();
+        $container = $this->getContainer();
+        if($container) {
+            $container->invalidateLookup();
         }
     }
     

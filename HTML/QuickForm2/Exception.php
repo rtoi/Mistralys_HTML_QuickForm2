@@ -117,4 +117,17 @@ s * @version  Release: @package_version@
 class HTML_QuickForm2_InvalidArgumentException extends HTML_QuickForm2_Exception
 {
 }
-?>
+
+/**
+ * Exception that denotes an attempt to trigger or register an unknown event.
+ * 
+ * @category HTML
+ * @license  http://opensource.org/licenses/bsd-license.php New BSD License
+ * @author Sebastian Mordziol <s.mordziol@mistralys.eu>
+ * @version @package_version@
+ * @link     http://pear.php.net/package/HTML_QuickForm2
+ */
+class HTML_QuickForm2_InvalidEventException extends HTML_QuickForm2_Exception
+{
+    
+}

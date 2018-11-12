@@ -107,5 +107,27 @@ class HTML_QuickForm2_Element_Textarea extends HTML_QuickForm2_Element
         }
         return $html . $this->getPersistentContent();
     }
+    
+   /**
+    * Sets the columns attribute of the textarea.
+    * @param int $cols
+    * @return HTML_QuickForm2_Element_Textarea
+    */
+    public function setColumns($cols)
+    {
+        $this->setAttribute('cols', $cols);
+        return $this;
+    }
+
+   /**
+    * Sets the rows attribute of the textarea.
+    * @param int $rows
+    * @return HTML_QuickForm2_Element_Textarea
+    */
+    public function setRows($rows)
+    {
+        $this->setAttribute('rows', $rows);
+        return $this;
+    }
 }
 ?>

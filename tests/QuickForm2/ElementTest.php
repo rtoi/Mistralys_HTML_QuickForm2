@@ -160,14 +160,18 @@ class HTML_QuickForm2_ElementTest extends PHPUnit_Framework_TestCase
 
     public function testManualIdsNotReused()
     {
+        // use a unique element name for this test, to avoid conflicts
+        // with other tests.
+        $elName = 'grabby';
+        
         $usedIds = array(
-            'foo-0', 'foo-2', 'foo-bar-0', 'foo-bar-2', 'foo-baz-0-0'
+            $elName.'-0', $elName.'-2', $elName.'-bar-0', $elName.'-bar-2', $elName.'-baz-0-0'
         );
         $names = array(
-            'foo', 'foo[bar]', 'foo[baz][]'
+            $elName, $elName.'[bar]', $elName.'[baz][]'
         );
         foreach ($usedIds as $id) {
-            $elManual = new HTML_QuickForm2_ElementImpl('foo', array('id' => $id));
+            $elManual = new HTML_QuickForm2_ElementImpl($elName, array('id' => $id));
         }
         foreach ($names as $name) {
             $el = new HTML_QuickForm2_ElementImpl($name);
@@ -228,7 +232,7 @@ class HTML_QuickForm2_ElementTest extends PHPUnit_Framework_TestCase
     {
         HTML_Common2::setOption('id_force_append_index', false);
 
-        $name = 'foo_' . mt_rand(0, 1000);
+        $name = 'finno_' . mt_rand(0, 1000);
         $el = new HTML_QuickForm2_ElementImpl($name);
         $this->assertEquals($name, $el->getId());
 

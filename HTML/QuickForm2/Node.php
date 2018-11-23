@@ -210,8 +210,6 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2
         }
     }
 
-    protected static $generatedIDs = array();
-
    /**
     * Generates an id for the element
     *
@@ -223,12 +221,6 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2
     */
     protected static function generateId($elementName)
     {
-        // added to avoid generating IDs for the
-        // same element names over and over again.
-        if(isset(self::$generatedIDs[$elementName])) {
-            return self::$generatedIDs[$elementName];
-        }
-        
         $stop      =  !self::getOption('id_force_append_index');
         $tokens    =  strlen($elementName)
                       ? explode('[', str_replace(']', '', $elementName))
@@ -270,7 +262,7 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2
         } while (!empty($tokens));
 
         $id = substr($id, 1);
-        self::$generatedIDs[$elementName] = $id;
+
         return $id;
     }
 

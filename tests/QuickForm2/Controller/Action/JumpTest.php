@@ -186,7 +186,10 @@ class HTML_QuickForm2_Controller_Action_JumpTest
         }
 
         $old = ini_set('session.use_only_cookies', false);
-        define('SID', 'mysessionid=foobar');
+        
+        if(!defined('SID')) {
+            define('SID', 'mysessionid=foobar');
+        }
 
         $controller = new HTML_QuickForm2_Controller('testBug3443');
         $controller->addPage($this->getMock(

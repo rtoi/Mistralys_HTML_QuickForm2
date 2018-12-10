@@ -76,10 +76,9 @@ class HTML_QuickForm2_Element_Button extends HTML_QuickForm2_Element
     */
     protected $submitValue = null;
 
-
     public function getType()
     {
-        return 'button';
+        return $this->getAttribute('type');
     }
 
    /**
@@ -106,6 +105,27 @@ class HTML_QuickForm2_Element_Button extends HTML_QuickForm2_Element
     {
         $this->data['content'] = $content;
         return $this;
+    }
+    
+   /**
+    * Sets the button's type attribute.
+    * @param string $type
+    * @return HTML_QuickForm2_Element_Button
+    */
+    public function setType($type)
+    {
+        $this->setAttribute('type', $type);
+        return $this;
+    }
+    
+   /**
+    * Sets the button label. This is an alias for the {@link setContent()} method.
+    * @param string $label Can contain HTML.
+    * @return HTML_QuickForm2_Element_Button
+    */
+    public function setLabel($label)
+    {
+        return $this->setContent($label);
     }
 
    /**

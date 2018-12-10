@@ -53,6 +53,11 @@ require_once 'HTML/QuickForm2/Container.php';
 require_once 'HTML/QuickForm2/DataSource/SuperGlobal.php';
 
 /**
+ * Event handling class to dispatch any events in the form
+ */
+require_once 'HTML/QuickForm2/EventHandler.php';
+
+/**
  * Class representing a HTML form
  *
  * @category HTML
@@ -76,6 +81,12 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
     * @var array
     */
     protected $watchedAttributes = array('id', 'method');
+    
+   /**
+    * The event handler instance for the form
+    * @var HTML_QuickForm2_EventHandler
+    */
+    protected $eventHandler;
 
    /**
     * Class constructor, form's "id" and "method" attributes can only be set here
@@ -90,6 +101,7 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
     public function __construct(
         $id, $method = 'post', $attributes = null, $trackSubmit = true
     ) {
+        $this->eventHandler = new HTML_QuickForm2_EventHandler($this);
         $method      = ('GET' == strtoupper($method))? 'get': 'post';
         $trackSubmit = empty($id) ? false : $trackSubmit;
         $this->attributes = array_merge(
@@ -252,5 +264,15 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
         }
         return $value;
     }
+   
+   /**
+    * Retrieves the event handler instance of the form,
+    * which is used to manage form events.
+    * 
+    * @return HTML_QuickForm2_EventHandler
+    */
+    public function getEventHandler()
+    {
+        return $this->eventHandler;
+    }
 }
-?>

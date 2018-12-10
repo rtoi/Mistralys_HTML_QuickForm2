@@ -10,6 +10,8 @@
  * client-side validation with custom element.
  */
 
+require_once '../../vendor/autoload.php';
+
 require_once 'HTML/QuickForm2.php';
 require_once 'HTML/QuickForm2/Element/Select.php';
 require_once 'HTML/QuickForm2/Renderer.php';

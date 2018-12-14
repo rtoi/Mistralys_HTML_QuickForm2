@@ -945,7 +945,6 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2
     {
         return !empty($this->rules);
     }
-
     
    /**
     * Retrieves the parent form of the node.

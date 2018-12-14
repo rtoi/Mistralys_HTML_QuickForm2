@@ -107,7 +107,7 @@ class HTML_QuickForm2_Element_Textarea extends HTML_QuickForm2_Element
         }
         return $html . $this->getPersistentContent();
     }
-    
+
    /**
     * Sets the columns attribute of the textarea.
     * @param int $cols

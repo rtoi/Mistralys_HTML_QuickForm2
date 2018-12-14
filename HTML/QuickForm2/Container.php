@@ -657,6 +657,21 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
         
         return false;
     }
+
+    public function getValues()
+    {
+        /* @var $element HTML_QuickForm2_Node */
+        
+        $elements = $this->getElements();
+
+        $values = array();
+        foreach ($elements as $element) 
+        {
+            $values[$element->getName()] = $element->getValue();
+        }
+        
+        return $values;
+    }
 }
 
 /**

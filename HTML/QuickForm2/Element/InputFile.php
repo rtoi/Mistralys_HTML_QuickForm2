@@ -260,5 +260,26 @@ class HTML_QuickForm2_Element_InputFile extends HTML_QuickForm2_Element_Input
             'InputFile elements do not support filters'
         );
     }
+    
+   /**
+    * Adds a mime type to the accept attribute.
+    * @param string $mime A mime type, e.g "image/png"
+    * @return HTML_QuickForm2_Element_InputFile
+    */
+    public function addAccept($mime)
+    {
+        $accepts = $this->getAttribute('accept');
+        $result = array();
+        if(!empty($accepts)) {
+            $result = explode(',', $accepts);
+        }
+        
+        if(!in_array($mime, $result)) {
+            $result[] = $mime;
+        }
+        
+        $this->setAttribute('accept', implode(',', $result));
+        return $this;
+    }
 }
-?>
+

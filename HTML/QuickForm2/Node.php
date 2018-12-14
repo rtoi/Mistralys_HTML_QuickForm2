@@ -200,18 +200,29 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2
     public function __construct($name = null, $attributes = null, array $data = array())
     {
         parent::__construct($attributes);
+        
         $this->setName($name);
+        
         // Autogenerating the id if not set on previous steps
-        if ('' == $this->getId()) {
+        $id = $this->getId();
+        if ('' == $id) 
+        {
             $this->setId();
         }
+        // if the ID uses hyphens like the auto-generated IDs,
+        // we need to make sure we don't generate the same.
+        else if(stristr($id, '-')) 
+        {
+            self::parseID($id);
+        }
+        
         if (!empty($data)) {
             $this->data = array_merge($this->data, $data);
         }
     }
-
-    protected static $generatedIDs = array();
-
+    
+    protected static $elementIDs = array();
+    
    /**
     * Generates an id for the element
     *
@@ -223,58 +234,81 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2
     */
     protected static function generateId($elementName)
     {
-        // added to avoid generating IDs for the
-        // same element names over and over again.
-        if(isset(self::$generatedIDs[$elementName])) {
-            return self::$generatedIDs[$elementName];
+        if(empty($elementName)) {
+            $elementName = 'qfauto';
         }
         
-        $stop      =  !self::getOption('id_force_append_index');
-        $tokens    =  strlen($elementName)
-                      ? explode('[', str_replace(']', '', $elementName))
-                      : ($stop? array('qfauto', ''): array('qfauto'));
-        $container =& self::$ids;
-        $id        =  '';
+        $baseID = $elementName;
+        
+        // handle element[][] names: simply replace brackets with hyphens,
+        // and trim the hyphens at the end. This does the following:
+        // 
+        // element => element
+        // element[] => element
+        // element[name] => element-name
+        // element[name][] => element-name
+        //
+        if(stristr($baseID, '[')) {
+            $baseID = rtrim(str_replace(array('[', ']'), '-', $elementName), '-');
+        }
+        
+        // avoid IDs that start with numbers.
+        if(is_numeric(substr($baseID, 0, 1))) {
+            $baseID = 'qf'.$baseID;
+        }
+        
+        if(!isset(self::$elementIDs[$baseID])) 
+        {
+            self::$elementIDs[$baseID] = 0;
+            
+            // only append the number if it has been explicitly set.
+            if(self::getOption('id_force_append_index')) {
+                $baseID .= '-'.self::$elementIDs[$baseID];
+            }
+        } 
+        else 
+        {
+            self::$elementIDs[$baseID]++;
+            
+            // the number is appended independently of the id_force_append_index
+            // option, since the element has the same name as an existing element,
+            // to avoid any ID conflicts.
+            $baseID .= '-'.self::$elementIDs[$baseID];
+        }
 
-        do {
-            $token = array_shift($tokens);
-            // prevent generated ids starting with numbers
-            if ('' == $id && is_numeric($token)) {
-                $token = 'qf' . $token;
-            }
-            // Handle the 'array[]' names
-            if ('' === $token) {
-                if (empty($container)) {
-                    $token = 0;
-                } else {
-                    $keys  = array_filter(array_keys($container), 'is_numeric');
-                    $token = empty($keys) ? 0 : end($keys);
-                    while (isset($container[$token])) {
-                        $token++;
-                    }
-                }
-            }
-            $id .= '-' . $token;
-            if (!isset($container[$token])) {
-                $container[$token] = array();
-            // Handle duplicate names when not having mandatory indexes
-            } elseif (empty($tokens) && $stop) {
-                $tokens[] = '';
-            }
-            // Handle mandatory indexes
-            if (empty($tokens) && !$stop) {
-                $tokens[] = '';
-                $stop     = true;
-            }
-            $container =& $container[$token];
-        } while (!empty($tokens));
-
-        $id = substr($id, 1);
-        self::$generatedIDs[$elementName] = $id;
-        return $id;
+        return $baseID;
     }
-
-
+    
+   /**
+    * Parses a manually provided element ID to ensure
+    * that the automatically generated IDs will not 
+    * conflict with it. This is only relevant if the
+    * manual ID uses the same syntax, for example:
+    * 
+    * <code>foo-45</code>
+    * 
+    * In this case, the internal counter for <code>foo</code>
+    * element IDs will be set to 45, unless the counter
+    * is already higher than 45. 
+    *     
+    * @param string $id
+    * @see HTML_QuickForm2_Node::generateId()
+    */
+    protected static function parseID($id)
+    {
+        $tokens = explode('-', $id);
+        $last = array_pop($tokens);
+        if(!is_numeric($last)) {
+            return;
+        }
+         
+        $baseID = implode('-', $tokens);
+        
+        if(!isset(self::$elementIDs[$baseID]) || $last > self::$elementIDs[$baseID]) {
+            self::$elementIDs[$baseID] = $last;
+        }
+    }
+    
    /**
     * Stores the explicitly given id to prevent duplicate id generation
     *

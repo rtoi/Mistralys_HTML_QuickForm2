@@ -23,7 +23,7 @@ class HTML_QuickForm2_Element_InputFile_Upload
     {
         $this->element = $element;
         $this->value = $value;
-        $this->valid = !empty($this->value) && is_uploaded_file($this->getTempPath());
+        $this->valid = !empty($this->value) && is_uploaded_file($value['tmp_name']);
     }
     
    /**

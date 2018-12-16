@@ -301,7 +301,7 @@ class HTML_QuickForm2_Element_InputFile extends HTML_QuickForm2_Element_Input
     {
         $args = func_get_args();
         if(is_array($args[0])) {
-            $args = args[0];
+            $args = $args[0];
         }
         
         foreach($args as $accept) {

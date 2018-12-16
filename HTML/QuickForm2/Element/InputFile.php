@@ -281,5 +281,24 @@ class HTML_QuickForm2_Element_InputFile extends HTML_QuickForm2_Element_Input
         $this->setAttribute('accept', implode(',', $result));
         return $this;
     }
+
+   /**
+    * Retrieves the upload instance for the uploaded file, if any.
+    * Make sure to check if there is a valid uploaded file using
+    * the upload's {@link HTML_QuickForm2_Element_InputFile_Upload::isValid()} 
+    * method.
+    *
+    * If the form has not been submitted, the upload will, of course,
+    * not be valid. This is meant to be used after the form has been
+    * submitted and validated to make working with the result easier.
+    * 
+    * @return HTML_QuickForm2_Element_InputFile_Upload
+    */
+    public function getUpload()
+    {
+        require_once __DIR__.'/InputFile/Upload.php';
+        
+        return new HTML_QuickForm2_Element_InputFile_Upload($this, $this->getValue());
+    }
 }
 

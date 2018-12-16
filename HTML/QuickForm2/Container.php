@@ -255,7 +255,10 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
         if ($this === $element->getContainer()) {
             $this->removeChild($element);
         }
+        
         $element->setContainer($this);
+        
+
         $this->elements[] = $element;
         
         $this->invalidateLookup();
@@ -672,6 +675,25 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
         
         return $values;
     }
+
+    /**
+     * Executes required initialization before the form
+     * is rendered. Since this means the form's configuration
+     * is completed, elements like the file upload can do
+     * necessary checks now.
+     *
+     * Goes through all elements and lets them do their
+     * initialization as well.
+     */
+     public function preRender()
+     {
+         $elements = $this->getElements();
+         
+         $total = count($elements);
+         for($i=0; $i < $total; $i++) {
+             $elements[$i]->preRender();
+         }
+     }
 }
 
 /**

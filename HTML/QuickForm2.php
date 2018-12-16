@@ -237,6 +237,8 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
     */
     public function render(HTML_QuickForm2_Renderer $renderer)
     {
+        $this->preRender();
+        
         $renderer->startForm($this);
         $renderer->getJavascriptBuilder()->setFormId($this->getId());
         foreach ($this as $element) {
@@ -246,7 +248,7 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
         $renderer->finishForm($this);
         return $renderer;
     }
-
+    
     /**
      * Filter for form's getValue() removing internal fields' values from the array
      *

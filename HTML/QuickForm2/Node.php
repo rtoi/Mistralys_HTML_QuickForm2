@@ -969,4 +969,9 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2
         
         throw new Exception('The node has no form.');
     }
+    
+    public function preRender()
+    {
+        
+    }
 }

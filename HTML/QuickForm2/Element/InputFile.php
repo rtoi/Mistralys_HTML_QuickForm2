@@ -281,6 +281,35 @@ class HTML_QuickForm2_Element_InputFile extends HTML_QuickForm2_Element_Input
         $this->setAttribute('accept', implode(',', $result));
         return $this;
     }
+    
+   /**
+    * Like {@link HTML_QuickForm2_Element_InputFile::addAccept()},
+    * but allows setting several mime types at once. The first 
+    * parameter may be an array with mime types, or you can set
+    * them as separate parameters.
+    * 
+    * The following statements are equivalent:
+    * 
+    * <pre>
+    * $el->addAccepts(array('image/jpeg', 'image/png'));
+    * $el->addAccepts('image/jpeg', 'image/png');
+    * </pre>
+    * 
+    * @return HTML_QuickForm2_Element_InputFile
+    */
+    public function addAccepts()
+    {
+        $args = func_get_args();
+        if(is_array($args[0])) {
+            $args = args[0];
+        }
+        
+        foreach($args as $accept) {
+            $this->addAccept($accept);
+        }
+        
+        return $this;
+    }
 
    /**
     * Retrieves the upload instance for the uploaded file, if any.

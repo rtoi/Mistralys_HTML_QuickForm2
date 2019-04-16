@@ -129,5 +129,14 @@ class HTML_QuickForm2_Element_Textarea extends HTML_QuickForm2_Element
         $this->setAttribute('rows', $rows);
         return $this;
     }
+    
+   /**
+    * Adds a filter for the "trim" function.
+    * @return HTML_QuickForm2_Element_Textarea
+    */
+    public function addFilterTrim()
+    {
+        return $this->addFilter('trim');
+    }
 }
 ?>

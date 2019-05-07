@@ -95,17 +95,43 @@ class HTML_QuickForm2_Rule_Compare extends HTML_QuickForm2_Rule
     {
         $value  = $this->owner->getValue();
         $config = $this->getConfig();
-        if (!in_array($config['operator'], array('===', '!=='))) {
-            $compareFn = create_function(
-                '$a, $b', 'return floatval($a) ' . $config['operator'] . ' floatval($b);'
-            );
-        } else {
-            $compareFn = create_function(
-                '$a, $b', 'return strval($a) ' . $config['operator'] . ' strval($b);'
-            );
+        
+        $compareFn = function($a, $b) use($config)
+        {
+            if(in_array($config['operator'], array('===', '!=='))) 
+            {
+                $a = strval($a);
+                $b = strval($b);
+            } 
+            else 
+            {
+                $a = floatval($a);
+                $b = floatval($b);
+            }
+            
+            switch($config['operator']) 
+            {
+                case '==': return $a == $b;
+                case '!=': return $a != $b;
+                case '<': return $a < $b;
+                case '<=': return $a <= $b;
+                case '>': return $a > $b;
+                case '>=': return $a >= $b;
+                case '===': return $a === $b;
+                case '!==': return $a !== $b;
+                default:
+                    throw new HTML_QuickForm2_InvalidArgumentException(
+                        'Invalid comparison operator'
+                    );
+            }
+        }; 
+        
+        $compareVal = $config['operand'];
+        if($compareVal instanceof HTML_QuickForm2_Node) {
+            $compareVal = $compareVal->getValue();
         }
-        return $compareFn($value, $config['operand'] instanceof HTML_QuickForm2_Node
-                                  ? $config['operand']->getValue(): $config['operand']);
+            
+        return $compareFn($value, $compareVal);
     }
 
     protected function getJavascriptCallback()

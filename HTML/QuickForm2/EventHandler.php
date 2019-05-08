@@ -218,8 +218,6 @@ class HTML_QuickForm2_EventHandler
         
         $className = 'HTML_QuickForm2_Event_'.$eventName;
         
-        require_once str_replace('_', '/', $className).'.php';
-        
         return $className;
     }
     

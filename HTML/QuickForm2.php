@@ -19,21 +19,6 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
-// pear-package-only /**
-// pear-package-only  * Abstract base class for QuickForm2 containers
-// pear-package-only  */
-// pear-package-only require_once 'HTML/QuickForm2/Container.php';
-
-// pear-package-only /**
-// pear-package-only  * Data source for HTML_QuickForm2 objects based on superglobal arrays
-// pear-package-only  */
-// pear-package-only require_once 'HTML/QuickForm2/DataSource/SuperGlobal.php';
-
-/**
- * Event handling class to dispatch any events in the form
- */
-require_once 'HTML/QuickForm2/EventHandler.php';
-
 /**
  * Class representing a HTML form
  *

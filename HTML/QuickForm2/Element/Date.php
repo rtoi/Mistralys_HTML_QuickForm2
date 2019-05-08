@@ -4,52 +4,29 @@
  *
  * PHP version 5
  *
- * LICENSE:
+ * LICENSE
  *
- * Copyright (c) 2006-2014, Alexey Borzov <avb@php.net>,
- *                          Bertrand Mansion <golgote@mamasam.com>
- * All rights reserved.
+ * This source file is subject to BSD 3-Clause License that is bundled
+ * with this package in the file LICENSE and available at the URL
+ * https://raw.githubusercontent.com/pear/HTML_QuickForm2/trunk/docs/LICENSE
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- *    * Redistributions of source code must retain the above copyright
- *      notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- *    * The names of the authors may not be used to endorse or promote products
- *      derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
- * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
- * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * @category HTML
- * @package  HTML_QuickForm2
- * @author   Alexey Borzov <avb@php.net>
- * @author   Bertrand Mansion <golgote@mamasam.com>
- * @license  http://opensource.org/licenses/bsd-license.php New BSD License
- * @link     http://pear.php.net/package/HTML_QuickForm2
+ * @category  HTML
+ * @package   HTML_QuickForm2
+ * @author    Alexey Borzov <avb@php.net>
+ * @author    Bertrand Mansion <golgote@mamasam.com>
+ * @copyright 2006-2019 Alexey Borzov <avb@php.net>, Bertrand Mansion <golgote@mamasam.com>
+ * @license   https://opensource.org/licenses/BSD-3-Clause BSD 3-Clause License
+ * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
-/**
- * Base class for HTML_QuickForm2 group of elements
- */
-require_once 'HTML/QuickForm2/Container/Group.php';
-/**
- * Base class for HTML_QuickForm2 select element
- */
-require_once 'HTML/QuickForm2/Element/Select.php';
+// pear-package-only /**
+// pear-package-only  * Base class for HTML_QuickForm2 group of elements
+// pear-package-only  */
+// pear-package-only require_once 'HTML/QuickForm2/Container/Group.php';
+// pear-package-only /**
+// pear-package-only  * Base class for HTML_QuickForm2 select element
+// pear-package-only  */
+// pear-package-only require_once 'HTML/QuickForm2/Element/Select.php';
 
 /**
  * Class for a group of elements used to input dates (and times).
@@ -58,9 +35,9 @@ require_once 'HTML/QuickForm2/Element/Select.php';
  * @package  HTML_QuickForm2
  * @author   Alexey Borzov <avb@php.net>
  * @author   Bertrand Mansion <golgote@mamasam.com>
- * @license  http://opensource.org/licenses/bsd-license.php New BSD License
+ * @license  https://opensource.org/licenses/BSD-3-Clause BSD 3-Clause License
  * @version  Release: @package_version@
- * @link     http://pear.php.net/package/HTML_QuickForm2
+ * @link     https://pear.php.net/package/HTML_QuickForm2
  */
 class HTML_QuickForm2_Element_Date extends HTML_QuickForm2_Container_Group
 {
@@ -161,10 +138,10 @@ class HTML_QuickForm2_Element_Date extends HTML_QuickForm2_Container_Group
             $this->messageProvider = $data['messageProvider'];
         } else {
             if (isset($data['language']) && 'locale' == $data['language']) {
-                HTML_QuickForm2_Loader::loadClass('HTML_QuickForm2_MessageProvider_Strftime');
+                // pear-package-only HTML_QuickForm2_Loader::loadClass('HTML_QuickForm2_MessageProvider_Strftime');
                 $this->messageProvider = new HTML_QuickForm2_MessageProvider_Strftime();
             } else {
-                HTML_QuickForm2_Loader::loadClass('HTML_QuickForm2_MessageProvider_Default');
+                // pear-package-only HTML_QuickForm2_Loader::loadClass('HTML_QuickForm2_MessageProvider_Default');
                 $this->messageProvider = HTML_QuickForm2_MessageProvider_Default::getInstance();
             }
         }
@@ -236,14 +213,14 @@ class HTML_QuickForm2_Element_Date extends HTML_QuickForm2_Container_Group
                         $this->data['maxYear'],
                         $this->data['minYear'] > $this->data['maxYear']? -1: 1
                     );
-                    array_walk($options, create_function('&$v,$k', '$v = substr($v,-2);'));
+                    array_walk($options, array($this, '_shortYearCallback'));
                     break;
                 case 'h':
                     $options = $this->createOptionList(1, 12);
                     break;
                 case 'g':
                     $options = $this->createOptionList(1, 12);
-                    array_walk($options, create_function('&$v,$k', '$v = intval($v);'));
+                    array_walk($options, array($this, '_shortHourCallback'));
                     break;
                 case 'H':
                     $options = $this->createOptionList(
@@ -300,6 +277,28 @@ class HTML_QuickForm2_Element_Date extends HTML_QuickForm2_Container_Group
         }
         $separators[] = $separator . ($backslash? '\\': '');
         $this->setSeparator($separators);
+    }
+
+    /**
+     * Callback for creating two-digit year list, formerly via create_function()
+     *
+     * @param string $v
+     * @param string $k
+     */
+    private function _shortYearCallback(&$v, $k)
+    {
+        $v = substr($v,-2);
+    }
+
+    /**
+     * Callback for creating hour list without leading zeroes, formerly via create_function()
+     *
+     * @param $v
+     * @param $k
+     */
+    private function _shortHourCallback(&$v, $k)
+    {
+        $v = intval($v);
     }
 
    /**

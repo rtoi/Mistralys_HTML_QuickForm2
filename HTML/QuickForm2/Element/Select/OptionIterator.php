@@ -31,13 +31,13 @@
  * @link     https://pear.php.net/package/HTML_QuickForm2
  */
 class HTML_QuickForm2_Element_Select_OptionIterator extends RecursiveArrayIterator
-implements RecursiveIterator
+    implements RecursiveIterator
 {
     public function hasChildren()
     {
         return $this->current() instanceof HTML_QuickForm2_Element_Select_OptionContainer;
     }
-    
+
     public function getChildren()
     {
         return new HTML_QuickForm2_Element_Select_OptionIterator(

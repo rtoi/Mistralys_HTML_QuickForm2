@@ -40,54 +40,54 @@
  * @internal
  */
 class HTML_QuickForm2_Element_Select_OptionContainer extends HTML_Common2
-implements IteratorAggregate, Countable
+    implements IteratorAggregate, Countable
 {
-    /**
-     * List of options and optgroups in this container
-     *
-     * Options are stored as arrays (for performance reasons), optgroups as
-     * instances of Optgroup class.
-     *
-     * @var array
-     */
+   /**
+    * List of options and optgroups in this container
+    *
+    * Options are stored as arrays (for performance reasons), optgroups as
+    * instances of Optgroup class.
+    *
+    * @var array
+    */
     protected $options = array();
-    
-    /**
-     * Reference to parent <select>'s values
-     * @var array
-     */
+
+   /**
+    * Reference to parent <select>'s values
+    * @var array
+    */
     protected $values;
-    
-    /**
-     * Reference to parent <select>'s possible values
-     * @var array
-     */
+
+   /**
+    * Reference to parent <select>'s possible values
+    * @var array
+    */
     protected $possibleValues;
-    
-    
-    /**
-     * Class constructor
-     *
-     * @param array &$values         Reference to values of parent <select> element
-     * @param array &$possibleValues Reference to possible values of parent <select> element
-     */
+
+
+   /**
+    * Class constructor
+    *
+    * @param array &$values         Reference to values of parent <select> element
+    * @param array &$possibleValues Reference to possible values of parent <select> element
+    */
     public function __construct(&$values, &$possibleValues)
     {
         $this->values         =& $values;
         $this->possibleValues =& $possibleValues;
     }
-    
-    /**
-     * Adds a new option
-     *
-     * Please note that if you pass 'selected' attribute in the $attributes
-     * parameter then this option's value will be added to <select>'s values.
-     *
-     * @param string       $text       Option text
-     * @param string       $value      'value' attribute for <option> tag
-     * @param string|array $attributes Additional attributes for <option> tag
-     *                     (either as a string or as an associative array)
-     */
+
+   /**
+    * Adds a new option
+    *
+    * Please note that if you pass 'selected' attribute in the $attributes
+    * parameter then this option's value will be added to <select>'s values.
+    *
+    * @param string       $text       Option text
+    * @param string       $value      'value' attribute for <option> tag
+    * @param string|array $attributes Additional attributes for <option> tag
+    *                     (either as a string or as an associative array)
+    */
     public function addOption($text, $value, $attributes = null)
     {
         if (null === $attributes) {
@@ -126,34 +126,34 @@ implements IteratorAggregate, Countable
         array_unshift($this->options, $last);
     }
     
-    /**
-     * Adds a new optgroup
-     *
-     * @param string       $label      'label' attribute for optgroup tag
-     * @param string|array $attributes Additional attributes for <optgroup> tag
-     *                     (either as a string or as an associative array)
-     *
-     * @return   HTML_QuickForm2_Element_Select_Optgroup
-     */
+   /**
+    * Adds a new optgroup
+    *
+    * @param string       $label      'label' attribute for optgroup tag
+    * @param string|array $attributes Additional attributes for <optgroup> tag
+    *                     (either as a string or as an associative array)
+    *
+    * @return   HTML_QuickForm2_Element_Select_Optgroup
+    */
     public function addOptgroup($label, $attributes = null)
     {
         $optgroup = new HTML_QuickForm2_Element_Select_Optgroup(
             $this->values, $this->possibleValues, $label, $attributes
-            );
+        );
         $this->options[] = $optgroup;
         return $optgroup;
     }
-    
-    /**
-     * Returns an array of contained options
-     *
-     * @return   array
-     */
+
+   /**
+    * Returns an array of contained options
+    *
+    * @return   array
+    */
     public function getOptions()
     {
         return $this->options;
     }
-    
+
     public function __toString()
     {
         $indentLvl = $this->getIndentLevel();
@@ -167,8 +167,8 @@ implements IteratorAggregate, Countable
                     $option['attr']['selected'] = 'selected';
                 }
                 $html .= $indent . '<option' .
-                    self::getAttributesString($option['attr']) .
-                    '>' . $option['text'] . '</option>' . $linebreak;
+                         self::getAttributesString($option['attr']) .
+                         '>' . $option['text'] . '</option>' . $linebreak;
             } elseif ($option instanceof HTML_QuickForm2_Element_Select_OptionContainer) {
                 $option->setIndentLevel($indentLvl + 1);
                 $html .= $option->__toString();
@@ -176,35 +176,35 @@ implements IteratorAggregate, Countable
         }
         return $html;
     }
-    
-    /**
-     * Returns an iterator over contained elements
-     *
-     * @return   HTML_QuickForm2_Element_Select_OptionIterator
-     */
+
+   /**
+    * Returns an iterator over contained elements
+    *
+    * @return   HTML_QuickForm2_Element_Select_OptionIterator
+    */
     public function getIterator()
     {
         return new HTML_QuickForm2_Element_Select_OptionIterator($this->options);
     }
-    
-    /**
-     * Returns a recursive iterator over contained elements
-     *
-     * @return   RecursiveIteratorIterator
-     */
+
+   /**
+    * Returns a recursive iterator over contained elements
+    *
+    * @return   RecursiveIteratorIterator
+    */
     public function getRecursiveIterator()
     {
         return new RecursiveIteratorIterator(
             new HTML_QuickForm2_Element_Select_OptionIterator($this->options),
             RecursiveIteratorIterator::SELF_FIRST
-            );
+        );
     }
-    
-    /**
-     * Returns the number of options in the container
-     *
-     * @return   int
-     */
+
+   /**
+    * Returns the number of options in the container
+    *
+    * @return   int
+    */
     public function count()
     {
         return count($this->options);
@@ -236,3 +236,4 @@ implements IteratorAggregate, Countable
         return $count;
     }
 }
+?>

@@ -4,41 +4,19 @@
  *
  * PHP version 5
  *
- * LICENSE:
+ * LICENSE
  *
- * Copyright (c) 2006-2014, Alexey Borzov <avb@php.net>,
- *                          Bertrand Mansion <golgote@mamasam.com>
- * All rights reserved.
+ * This source file is subject to BSD 3-Clause License that is bundled
+ * with this package in the file LICENSE and available at the URL
+ * https://raw.githubusercontent.com/pear/HTML_QuickForm2/trunk/docs/LICENSE
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- *    * Redistributions of source code must retain the above copyright
- *      notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- *    * The names of the authors may not be used to endorse or promote products
- *      derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
- * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
- * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * @category   HTML
- * @package    HTML_QuickForm2
- * @author     Alexey Borzov <avb@php.net>
- * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @link       http://pear.php.net/package/HTML_QuickForm2
+ * @category  HTML
+ * @package   HTML_QuickForm2
+ * @author    Alexey Borzov <avb@php.net>
+ * @author    Bertrand Mansion <golgote@mamasam.com>
+ * @copyright 2006-2019 Alexey Borzov <avb@php.net>, Bertrand Mansion <golgote@mamasam.com>
+ * @license   https://opensource.org/licenses/BSD-3-Clause BSD 3-Clause License
+ * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
 /** Sets up includes */
@@ -125,18 +103,18 @@ class HTML_QuickForm2_RuleTest extends PHPUnit_Framework_TestCase
         $ruleTrue = new HTML_QuickForm2_Rule_ImplConst($elTest, '...', true);
         $ruleFalse = new HTML_QuickForm2_Rule_ImplConst($elTest, '...', false);
 
-        $ruleAndTrue = $this->getMock(
-            'HTML_QuickForm2_Rule', array('validateOwner'),
-            array($elTest)
-        );
+        $ruleAndTrue = $this->getMockBuilder('HTML_QuickForm2_Rule')
+            ->setMethods(array('validateOwner'))
+            ->setConstructorArgs(array($elTest))
+            ->getMock();
         $ruleAndTrue->expects($this->once())->method('validateOwner');
         $ruleTrue->and_($ruleAndTrue);
         $ruleTrue->validate();
 
-        $ruleAndFalse = $this->getMock(
-            'HTML_QuickForm2_Rule', array('validateOwner'),
-            array($elTest)
-        );
+        $ruleAndFalse = $this->getMockBuilder('HTML_QuickForm2_Rule')
+            ->setMethods(array('validateOwner'))
+            ->setConstructorArgs(array($elTest))
+            ->getMock();
         $ruleAndFalse->expects($this->never())->method('validateOwner');
         $ruleFalse->and_($ruleAndFalse);
         $ruleFalse->validate();
@@ -148,18 +126,18 @@ class HTML_QuickForm2_RuleTest extends PHPUnit_Framework_TestCase
         $ruleTrue = new HTML_QuickForm2_Rule_ImplConst($elTest, '...', true);
         $ruleFalse = new HTML_QuickForm2_Rule_ImplConst($elTest, '...', false);
 
-        $ruleOrTrue = $this->getMock(
-            'HTML_QuickForm2_Rule', array('validateOwner'),
-            array($elTest)
-        );
+        $ruleOrTrue = $this->getMockBuilder('HTML_QuickForm2_Rule')
+            ->setMethods(array('validateOwner'))
+            ->setConstructorArgs(array($elTest))
+            ->getMock();
         $ruleOrTrue->expects($this->never())->method('validateOwner');
         $ruleTrue->or_($ruleOrTrue);
         $ruleTrue->validate();
 
-        $ruleOrFalse = $this->getMock(
-            'HTML_QuickForm2_Rule', array('validateOwner'),
-            array($elTest)
-        );
+        $ruleOrFalse = $this->getMockBuilder('HTML_QuickForm2_Rule')
+            ->setMethods(array('validateOwner'))
+            ->setConstructorArgs(array($elTest))
+            ->getMock();
         $ruleOrFalse->expects($this->once())->method('validateOwner');
         $ruleFalse->or_($ruleOrFalse);
         $ruleFalse->validate();
@@ -197,10 +175,10 @@ class HTML_QuickForm2_RuleTest extends PHPUnit_Framework_TestCase
     public function testValidationTriggers()
     {
         $el = new HTML_QuickForm2_Element_InputText('foo', array('id' => 'foo'));
-        $rule = $this->getMock(
-            'HTML_QuickForm2_Rule', array('validateOwner', 'getJavascriptCallback'),
-            array($el)
-        );
+        $rule = $this->getMockBuilder('HTML_QuickForm2_Rule')
+            ->setMethods(array('validateOwner', 'getJavascriptCallback'))
+            ->setConstructorArgs(array($el))
+            ->getMock();
         $rule->expects($this->any())->method('getJavascriptCallback')
              ->will($this->returnValue('a callback'));
 
@@ -215,18 +193,18 @@ class HTML_QuickForm2_RuleTest extends PHPUnit_Framework_TestCase
         $bar = new HTML_QuickForm2_Element_InputText('bar', array('id' => 'bar'));
         $baz = new HTML_QuickForm2_Element_InputText('baz', array('id' => 'baz'));
 
-        $ruleFoo = $this->getMock(
-            'HTML_QuickForm2_Rule', array('validateOwner', 'getJavascriptCallback'),
-            array($foo)
-        );
-        $ruleBar = $this->getMock(
-            'HTML_QuickForm2_Rule', array('validateOwner', 'getJavascriptCallback'),
-            array($bar)
-        );
-        $ruleBaz = $this->getMock(
-            'HTML_QuickForm2_Rule', array('validateOwner', 'getJavascriptCallback'),
-            array($baz)
-        );
+        $ruleFoo = $this->getMockBuilder('HTML_QuickForm2_Rule')
+            ->setMethods(array('validateOwner', 'getJavascriptCallback'))
+            ->setConstructorArgs(array($foo))
+            ->getMock();
+        $ruleBar = $this->getMockBuilder('HTML_QuickForm2_Rule')
+            ->setMethods(array('validateOwner', 'getJavascriptCallback'))
+            ->setConstructorArgs(array($bar))
+            ->getMock();
+        $ruleBaz = $this->getMockBuilder('HTML_QuickForm2_Rule')
+            ->setMethods(array('validateOwner', 'getJavascriptCallback'))
+            ->setConstructorArgs(array($baz))
+            ->getMock();
         $ruleFoo->expects($this->once())->method('getJavascriptCallback')
                 ->will($this->returnValue('a callback'));
         $ruleBar->expects($this->once())->method('getJavascriptCallback')
@@ -247,18 +225,18 @@ class HTML_QuickForm2_RuleTest extends PHPUnit_Framework_TestCase
         $text   = new HTML_QuickForm2_Element_InputText('canHaveError');
 
         try {
-            $rule = $this->getMock(
-                'HTML_QuickForm2_Rule', array('validateOwner'),
-                array($hidden, 'an error message')
-            );
+            $rule = $this->getMockBuilder('HTML_QuickForm2_Rule')
+                ->setMethods(array('validateOwner'))
+                ->setConstructorArgs(array($hidden, 'an error message'))
+                ->getMock();
             $this->fail('Expected HTML_QuickForm2_InvalidArgumentException was not thrown');
         } catch (HTML_QuickForm2_InvalidArgumentException $e) {}
 
         try {
-            $rule = $this->getMock(
-                'HTML_QuickForm2_Rule', array('validateOwner'),
-                array($text, 'an error message')
-            );
+            $rule = $this->getMockBuilder('HTML_QuickForm2_Rule')
+                ->setMethods(array('validateOwner'))
+                ->setConstructorArgs(array($text, 'an error message'))
+                ->getMock();
             $rule->setOwner($hidden);
             $this->fail('Expected HTML_QuickForm2_InvalidArgumentException was not thrown');
         } catch (HTML_QuickForm2_InvalidArgumentException $e) {}

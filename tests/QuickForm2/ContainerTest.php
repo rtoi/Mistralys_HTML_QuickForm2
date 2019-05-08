@@ -4,41 +4,19 @@
  *
  * PHP version 5
  *
- * LICENSE:
+ * LICENSE
  *
- * Copyright (c) 2006-2014, Alexey Borzov <avb@php.net>,
- *                          Bertrand Mansion <golgote@mamasam.com>
- * All rights reserved.
+ * This source file is subject to BSD 3-Clause License that is bundled
+ * with this package in the file LICENSE and available at the URL
+ * https://raw.githubusercontent.com/pear/HTML_QuickForm2/trunk/docs/LICENSE
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- *    * Redistributions of source code must retain the above copyright
- *      notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- *    * The names of the authors may not be used to endorse or promote products
- *      derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
- * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
- * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * @category   HTML
- * @package    HTML_QuickForm2
- * @author     Alexey Borzov <avb@php.net>
- * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @link       http://pear.php.net/package/HTML_QuickForm2
+ * @category  HTML
+ * @package   HTML_QuickForm2
+ * @author    Alexey Borzov <avb@php.net>
+ * @author    Bertrand Mansion <golgote@mamasam.com>
+ * @copyright 2006-2019 Alexey Borzov <avb@php.net>, Bertrand Mansion <golgote@mamasam.com>
+ * @license   https://opensource.org/licenses/BSD-3-Clause BSD 3-Clause License
+ * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
 /** Sets up includes */
@@ -475,22 +453,22 @@ class HTML_QuickForm2_ContainerTest extends PHPUnit_Framework_TestCase
         $el1 = $cValidate->appendChild(new HTML_QuickForm2_ElementImpl2('foo'));
         $el2 = $cValidate->appendChild(new HTML_QuickForm2_ElementImpl2('bar'));
 
-        $ruleTrue1 = $this->getMock(
-            'HTML_QuickForm2_Rule', array('validateOwner'),
-            array($cValidate, 'irrelevant message')
-        );
+        $ruleTrue1 = $this->getMockBuilder('HTML_QuickForm2_Rule')
+            ->setMethods(array('validateOwner'))
+            ->setConstructorArgs(array($cValidate, 'irrelevant message'))
+            ->getMock();
         $ruleTrue1->expects($this->once())->method('validateOwner')
                   ->will($this->returnValue(true));
-        $ruleFalse = $this->getMock(
-            'HTML_QuickForm2_Rule', array('validateOwner'),
-            array($el1, 'some error')
-        );
+        $ruleFalse = $this->getMockBuilder('HTML_QuickForm2_Rule')
+            ->setMethods(array('validateOwner'))
+            ->setConstructorArgs(array($el1, 'some error'))
+            ->getMock();
         $ruleFalse->expects($this->once())->method('validateOwner')
                   ->will($this->returnValue(false));
-        $ruleTrue2 = $this->getMock(
-            'HTML_QuickForm2_Rule', array('validateOwner'),
-            array($el2, 'irrelevant message')
-        );
+        $ruleTrue2 = $this->getMockBuilder('HTML_QuickForm2_Rule')
+            ->setMethods(array('validateOwner'))
+            ->setConstructorArgs(array($el2, 'irrelevant message'))
+            ->getMock();
         $ruleTrue2->expects($this->once())->method('validateOwner')
                   ->will($this->returnValue(true));
 
@@ -511,10 +489,10 @@ class HTML_QuickForm2_ContainerTest extends PHPUnit_Framework_TestCase
         $container = new HTML_QuickForm2_ContainerImpl('last');
         $element   = $container->appendChild(new HTML_QuickForm2_ElementImpl2('foo'));
 
-        $ruleChange = $this->getMock(
-            'HTML_QuickForm2_Rule', array('validateOwner'),
-            array($element, 'a message')
-        );
+        $ruleChange = $this->getMockBuilder('HTML_QuickForm2_Rule')
+            ->setMethods(array('validateOwner'))
+            ->setConstructorArgs(array($element, 'a message'))
+            ->getMock();
         $ruleChange->expects($this->exactly(2))->method('validateOwner')
                    ->will($this->onConsecutiveCalls(true, false));
         $element->addRule($ruleChange);
@@ -538,16 +516,16 @@ class HTML_QuickForm2_ContainerTest extends PHPUnit_Framework_TestCase
         $container = new HTML_QuickForm2_ContainerImpl('aContainer');
         $element   = $container->appendChild(new HTML_QuickForm2_ElementImpl2('anElement'));
 
-        $ruleContainer = $this->getMock(
-            'HTML_QuickForm2_Rule', array('validateOwner', 'getJavascriptCallback'),
-            array($container)
-        );
+        $ruleContainer = $this->getMockBuilder('HTML_QuickForm2_Rule')
+            ->setMethods(array('validateOwner', 'getJavascriptCallback'))
+            ->setConstructorArgs(array($container))
+            ->getMock();
         $ruleContainer->expects($this->once())->method('getJavascriptCallback')
                       ->will($this->returnValue('containerCallback'));
-        $ruleElement = $this->getMock(
-            'HTML_QuickForm2_Rule', array('validateOwner', 'getJavascriptCallback'),
-            array($element)
-        );
+        $ruleElement = $this->getMockBuilder('HTML_QuickForm2_Rule')
+            ->setMethods(array('validateOwner', 'getJavascriptCallback'))
+            ->setConstructorArgs(array($element))
+            ->getMock();
         $ruleElement->expects($this->once())->method('getJavascriptCallback')
                     ->will($this->returnValue('elementCallback'));
 
@@ -563,10 +541,10 @@ class HTML_QuickForm2_ContainerTest extends PHPUnit_Framework_TestCase
     public function testFrozenContainersHaveNoClientValidation()
     {
         $container = new HTML_QuickForm2_ContainerImpl('aContainer');
-        $ruleContainer = $this->getMock(
-            'HTML_QuickForm2_Rule', array('validateOwner', 'getJavascriptCallback'),
-            array($container)
-        );
+        $ruleContainer = $this->getMockBuilder('HTML_QuickForm2_Rule')
+            ->setMethods(array('validateOwner', 'getJavascriptCallback'))
+            ->setConstructorArgs(array($container))
+            ->getMock();
         $ruleContainer->expects($this->never())->method('getJavascriptCallback');
 
         $container->addRule($ruleContainer, HTML_QuickForm2_Rule::CLIENT);

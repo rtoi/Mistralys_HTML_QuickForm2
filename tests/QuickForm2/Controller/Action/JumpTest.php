@@ -4,41 +4,19 @@
  *
  * PHP version 5
  *
- * LICENSE:
+ * LICENSE
  *
- * Copyright (c) 2006-2014, Alexey Borzov <avb@php.net>,
- *                          Bertrand Mansion <golgote@mamasam.com>
- * All rights reserved.
+ * This source file is subject to BSD 3-Clause License that is bundled
+ * with this package in the file LICENSE and available at the URL
+ * https://raw.githubusercontent.com/pear/HTML_QuickForm2/trunk/docs/LICENSE
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- *    * Redistributions of source code must retain the above copyright
- *      notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- *    * The names of the authors may not be used to endorse or promote products
- *      derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
- * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
- * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * @category   HTML
- * @package    HTML_QuickForm2
- * @author     Alexey Borzov <avb@php.net>
- * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @link       http://pear.php.net/package/HTML_QuickForm2
+ * @category  HTML
+ * @package   HTML_QuickForm2
+ * @author    Alexey Borzov <avb@php.net>
+ * @author    Bertrand Mansion <golgote@mamasam.com>
+ * @copyright 2006-2019 Alexey Borzov <avb@php.net>, Bertrand Mansion <golgote@mamasam.com>
+ * @license   https://opensource.org/licenses/BSD-3-Clause BSD 3-Clause License
+ * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
 /** Sets up includes */
@@ -54,9 +32,9 @@ class HTML_QuickForm2_Controller_Action_JumpTest
 
     public function setUp()
     {
-        $this->mockJump = $this->getMock(
-            'HTML_QuickForm2_Controller_Action_Jump', array('doRedirect')
-        );
+        $this->mockJump = $this->getMockBuilder('HTML_QuickForm2_Controller_Action_Jump')
+            ->setMethods(array('doRedirect'))
+            ->getMock();
         $this->mockJump->expects($this->atLeastOnce())->method('doRedirect')
              ->will($this->returnArgument(0));
 
@@ -115,10 +93,10 @@ class HTML_QuickForm2_Controller_Action_JumpTest
         );
 
         $controller = new HTML_QuickForm2_Controller('rfc3986', true);
-        $mockPage = $this->getMock(
-            'HTML_QuickForm2_Controller_Page', array('populateForm'),
-            array(new HTML_QuickForm2('relative'))
-        );
+        $mockPage = $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
+            ->setMethods(array('populateForm'))
+            ->setConstructorArgs(array(new HTML_QuickForm2('relative')))
+            ->getMock();
         $mockPage->addHandler('jump', $this->mockJump);
         $controller->addPage($mockPage);
 
@@ -131,14 +109,18 @@ class HTML_QuickForm2_Controller_Action_JumpTest
     public function testCannotRedirectPastInvalidPageInWizard()
     {
         $controller = new HTML_QuickForm2_Controller('twopagewizard', true);
-        $controller->addPage($this->getMock(
-            'HTML_QuickForm2_Controller_Page', array('populateForm'),
-            array(new HTML_QuickForm2('first'))
-        ));
-        $controller->addPage($this->getMock(
-            'HTML_QuickForm2_Controller_Page', array('populateForm'),
-            array(new HTML_QuickForm2('second'))
-        ));
+        $controller->addPage(
+            $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
+                ->setMethods(array('populateForm'))
+                ->setConstructorArgs(array(new HTML_QuickForm2('first')))
+                ->getMock()
+        );
+        $controller->addPage(
+            $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
+                ->setMethods(array('populateForm'))
+                ->setConstructorArgs(array(new HTML_QuickForm2('second')))
+                ->getMock()
+        );
         $controller->addHandler('jump', $this->mockJump);
 
         $this->assertContains(
@@ -149,10 +131,10 @@ class HTML_QuickForm2_Controller_Action_JumpTest
 
     public function testPropagateControllerId()
     {
-        $noPropPage = $this->getMock(
-            'HTML_QuickForm2_Controller_Page', array('populateForm'),
-            array(new HTML_QuickForm2('noPropagateForm'))
-        );
+        $noPropPage = $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
+            ->setMethods(array('populateForm'))
+            ->setConstructorArgs(array(new HTML_QuickForm2('noPropagateForm')))
+            ->getMock();
         $noPropController = new HTML_QuickForm2_Controller('foo', true, false);
         $noPropController->addPage($noPropPage);
         $noPropController->addHandler('jump', $this->mockJump);
@@ -161,10 +143,10 @@ class HTML_QuickForm2_Controller_Action_JumpTest
             $noPropPage->handle('jump')
         );
 
-        $propPage = $this->getMock(
-            'HTML_QuickForm2_Controller_Page', array('populateForm'),
-            array(new HTML_QuickForm2('propagateForm'))
-        );
+        $propPage = $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
+            ->setMethods(array('populateForm'))
+            ->setConstructorArgs(array(new HTML_QuickForm2('propagateForm')))
+            ->getMock();
         $propController = new HTML_QuickForm2_Controller('bar', true, true);
         $propController->addPage($propPage);
         $propController->addHandler('jump', $this->mockJump);
@@ -184,6 +166,9 @@ class HTML_QuickForm2_Controller_Action_JumpTest
         if ('' != session_id()) {
             $this->markTestSkipped('This test cannot be run with session started');
         }
+        if (version_compare(phpversion(), '7.2', '>=')) {
+            $this->markTestSkipped('Cannot change session config in PHP 7.2+ after headers are sent');
+        }
 
         $old = ini_set('session.use_only_cookies', false);
         
@@ -192,10 +177,12 @@ class HTML_QuickForm2_Controller_Action_JumpTest
         }
 
         $controller = new HTML_QuickForm2_Controller('testBug3443');
-        $controller->addPage($this->getMock(
-            'HTML_QuickForm2_Controller_Page', array('populateForm'),
-            array(new HTML_QuickForm2('dest'))
-        ));
+        $controller->addPage(
+            $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
+                ->setMethods(array('populateForm'))
+                ->setConstructorArgs(array(new HTML_QuickForm2('dest')))
+                ->getMock()
+        );
         $controller->addHandler('jump', $this->mockJump);
         $this->assertContains('mysessionid=', $controller->getPage('dest')->handle('jump'));
 
@@ -215,10 +202,10 @@ class HTML_QuickForm2_Controller_Action_JumpTest
         $_SERVER['HTTPS'] = 'OFF';
 
         $controller = new HTML_QuickForm2_Controller('bug16328');
-        $mockPage   = $this->getMock(
-            'HTML_QuickForm2_Controller_Page', array('populateForm'),
-            array(new HTML_QuickForm2('unsecure'))
-        );
+        $mockPage   = $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
+            ->setMethods(array('populateForm'))
+            ->setConstructorArgs(array(new HTML_QuickForm2('unsecure')))
+            ->getMock();
         $controller->addPage($mockPage);
         $controller->addHandler('jump', $this->mockJump);
         $mockPage->getForm()->setAttribute('action', '/foo');
@@ -234,10 +221,10 @@ class HTML_QuickForm2_Controller_Action_JumpTest
     public function testBug19216()
     {
         $controller = new HTML_QuickForm2_Controller('bug19216');
-        $mockPage   = $this->getMock(
-            'HTML_QuickForm2_Controller_Page', array('populateForm'),
-            array(new HTML_QuickForm2('testhost'))
-        );
+        $mockPage   = $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
+            ->setMethods(array('populateForm'))
+            ->setConstructorArgs(array(new HTML_QuickForm2('testhost')))
+            ->getMock();
         $controller->addPage($mockPage);
         $controller->addHandler('jump', $this->mockJump);
         $mockPage->getForm()->setAttribute('action', '/foo');
@@ -257,10 +244,10 @@ class HTML_QuickForm2_Controller_Action_JumpTest
     public function testHttpHostWithPortNumber()
     {
         $controller = new HTML_QuickForm2_Controller('weirdhost');
-        $mockPage   = $this->getMock(
-            'HTML_QuickForm2_Controller_Page', array('populateForm'),
-            array(new HTML_QuickForm2('weirdhost'))
-        );
+        $mockPage   = $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
+            ->setMethods(array('populateForm'))
+            ->setConstructorArgs(array(new HTML_QuickForm2('weirdhost')))
+            ->getMock();
         $controller->addPage($mockPage);
         $controller->addHandler('jump', $this->mockJump);
         $mockPage->getForm()->setAttribute('action', '/foo');
@@ -275,19 +262,20 @@ class HTML_QuickForm2_Controller_Action_JumpTest
         $_SERVER['HTTP_HOST']             = 'localhost';
 
         $controller = new HTML_QuickForm2_Controller('forwarded');
-        $mockPage   = $this->getMock(
-            'HTML_QuickForm2_Controller_Page', array('populateForm'),
-            array(new HTML_QuickForm2('forwarded'))
-        );
+        $mockPage   = $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
+            ->setMethods(array('populateForm'))
+            ->setConstructorArgs(array(new HTML_QuickForm2('forwarded')))
+            ->getMock();
         $controller->addPage($mockPage);
         $controller->addHandler('jump', $this->mockJump);
         $mockPage->getForm()->setAttribute('action', '/foo');
 
         $this->assertStringStartsWith('http://localhost/foo?', $mockPage->handle('jump'));
 
-        $trustingJump = $this->getMock(
-            'HTML_QuickForm2_Controller_Action_Jump', array('doRedirect'), array(true)
-        );
+        $trustingJump = $this->getMockBuilder('HTML_QuickForm2_Controller_Action_Jump')
+            ->setMethods(array('doRedirect'))
+            ->setConstructorArgs(array(true))
+            ->getMock();
         $trustingJump->expects($this->atLeastOnce())->method('doRedirect')
             ->will($this->returnArgument(0));
         $controller->addHandler('jump', $trustingJump);

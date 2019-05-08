@@ -4,41 +4,19 @@
  *
  * PHP version 5
  *
- * LICENSE:
+ * LICENSE
  *
- * Copyright (c) 2006-2014, Alexey Borzov <avb@php.net>,
- *                          Bertrand Mansion <golgote@mamasam.com>
- * All rights reserved.
+ * This source file is subject to BSD 3-Clause License that is bundled
+ * with this package in the file LICENSE and available at the URL
+ * https://raw.githubusercontent.com/pear/HTML_QuickForm2/trunk/docs/LICENSE
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- *    * Redistributions of source code must retain the above copyright
- *      notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- *    * The names of the authors may not be used to endorse or promote products
- *      derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
- * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
- * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * @category   HTML
- * @package    HTML_QuickForm2
- * @author     Alexey Borzov <avb@php.net>
- * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @link       http://pear.php.net/package/HTML_QuickForm2
+ * @category  HTML
+ * @package   HTML_QuickForm2
+ * @author    Alexey Borzov <avb@php.net>
+ * @author    Bertrand Mansion <golgote@mamasam.com>
+ * @copyright 2006-2019 Alexey Borzov <avb@php.net>, Bertrand Mansion <golgote@mamasam.com>
+ * @license   https://opensource.org/licenses/BSD-3-Clause BSD 3-Clause License
+ * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
 /** Sets up includes */
@@ -51,10 +29,10 @@ class HTML_QuickForm2_Controller_PageTest extends PHPUnit_Framework_TestCase
 {
     public function testPopulateFormOnce()
     {
-        $mockPage = $this->getMock(
-            'HTML_QuickForm2_Controller_Page', array('populateForm'),
-            array(new HTML_QuickForm2('firstPage'))
-        );
+        $mockPage = $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
+            ->setMethods(array('populateForm'))
+            ->setConstructorArgs(array(new HTML_QuickForm2('firstPage')))
+            ->getMock();
         $mockPage->expects($this->once())->method('populateForm');
 
         $mockPage->populateFormOnce();
@@ -64,10 +42,10 @@ class HTML_QuickForm2_Controller_PageTest extends PHPUnit_Framework_TestCase
     public function testActionHandlerPrecedence()
     {
         $controller = new HTML_QuickForm2_Controller('precedence');
-        $mockPage   = $this->getMock(
-            'HTML_QuickForm2_Controller_Page', array('populateForm'),
-            array(new HTML_QuickForm2('precedencePage'))
-        );
+        $mockPage   = $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
+            ->setMethods(array('populateForm'))
+            ->setConstructorArgs(array(new HTML_QuickForm2('precedencePage')))
+            ->getMock();
         $controller->addPage($mockPage);
 
         try {
@@ -75,17 +53,17 @@ class HTML_QuickForm2_Controller_PageTest extends PHPUnit_Framework_TestCase
             $this->fail('Expected HTML_QuickForm2_NotFoundException was not thrown');
         } catch (HTML_QuickForm2_NotFoundException $e) {}
 
-        $mockFoo1 = $this->getMock(
-            'HTML_QuickForm2_Controller_Action', array('perform')
-        );
+        $mockFoo1 = $this->getMockBuilder('HTML_QuickForm2_Controller_Action')
+            ->setMethods(array('perform'))
+            ->getMock();
         $mockFoo1->expects($this->once())->method('perform')
                  ->will($this->returnValue('foo common'));
         $controller->addHandler('foo', $mockFoo1);
         $this->assertEquals('foo common', $mockPage->handle('foo'));
 
-        $mockFoo2 = $this->getMock(
-            'HTML_QuickForm2_Controller_Action', array('perform')
-        );
+        $mockFoo2 = $this->getMockBuilder('HTML_QuickForm2_Controller_Action')
+            ->setMethods(array('perform'))
+            ->getMock();
         $mockFoo2->expects($this->once())->method('perform')
                  ->will($this->returnValue('foo specific'));
         $mockPage->addHandler('foo', $mockFoo2);
@@ -95,10 +73,10 @@ class HTML_QuickForm2_Controller_PageTest extends PHPUnit_Framework_TestCase
     public function testDefaultActionHandler()
     {
         $controller = new HTML_QuickForm2_Controller('defaultDisplay');
-        $mockPage   = $this->getMock(
-            'HTML_QuickForm2_Controller_Page', array('populateForm'),
-            array(new HTML_QuickForm2('defaultDisplayPage'))
-        );
+        $mockPage   = $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
+            ->setMethods(array('populateForm'))
+            ->setConstructorArgs(array(new HTML_QuickForm2('defaultDisplayPage')))
+            ->getMock();
         $controller->addPage($mockPage);
 
         ob_start();
@@ -109,10 +87,10 @@ class HTML_QuickForm2_Controller_PageTest extends PHPUnit_Framework_TestCase
 
     public function testSetDefaultAction()
     {
-        $mockPage = $this->getMock(
-            'HTML_QuickForm2_Controller_Page', array('populateForm'),
-            array(new HTML_QuickForm2('defaultActionPage'))
-        );
+        $mockPage = $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
+            ->setMethods(array('populateForm'))
+            ->setConstructorArgs(array(new HTML_QuickForm2('defaultActionPage')))
+            ->getMock();
         $mockPage->setDefaultAction('foo', 'empty.gif');
 
         $default = $mockPage->getForm()->getElementById('qf:default-action');
@@ -127,10 +105,10 @@ class HTML_QuickForm2_Controller_PageTest extends PHPUnit_Framework_TestCase
 
     public function testDefaultActionIsFirstElement()
     {
-        $mockPage = $this->getMock(
-            'HTML_QuickForm2_Controller_Page', array('populateForm'),
-            array(new HTML_QuickForm2('defaultActionPage'))
-        );
+        $mockPage = $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
+            ->setMethods(array('populateForm'))
+            ->setConstructorArgs(array(new HTML_QuickForm2('defaultActionPage')))
+            ->getMock();
         $mockPage->getForm()->addElement('text', 'first');
         $mockPage->getForm()->addElement('text', 'second');
         $mockPage->setDefaultAction('foo', 'empty.gif');
@@ -143,20 +121,20 @@ class HTML_QuickForm2_Controller_PageTest extends PHPUnit_Framework_TestCase
 
     public function testPropagateControllerId()
     {
-        $noPropPage = $this->getMock(
-            'HTML_QuickForm2_Controller_Page', array('populateForm'),
-            array(new HTML_QuickForm2('noPropagateForm'))
-        );
+        $noPropPage = $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
+            ->setMethods(array('populateForm'))
+            ->setConstructorArgs(array(new HTML_QuickForm2('noPropagateForm')))
+            ->getMock();
         $noPropController = new HTML_QuickForm2_Controller('foo', true, false);
         $noPropController->addPage($noPropPage);
         $noPropPage->populateFormOnce();
         $hidden = $noPropPage->getForm()->getElementsByName(HTML_QuickForm2_Controller::KEY_ID);
         $this->assertEquals(0, count($hidden));
 
-        $propPage = $this->getMock(
-            'HTML_QuickForm2_Controller_Page', array('populateForm'),
-            array(new HTML_QuickForm2('propagateForm'))
-        );
+        $propPage = $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
+            ->setMethods(array('populateForm'))
+            ->setConstructorArgs(array(new HTML_QuickForm2('propagateForm')))
+            ->getMock();
         $propController = new HTML_QuickForm2_Controller('bar', true, true);
         $propController->addPage($propPage);
         $propPage->populateFormOnce();

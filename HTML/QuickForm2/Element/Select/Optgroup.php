@@ -40,17 +40,17 @@
  * @internal
  */
 class HTML_QuickForm2_Element_Select_Optgroup
-extends HTML_QuickForm2_Element_Select_OptionContainer
+    extends HTML_QuickForm2_Element_Select_OptionContainer
 {
-    /**
-     * Class constructor
-     *
-     * @param array        &$values         Reference to values of parent <select> element
-     * @param array        &$possibleValues Reference to possible values of parent <select> element
-     * @param string       $label           'label' attribute for optgroup tag
-     * @param string|array $attributes      Additional attributes for <optgroup> tag
-     *                                      (either as a string or as an associative array)
-     */
+   /**
+    * Class constructor
+    *
+    * @param array        &$values         Reference to values of parent <select> element
+    * @param array        &$possibleValues Reference to possible values of parent <select> element
+    * @param string       $label           'label' attribute for optgroup tag
+    * @param string|array $attributes      Additional attributes for <optgroup> tag
+    *                                      (either as a string or as an associative array)
+    */
     public function __construct(&$values, &$possibleValues, $label, $attributes = null)
     {
         parent::__construct($values, $possibleValues);
@@ -58,20 +58,21 @@ extends HTML_QuickForm2_Element_Select_OptionContainer
         $this->attributes['label'] = (string)$label;
     }
     
-    /**
-     * Retrieves the option group's label.
-     * @return string|NULL
-     */
+   /**
+    * Retrieves the optgroup's label.
+    * @return string
+    */
     public function getLabel()
     {
-        return $this->getAttribute('label');
+        return $this->attributes['label'];
     }
-    
+
     public function __toString()
     {
         $indent    = $this->getIndent();
         $linebreak = self::getOption('linebreak');
         return $indent . '<optgroup' . $this->getAttributes(true) . '>' .
-            $linebreak . parent::__toString() . $indent . '</optgroup>' . $linebreak;
+               $linebreak . parent::__toString() . $indent . '</optgroup>' . $linebreak;
     }
 }
+?>

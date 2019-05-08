@@ -5,6 +5,7 @@
     http://pear.php.net/dtd/package-2.0.xsd">
  <name>HTML_QuickForm2</name>
  <channel>pear.php.net</channel>
+ <extends>HTML_QuickForm</extends>
  <summary>PHP5 rewrite of HTML_QuickForm package</summary>
  <description>
  PHP5 rewrite of HTML_QuickForm and HTML_QuickForm_Controller packages.
@@ -41,25 +42,43 @@
   <email>golgote@mamasam.com</email>
   <active>yes</active>
  </lead>
- <date>2014-06-28</date>
+ <date>2019-04-10</date>
  <version>
-  <release>2.0.2</release>
+  <release>2.1.0</release>
   <api>2.0.1</api>
  </version>
  <stability>
   <release>stable</release>
   <api>stable</api>
  </stability>
- <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+ <license uri="https://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause License</license>
  <notes>
-Bug #20295 was incorrectly fixed for Static elements, this led to removing
-their contents when DataSources did not contain values for them.
+ * HTML_QuickForm2 runs under PHP 7.2+ without warnings / &quot;deprecated&quot;
+   messages
+ * Tests run correctly on PHPUnit versions up to 5
+ * It is possible to automatically add &quot;nonce&quot; attributes to inline
+   &lt;script&gt; tags, just call
+   HTML_Common2::setOption('nonce', $someNonceValue);
+   before outputting the form. This allows running HTML_QuickForm2 with
+   reasonable Content-Security-Policy
+ * Bundled a separate LICENSE file instead of having it in each .php file
+   header. Updated phrasing and links to mention 3-Clause BSD license
+   the package actually uses.
+
+When installing with composer, files no longer contain 'require_once' calls
+and 'include-path' option is not used. The package is now 100% autoloader
+compatible, all classes reside in separate files.
  </notes>
  <contents>
   <dir name="/">
    <dir name="HTML">
     <dir name="QuickForm2">
      <dir name="Container">
+      <dir name="Repeat">
+       <file name="JavascriptBuilder.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+      </dir> <!-- /HTML/QuickForm2/Container/Repeat -->
       <file name="Fieldset.php" role="php">
        <tasks:replace from="@package_version@" to="version" type="package-info" />
       </file>
@@ -122,6 +141,17 @@ their contents when DataSources did not contain values for them.
       </file>
      </dir> <!-- /HTML/QuickForm2/DataSource -->
      <dir name="Element">
+      <dir name="Select">
+       <file name="Optgroup.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file name="OptionContainer.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file name="OptionIterator.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+      </dir> <!-- /HTML/QuickForm2/Element/Select -->
       <file name="Button.php" role="php">
        <tasks:replace from="@package_version@" to="version" type="package-info" />
       </file>
@@ -252,6 +282,9 @@ their contents when DataSources did not contain values for them.
      <file name="Container.php" role="php">
       <tasks:replace from="@package_version@" to="version" type="package-info" />
      </file>
+     <file name="ContainerIterator.php" role="php">
+      <tasks:replace from="@package_version@" to="version" type="package-info" />
+     </file>
      <file name="Controller.php" role="php">
       <tasks:replace from="@package_version@" to="version" type="package-info" />
      </file>
@@ -267,6 +300,9 @@ their contents when DataSources did not contain values for them.
      <file name="Factory.php" role="php">
       <tasks:replace from="@package_version@" to="version" type="package-info" />
      </file>
+     <file name="InvalidArgumentException.php" role="php">
+      <tasks:replace from="@package_version@" to="version" type="package-info" />
+     </file>
      <file name="JavascriptBuilder.php" role="php">
       <tasks:replace from="@data_dir@" to="data_dir" type="pear-config" />
       <tasks:replace from="@package_version@" to="version" type="package-info" />
@@ -278,6 +314,9 @@ their contents when DataSources did not contain values for them.
       <tasks:replace from="@package_version@" to="version" type="package-info" />
      </file>
      <file name="Node.php" role="php">
+      <tasks:replace from="@package_version@" to="version" type="package-info" />
+     </file>
+     <file name="NotFoundException.php" role="php">
       <tasks:replace from="@package_version@" to="version" type="package-info" />
      </file>
      <file name="Renderer.php" role="php">
@@ -390,6 +429,9 @@ their contents when DataSources did not contain values for them.
        <tasks:replace from="@package_version@" to="version" type="package-info" />
       </file>
       <file name="InputTest.php" role="test">
+       <tasks:replace from="@package_version@" to="version" type="package-info" />
+      </file>
+      <file name="ScriptTest.php" role="test">
        <tasks:replace from="@package_version@" to="version" type="package-info" />
       </file>
       <file name="SelectTest.php" role="test">
@@ -513,50 +555,53 @@ their contents when DataSources did not contain values for them.
      <tasks:replace from="@package_version@" to="version" type="package-info" />
     </file>
    </dir> <!-- /tests -->
-   <dir name="docs/examples">
-    <dir name="controller">
-     <file name="simple.php" role="doc">
-      <tasks:replace from="@data_dir@" to="data_dir" type="pear-config" />
-     </file>
-     <file name="tabbed.php" role="doc">
-      <tasks:replace from="@data_dir@" to="data_dir" type="pear-config" />
-     </file>
-     <file name="wizard.php" role="doc">
-      <tasks:replace from="@data_dir@" to="data_dir" type="pear-config" />
-     </file>
-    </dir> <!-- /docs/examples/controller -->
-    <dir name="js">
-     <file name="dualselect.js" role="doc" />
-     <file name="hierselect-server.php" role="doc" />
-    </dir> <!-- /docs/examples/js -->
-    <dir name="renderers">
-     <dir name="templates">
-      <file name="array-twig.tpl" role="doc" />
-     </dir> <!-- /docs/examples/renderers/templates -->
-     <file name="array-twig.php" role="doc">
-      <tasks:replace  from="@data_dir@" to="data_dir" type="pear-config" />
-     </file>
-    </dir> <!-- /docs/examples/renderers -->
-    <dir name="support">
-     <file name="hierselect-loader.php" role="doc" />
-    </dir> <!-- /docs/examples/support -->
-    <file role="doc" name="basic-elements.php">
-     <tasks:replace from="@data_dir@" to="data_dir" type="pear-config" />
-    </file>
-    <file role="doc" name="builtin-rules.php">
-     <tasks:replace from="@data_dir@" to="data_dir" type="pear-config" />
-    </file>
-    <file role="doc" name="default-renderer.php" />
-    <file role="doc" name="dualselect.php">
-     <tasks:replace from="@data_dir@" to="data_dir" type="pear-config" />
-    </file>
-    <file name="hierselect-ajax.php" role="doc">
-     <tasks:replace from="@data_dir@" to="data_dir" type="pear-config" />
-    </file>
-    <file name="repeat.php" role="doc">
-     <tasks:replace from="@data_dir@" to="data_dir" type="pear-config" />
-    </file>
-   </dir> <!-- /docs/examples -->
+   <dir name="docs">
+     <file name="LICENSE" role="doc" />
+     <dir name="examples">
+      <dir name="controller">
+       <file name="simple.php" role="doc">
+        <tasks:replace from="@data_dir@" to="data_dir" type="pear-config" />
+       </file>
+       <file name="tabbed.php" role="doc">
+        <tasks:replace from="@data_dir@" to="data_dir" type="pear-config" />
+       </file>
+       <file name="wizard.php" role="doc">
+        <tasks:replace from="@data_dir@" to="data_dir" type="pear-config" />
+       </file>
+      </dir> <!-- /docs/examples/controller -->
+      <dir name="js">
+       <file name="dualselect.js" role="doc" />
+       <file name="hierselect-server.php" role="doc" />
+      </dir> <!-- /docs/examples/js -->
+      <dir name="renderers">
+       <dir name="templates">
+        <file name="array-twig.tpl" role="doc" />
+       </dir> <!-- /docs/examples/renderers/templates -->
+       <file name="array-twig.php" role="doc">
+        <tasks:replace  from="@data_dir@" to="data_dir" type="pear-config" />
+       </file>
+      </dir> <!-- /docs/examples/renderers -->
+      <dir name="support">
+       <file name="hierselect-loader.php" role="doc" />
+      </dir> <!-- /docs/examples/support -->
+      <file role="doc" name="basic-elements.php">
+       <tasks:replace from="@data_dir@" to="data_dir" type="pear-config" />
+      </file>
+      <file role="doc" name="builtin-rules.php">
+       <tasks:replace from="@data_dir@" to="data_dir" type="pear-config" />
+      </file>
+      <file role="doc" name="default-renderer.php" />
+      <file role="doc" name="dualselect.php">
+       <tasks:replace from="@data_dir@" to="data_dir" type="pear-config" />
+      </file>
+      <file name="hierselect-ajax.php" role="doc">
+       <tasks:replace from="@data_dir@" to="data_dir" type="pear-config" />
+      </file>
+      <file name="repeat.php" role="doc">
+       <tasks:replace from="@data_dir@" to="data_dir" type="pear-config" />
+      </file>
+     </dir> <!-- /docs/examples -->
+   </dir>
    <dir name="data/js">
     <dir name="min">
      <file name="quickform.js" role="data">
@@ -593,7 +638,7 @@ their contents when DataSources did not contain values for them.
    <package>
     <name>HTML_Common2</name>
     <channel>pear.php.net</channel>
-    <min>2.0.0</min>
+    <min>2.1.0</min>
    </package>
   </required>
  </dependencies>
@@ -606,6 +651,8 @@ their contents when DataSources did not contain values for them.
    <install as="js/min/quickform.js" name="data/js/min/quickform.js" />
    <install as="js/min/quickform-hierselect.js" name="data/js/min/quickform-hierselect.js" />
    <install as="js/min/quickform-repeat.js" name="data/js/min/quickform-repeat.js" />
+
+   <install as="LICENSE" name="docs/LICENSE" />
    <install as="examples/controller/simple.php" name="docs/examples/controller/simple.php" />
    <install as="examples/controller/tabbed.php" name="docs/examples/controller/tabbed.php" />
    <install as="examples/controller/wizard.php" name="docs/examples/controller/wizard.php" />
@@ -665,6 +712,7 @@ their contents when DataSources did not contain values for them.
    <install as="QuickForm2/Element/InputResetTest.php" name="tests/QuickForm2/Element/InputResetTest.php" />
    <install as="QuickForm2/Element/InputSubmitTest.php" name="tests/QuickForm2/Element/InputSubmitTest.php" />
    <install as="QuickForm2/Element/InputTest.php" name="tests/QuickForm2/Element/InputTest.php" />
+   <install as="QuickForm2/Element/ScriptTest.php" name="tests/QuickForm2/Element/ScriptTest.php" />
    <install as="QuickForm2/Element/SelectTest.php" name="tests/QuickForm2/Element/SelectTest.php" />
    <install as="QuickForm2/Element/StaticTest.php" name="tests/QuickForm2/Element/StaticTest.php" />
    <install as="QuickForm2/Element/TextareaTest.php" name="tests/QuickForm2/Element/TextareaTest.php" />
@@ -695,6 +743,22 @@ their contents when DataSources did not contain values for them.
  </phprelease>
  <changelog>
   <release>
+   <date>2014-06-28</date>
+   <version>
+    <release>2.0.2</release>
+    <api>2.0.1</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="https://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause License</license>
+   <notes>
+Bug #20295 was incorrectly fixed for Static elements, this led to removing
+their contents when DataSources did not contain values for them.
+   </notes>
+  </release>
+  <release>
    <date>2014-06-26</date>
    <version>
     <release>2.0.1</release>
@@ -704,7 +768,7 @@ their contents when DataSources did not contain values for them.
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause License</license>
    <notes>
 Bug fixes
  * When using HTML_QuickForm2_DataSource_Array and its descendants elements'
@@ -743,7 +807,7 @@ Other features and changes
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause License</license>
    <notes>
   * Leftover 'foo' no longer stays in grouped element's name when renaming group
     named 'foo[foo]' (bug #19477)
@@ -762,7 +826,7 @@ Other features and changes
     <release>beta</release>
     <api>stable</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause License</license>
    <notes>
 Bug fixes
   * Server-side validation errors for elements inside Repeats are properly
@@ -798,7 +862,7 @@ Backwards compatibility issues
     <release>beta</release>
     <api>stable</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause License</license>
    <notes>
 Feature additions
   * Repeat element: given 'prototype' Container (either fieldset or group)
@@ -834,7 +898,7 @@ Bug fixes
     <release>beta</release>
     <api>stable</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause License</license>
    <notes>
 Feature additions
   * Added 'email' Rule (request #16906)
@@ -876,7 +940,7 @@ Backwards compatibility issues
     <release>beta</release>
     <api>beta</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause License</license>
    <notes>
 Bug fixes
   * Callback renderer did not export setLabelCallback() method (bug #18833)
@@ -900,7 +964,7 @@ Other features and changes
     <release>beta</release>
     <api>beta</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause License</license>
    <notes>
 Milestone 6: &quot;live&quot; validation, localization changes, moving to beta
 
@@ -962,7 +1026,7 @@ Backwards compatibility issues
     <release>alpha</release>
     <api>alpha</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause License</license>
    <notes>
 Milestone 5: Javascript support, client-side validation, filters
 
@@ -1012,7 +1076,7 @@ Backwards compatibility issues
     <release>alpha</release>
     <api>alpha</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause License</license>
    <date>2010-03-08</date>
    <notes>
 Milestone 4: port of HTML_QuickForm_Controller, group rules
@@ -1066,7 +1130,7 @@ Backwards compatibility issues
     <api>alpha</api>
    </stability>
    <date>2009-10-25</date>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause License</license>
    <notes>
 Milestone 3: renderers and groups
 
@@ -1104,7 +1168,7 @@ special attention to changes in SVN.
    <api>alpha</api>
   </stability>
   <date>2007-10-22</date>
-  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+  <license uri="https://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause License</license>
   <notes>
 Milestone 2: now with server-side validation support
 
@@ -1139,7 +1203,7 @@ Other resources to consider:
     <api>alpha</api>
    </stability>
    <date>2007-04-17</date>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause License</license>
    <notes>
 Milestone 1
 

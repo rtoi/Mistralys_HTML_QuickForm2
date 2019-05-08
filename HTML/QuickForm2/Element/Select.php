@@ -232,6 +232,32 @@ class HTML_QuickForm2_Element_Select_OptionContainer extends HTML_Common2
     {
         return count($this->options);
     }
+    
+   /**
+    * Counts all options in the select, ignoring optgroups.
+    * If the recursive flag is true, this will count all
+    * options in optgroups as well.
+    * 
+    * @param string $recursive
+    * @return int
+    */
+    public function countOptions($recursive=true)
+    {
+        $count = 0;
+        
+        foreach($this->options as $option) 
+        {
+            if($option instanceof HTML_QuickForm2_Element_Select_Optgroup && $recursive) 
+            {
+                $count += $option->countOptions($recursive);
+                continue;
+            }
+            
+            $count++;
+        }
+        
+        return $count;
+    }
 }
 
 
@@ -268,6 +294,15 @@ class HTML_QuickForm2_Element_Select_Optgroup
         $this->attributes['label'] = (string)$label;
     }
 
+    /**
+     * Retrieves the option group's label.
+     * @return string|NULL
+     */
+    public function getLabel()
+    {
+        return $this->getAttribute('label');
+    }
+    
     public function __toString()
     {
         $indent    = $this->getIndent();
@@ -621,6 +656,11 @@ class HTML_QuickForm2_Element_Select extends HTML_QuickForm2_Element
     public function getOptionContainer()
     {
         return $this->optionContainer;
+    }
+    
+    public function countOptions($recursive=true)
+    {
+        return $this->optionContainer->countOptions($recursive);
     }
 }
 ?>

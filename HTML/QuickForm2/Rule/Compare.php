@@ -93,45 +93,20 @@ class HTML_QuickForm2_Rule_Compare extends HTML_QuickForm2_Rule
     */
     protected function validateOwner()
     {
-        $value  = $this->owner->getValue();
-        $config = $this->getConfig();
+        $value   = $this->owner->getValue();
+        $config  = $this->getConfig();
+        $operand = $config['operand'] instanceof HTML_QuickForm2_Node
+                   ? $config['operand']->getValue(): $config['operand'];
         
-        $compareFn = function($a, $b) use($config)
-        {
-            if(in_array($config['operator'], array('===', '!=='))) 
-            {
-                $a = strval($a);
-                $b = strval($b);
-            } 
-            else 
-            {
-                $a = floatval($a);
-                $b = floatval($b);
-            }
-            
-            switch($config['operator']) 
-            {
-                case '==': return $a == $b;
-                case '!=': return $a != $b;
-                case '<': return $a < $b;
-                case '<=': return $a <= $b;
-                case '>': return $a > $b;
-                case '>=': return $a >= $b;
-                case '===': return $a === $b;
-                case '!==': return $a !== $b;
-                default:
-                    throw new HTML_QuickForm2_InvalidArgumentException(
-                        'Invalid comparison operator'
-                    );
-            }
-        }; 
-        
-        $compareVal = $config['operand'];
-        if($compareVal instanceof HTML_QuickForm2_Node) {
-            $compareVal = $compareVal->getValue();
+        switch ($config['operator']) {
+        case '===': return strval($value) === strval($operand);
+        case '!==': return strval($value) !== strval($operand);
+        case '>':   return floatval($value) > floatval($operand);
+        case '>=':  return floatval($value) >= floatval($operand);
+        case '<':   return floatval($value) < floatval($operand);
+        case '<=':  return floatval($value) <= floatval($operand);
+        default:    return false;
         }
-            
-        return $compareFn($value, $compareVal);
     }
 
     protected function getJavascriptCallback()

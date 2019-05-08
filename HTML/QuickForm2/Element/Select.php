@@ -1,344 +1,32 @@
 <?php
 /**
- * Classes for <select> elements
+ * Class for <select> elements
  *
  * PHP version 5
  *
- * LICENSE:
+ * LICENSE
  *
- * Copyright (c) 2006-2014, Alexey Borzov <avb@php.net>,
- *                          Bertrand Mansion <golgote@mamasam.com>
- * All rights reserved.
+ * This source file is subject to BSD 3-Clause License that is bundled
+ * with this package in the file LICENSE and available at the URL
+ * https://raw.githubusercontent.com/pear/HTML_QuickForm2/trunk/docs/LICENSE
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- *    * Redistributions of source code must retain the above copyright
- *      notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- *    * The names of the authors may not be used to endorse or promote products
- *      derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
- * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
- * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * @category HTML
- * @package  HTML_QuickForm2
- * @author   Alexey Borzov <avb@php.net>
- * @author   Bertrand Mansion <golgote@mamasam.com>
- * @license  http://opensource.org/licenses/bsd-license.php New BSD License
- * @link     http://pear.php.net/package/HTML_QuickForm2
+ * @category  HTML
+ * @package   HTML_QuickForm2
+ * @author    Alexey Borzov <avb@php.net>
+ * @author    Bertrand Mansion <golgote@mamasam.com>
+ * @copyright 2006-2019 Alexey Borzov <avb@php.net>, Bertrand Mansion <golgote@mamasam.com>
+ * @license   https://opensource.org/licenses/BSD-3-Clause BSD 3-Clause License
+ * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
-/**
- * Base class for simple HTML_QuickForm2 elements
- */
-require_once 'HTML/QuickForm2/Element.php';
-
-
-/**
- * Collection of <option>s and <optgroup>s
- *
- * This class handles the output of <option> tags. The class is not intended to
- * be used directly.
- *
- * @category HTML
- * @package  HTML_QuickForm2
- * @author   Alexey Borzov <avb@php.net>
- * @author   Bertrand Mansion <golgote@mamasam.com>
- * @license  http://opensource.org/licenses/bsd-license.php New BSD License
- * @version  Release: @package_version@
- * @link     http://pear.php.net/package/HTML_QuickForm2
- */
-class HTML_QuickForm2_Element_Select_OptionContainer extends HTML_Common2
-    implements IteratorAggregate, Countable
-{
-   /**
-    * List of options and optgroups in this container
-    *
-    * Options are stored as arrays (for performance reasons), optgroups as
-    * instances of Optgroup class.
-    *
-    * @var array
-    */
-    protected $options = array();
-
-   /**
-    * Reference to parent <select>'s values
-    * @var array
-    */
-    protected $values;
-
-   /**
-    * Reference to parent <select>'s possible values
-    * @var array
-    */
-    protected $possibleValues;
-
-
-   /**
-    * Class constructor
-    *
-    * @param array &$values         Reference to values of parent <select> element
-    * @param array &$possibleValues Reference to possible values of parent <select> element
-    */
-    public function __construct(&$values, &$possibleValues)
-    {
-        $this->values         =& $values;
-        $this->possibleValues =& $possibleValues;
-    }
-
-   /**
-    * Adds a new option
-    *
-    * Please note that if you pass 'selected' attribute in the $attributes
-    * parameter then this option's value will be added to <select>'s values.
-    *
-    * @param string       $text       Option text
-    * @param string       $value      'value' attribute for <option> tag
-    * @param string|array $attributes Additional attributes for <option> tag
-    *                     (either as a string or as an associative array)
-    */
-    public function addOption($text, $value, $attributes = null)
-    {
-        if (null === $attributes) {
-            $attributes = array('value' => (string)$value);
-        } else {
-            $attributes = self::prepareAttributes($attributes);
-            if (isset($attributes['selected'])) {
-                // the 'selected' attribute will be set in __toString()
-                unset($attributes['selected']);
-                if (!in_array($value, $this->values)) {
-                    $this->values[] = $value;
-                }
-            }
-            $attributes['value'] = (string)$value;
-        }
-        if (!isset($attributes['disabled'])) {
-            $this->possibleValues[(string)$value] = true;
-        }
-        $this->options[] = array('text' => $text, 'attr' => $attributes);
-    }
-    
-    /**
-     * Like addOption, but prepends the option to the beginning of the stack.
-     *
-     * @param string $text
-     * @param string $value
-     * @param array $attributes
-     */
-    public function prependOption($text, $value, $attributes = null)
-    {
-        // let the original method do its thing
-        $this->addOption($text, $value, $attributes);
-        
-        // and now remove it from the end and prepend it to the collection
-        $last = array_pop($this->options);
-        array_unshift($this->options, $last);
-    }
-
-   /**
-    * Adds a new optgroup
-    *
-    * @param string       $label      'label' attribute for optgroup tag
-    * @param string|array $attributes Additional attributes for <optgroup> tag
-    *                     (either as a string or as an associative array)
-    *
-    * @return   HTML_QuickForm2_Element_Select_Optgroup
-    */
-    public function addOptgroup($label, $attributes = null)
-    {
-        $optgroup = new HTML_QuickForm2_Element_Select_Optgroup(
-            $this->values, $this->possibleValues, $label, $attributes
-        );
-        $this->options[] = $optgroup;
-        return $optgroup;
-    }
-
-   /**
-    * Returns an array of contained options
-    *
-    * @return   array
-    */
-    public function getOptions()
-    {
-        return $this->options;
-    }
-
-    public function __toString()
-    {
-        $indentLvl = $this->getIndentLevel();
-        $indent    = $this->getIndent() . self::getOption('indent');
-        $linebreak = self::getOption('linebreak');
-        $html      = '';
-        $strValues = array_map('strval', $this->values);
-        foreach ($this->options as $option) {
-            if (is_array($option)) {
-                if (in_array($option['attr']['value'], $strValues, true)) {
-                    $option['attr']['selected'] = 'selected';
-                }
-                $html .= $indent . '<option' .
-                         self::getAttributesString($option['attr']) .
-                         '>' . $option['text'] . '</option>' . $linebreak;
-            } elseif ($option instanceof HTML_QuickForm2_Element_Select_OptionContainer) {
-                $option->setIndentLevel($indentLvl + 1);
-                $html .= $option->__toString();
-            }
-        }
-        return $html;
-    }
-
-   /**
-    * Returns an iterator over contained elements
-    *
-    * @return   HTML_QuickForm2_Element_Select_OptionIterator
-    */
-    public function getIterator()
-    {
-        return new HTML_QuickForm2_Element_Select_OptionIterator($this->options);
-    }
-
-   /**
-    * Returns a recursive iterator over contained elements
-    *
-    * @return   RecursiveIteratorIterator
-    */
-    public function getRecursiveIterator()
-    {
-        return new RecursiveIteratorIterator(
-            new HTML_QuickForm2_Element_Select_OptionIterator($this->options),
-            RecursiveIteratorIterator::SELF_FIRST
-        );
-    }
-
-   /**
-    * Returns the number of options in the container
-    *
-    * @return   int
-    */
-    public function count()
-    {
-        return count($this->options);
-    }
-    
-   /**
-    * Counts all options in the select, ignoring optgroups.
-    * If the recursive flag is true, this will count all
-    * options in optgroups as well.
-    * 
-    * @param string $recursive
-    * @return int
-    */
-    public function countOptions($recursive=true)
-    {
-        $count = 0;
-        
-        foreach($this->options as $option) 
-        {
-            if($option instanceof HTML_QuickForm2_Element_Select_Optgroup && $recursive) 
-            {
-                $count += $option->countOptions($recursive);
-                continue;
-            }
-            
-            $count++;
-        }
-        
-        return $count;
-    }
-}
-
-
-/**
- * Class representing an <optgroup> tag
- *
- * Do not instantiate this class yourself, use
- * {@link HTML_QuickForm2_Element_Select::addOptgroup()} method
- *
- * @category HTML
- * @package  HTML_QuickForm2
- * @author   Alexey Borzov <avb@php.net>
- * @author   Bertrand Mansion <golgote@mamasam.com>
- * @license  http://opensource.org/licenses/bsd-license.php New BSD License
- * @version  Release: @package_version@
- * @link     http://pear.php.net/package/HTML_QuickForm2
- */
-class HTML_QuickForm2_Element_Select_Optgroup
-    extends HTML_QuickForm2_Element_Select_OptionContainer
-{
-   /**
-    * Class constructor
-    *
-    * @param array        &$values         Reference to values of parent <select> element
-    * @param array        &$possibleValues Reference to possible values of parent <select> element
-    * @param string       $label           'label' attribute for optgroup tag
-    * @param string|array $attributes      Additional attributes for <optgroup> tag
-    *                                      (either as a string or as an associative array)
-    */
-    public function __construct(&$values, &$possibleValues, $label, $attributes = null)
-    {
-        parent::__construct($values, $possibleValues);
-        $this->setAttributes($attributes);
-        $this->attributes['label'] = (string)$label;
-    }
-
-    /**
-     * Retrieves the option group's label.
-     * @return string|NULL
-     */
-    public function getLabel()
-    {
-        return $this->getAttribute('label');
-    }
-    
-    public function __toString()
-    {
-        $indent    = $this->getIndent();
-        $linebreak = self::getOption('linebreak');
-        return $indent . '<optgroup' . $this->getAttributes(true) . '>' .
-               $linebreak . parent::__toString() . $indent . '</optgroup>' . $linebreak;
-    }
-}
-
-/**
- * Implements a recursive iterator for options arrays
- *
- * @category HTML
- * @package  HTML_QuickForm2
- * @author   Alexey Borzov <avb@php.net>
- * @author   Bertrand Mansion <golgote@mamasam.com>
- * @license  http://opensource.org/licenses/bsd-license.php New BSD License
- * @version  Release: @package_version@
- * @link     http://pear.php.net/package/HTML_QuickForm2
- */
-class HTML_QuickForm2_Element_Select_OptionIterator extends RecursiveArrayIterator
-    implements RecursiveIterator
-{
-    public function hasChildren()
-    {
-        return $this->current() instanceof HTML_QuickForm2_Element_Select_OptionContainer;
-    }
-
-    public function getChildren()
-    {
-        return new HTML_QuickForm2_Element_Select_OptionIterator(
-            $this->current()->getOptions()
-        );
-    }
-}
-
+// pear-package-only /**
+// pear-package-only  * Base class for simple HTML_QuickForm2 elements
+// pear-package-only  */
+// pear-package-only require_once 'HTML/QuickForm2/Element.php';
+// pear-package-only /**
+// pear-package-only  * Class representing an <optgroup> tag
+// pear-package-only  */
+// pear-package-only require_once 'HTML/QuickForm2/Element/Select/Optgroup.php';
 
 /**
  * Class representing a <select> element
@@ -347,9 +35,9 @@ class HTML_QuickForm2_Element_Select_OptionIterator extends RecursiveArrayIterat
  * @package  HTML_QuickForm2
  * @author   Alexey Borzov <avb@php.net>
  * @author   Bertrand Mansion <golgote@mamasam.com>
- * @license  http://opensource.org/licenses/bsd-license.php New BSD License
+ * @license  https://opensource.org/licenses/BSD-3-Clause BSD 3-Clause License
  * @version  Release: @package_version@
- * @link     http://pear.php.net/package/HTML_QuickForm2
+ * @link     https://pear.php.net/package/HTML_QuickForm2
  */
 class HTML_QuickForm2_Element_Select extends HTML_QuickForm2_Element
 {

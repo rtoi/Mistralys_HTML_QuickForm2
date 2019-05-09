@@ -60,7 +60,7 @@ class HTML_QuickForm2_Rule_Compare extends HTML_QuickForm2_Rule
     * Possible comparison operators
     * @var array
     */
-    protected $operators = array('==', '!=', '===', '!==', '<', '<=', '>', '>=');
+    protected static $operators = array('==', '!=', '===', '!==', '<', '<=', '>', '>=');
 
 
    /**
@@ -202,7 +202,7 @@ class HTML_QuickForm2_Rule_Compare extends HTML_QuickForm2_Rule
         $config = self::toCanonicalForm($config);
 
         $config += array('operator' => '===');
-        if (!in_array($config['operator'], $this->operators)) {
+        if (!in_array($config['operator'], self::$operators)) {
             throw new HTML_QuickForm2_InvalidArgumentException(
                 'Compare Rule requires a valid comparison operator, ' .
                 preg_replace('/\s+/', ' ', var_export($config['operator'], true)) . ' given'
@@ -213,6 +213,15 @@ class HTML_QuickForm2_Rule_Compare extends HTML_QuickForm2_Rule
         }
 
         return parent::setConfig($config);
+    }
+   
+   /**
+    * Retrieves the list of allowed operators.
+    * @return string[]
+    */
+    public static function getOperators()
+    {
+        return self::$operators;
     }
 }
 ?>

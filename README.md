@@ -12,6 +12,7 @@ Additions:
   * Elements: hasErrors() method to check if an element has errors after validation
   * Elements: getRules() method to retrieve all rules added to the element
   * Elements: hasRules() method to check if an element has any rules 
+  * Text-based elements: addFilterTrim() method 
   * Select element: prependOption() method to insert an element at the top
   * Select optgroups: getLabel() method
   * Select element and optgroups: countOptions() method with recursive capability

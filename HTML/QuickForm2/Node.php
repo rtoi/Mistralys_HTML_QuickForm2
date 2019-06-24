@@ -758,6 +758,7 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2
      */
     public function addFilter($callback, array $options = array())
     {
+        $callbackName = null;
         if (!is_callable($callback, false, $callbackName)) {
             throw new HTML_QuickForm2_InvalidArgumentException(
                 "Filter should be a valid callback, '{$callbackName}' was given"
@@ -789,6 +790,7 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2
      */
     public function addRecursiveFilter($callback, array $options = array())
     {
+        $callbackName = null;
         if (!is_callable($callback, false, $callbackName)) {
             throw new HTML_QuickForm2_InvalidArgumentException(
                 "Filter should be a valid callback, '{$callbackName}' was given"

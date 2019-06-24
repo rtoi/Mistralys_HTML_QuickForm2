@@ -228,5 +228,15 @@ class HTML_QuickForm2_Rule_Callback extends HTML_QuickForm2_Rule
         }
         return parent::setConfig($config + array('arguments' => array()));
     }
+
+   /**
+    * Retrieves the rule's callback.
+    * @return array|string
+    */
+    public function getCallback()
+    {
+        $config = $this->getConfig();
+        return $config['callback'];
+    }
 }
 ?>

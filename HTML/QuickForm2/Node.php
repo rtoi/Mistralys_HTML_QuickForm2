@@ -600,6 +600,28 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2
         $this->rules[] = array($rule, $runAt);
         return $rule;
     }
+    
+   /**
+    * Adds a callback rule to the node.
+    * 
+    * @param string $message
+    * @param Callable $callback
+    * @param array|null $arguments
+    * @param int $runAt
+    * @return HTML_QuickForm2_Rule_Callback
+    */
+    public function addRuleCallback($message, $callback, $arguments=null, $runAt = HTML_QuickForm2_Rule::SERVER)
+    {
+        /* @var $rule HTML_QuickForm2_Rule_Callback */
+        
+        $rule = $this->addRule('callback', $message, $callback);
+        
+        if($arguments !== null) {
+            $rule->setArguments($arguments);
+        }
+        
+        return $rule;
+    }
 
    /**
     * Removes a validation rule

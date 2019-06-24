@@ -196,6 +196,18 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2
         if (!empty($data)) {
             $this->data = array_merge($this->data, $data);
         }
+        
+        $this->initNode();
+    }
+    
+   /**
+    * Called after the constructor: can be extended in subclasses
+    * to do any necessary initializations without having to redefine
+    * the constructor.
+    */
+    protected function initNode()
+    {
+    
     }
     
     protected static $elementIDs = array();

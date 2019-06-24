@@ -118,7 +118,10 @@ class HTML_QuickForm2_DataSource_SuperGlobal
         if (empty($this->files)) {
             return null;
         }
-        if (false !== ($pos = strpos($name, '['))) {
+        
+        $pos = strpos($name, '[');
+        
+        if (false !== $pos) {
             $tokens = explode('[', str_replace(']', '', $name));
             $base   = array_shift($tokens);
             $value  = array();

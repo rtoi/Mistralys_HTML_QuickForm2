@@ -540,6 +540,7 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
     */
     public function __call($m, $a)
     {
+        $match = array();
         if (preg_match('/^(add)([a-zA-Z0-9_]+)$/', $m, $match)) {
             if ($match[1] == 'add') {
                 $type = strtolower($match[2]);

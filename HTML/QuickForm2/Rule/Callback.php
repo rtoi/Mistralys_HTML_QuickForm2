@@ -240,5 +240,32 @@ class HTML_QuickForm2_Rule_Callback extends HTML_QuickForm2_Rule
         $config = $this->getConfig();
         return $config['callback'];
     }
+
+   /**
+    * Sets the arguments for the callback. Every item in the array
+    * is an argument added to the callback, in the exact order they
+    * are found in the array. The first item stays the value to validate,
+    * and the last item is the rule instance itself.
+    * 
+    * @param array $args
+    * @return HTML_QuickForm2_Rule_Callback
+    */
+    public function setArguments($args)
+    {
+        // ensure we always have an array
+        if(!is_array($args)) {
+            $args = array($args);
+        }
+        
+        // the rule itself is always the last parameter.
+        $args[] = $this;
+        
+        $config = $this->getConfig();
+        $config['arguments'] = $args;
+        
+        $this->setConfig($config);
+        
+        return $this;
+    }
 }
 ?>

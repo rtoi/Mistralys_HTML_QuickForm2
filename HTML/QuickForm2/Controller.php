@@ -221,6 +221,7 @@ class HTML_QuickForm2_Controller implements IteratorAggregate
         $names = array_map('preg_quote', array_keys($this->pages));
         $regex = '/^_qf_(' . implode('|', $names) . ')_(.+?)(_x)?$/';
         foreach (array_keys($_REQUEST) as $key) {
+            $matches = array();
             if (preg_match($regex, $key, $matches)) {
                 $this->actionName = array($matches[1], $matches[2]);
                 break;

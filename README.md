@@ -12,6 +12,7 @@ Additions:
   * Elements: hasErrors() method to check if an element has errors after validation
   * Elements: getRules() method to retrieve all rules added to the element
   * Elements: hasRules() method to check if an element has any rules 
+  * Rules: The callback rule now has a method getCallback() to retrieve the configured callback
   * Text-based elements: addFilterTrim() method 
   * Select element: prependOption() method to insert an element at the top
   * Select optgroups: getLabel() method

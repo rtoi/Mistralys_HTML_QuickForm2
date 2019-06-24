@@ -923,7 +923,12 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2
     */
     public function getRules()
     {
-        return $this->rules;
+        $result = array();
+        foreach($this->rules as $entry) {
+            $result[] = $entry[0];
+        }
+        
+        return $result;
     }
     
    /**

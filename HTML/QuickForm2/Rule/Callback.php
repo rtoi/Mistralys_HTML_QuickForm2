@@ -214,6 +214,8 @@ class HTML_QuickForm2_Rule_Callback extends HTML_QuickForm2_Rule
         if (!is_array($config) || !isset($config['callback'])) {
             $config = array('callback' => $config);
         }
+       
+        $callbackName = null;
         if (!is_callable($config['callback'], false, $callbackName)) {
             throw new HTML_QuickForm2_InvalidArgumentException(
                 'Callback Rule requires a valid callback, \'' . $callbackName .

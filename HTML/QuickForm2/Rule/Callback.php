@@ -276,7 +276,7 @@ class HTML_QuickForm2_Rule_Callback extends HTML_QuickForm2_Rule
     public function getArguments()
     {
         $config = $this->getConfig();
-        if(isset($config['arguments']) && !empty($config['arguments']) {
+        if(isset($config['arguments']) && !empty($config['arguments'])) {
            return $config['arguments'];
         }
           

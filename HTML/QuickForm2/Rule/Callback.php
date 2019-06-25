@@ -267,5 +267,20 @@ class HTML_QuickForm2_Rule_Callback extends HTML_QuickForm2_Rule
         
         return $this;
     }
+   
+   /**
+    * Retrieves the arguments list of the callback, if any.
+    *  
+    * @return array
+    */
+    public function getArguments()
+    {
+        $config = $this->getConfig();
+        if(isset($config['arguments']) && !empty($config['arguments']) {
+           return $config['arguments'];
+        }
+          
+        return array();
+    }
 }
 ?>

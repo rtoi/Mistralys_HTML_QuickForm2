@@ -74,6 +74,14 @@ class HTML_QuickForm2_Rule_Callback extends HTML_QuickForm2_Rule
     {
         $value  = $this->owner->getValue();
         $config = $this->getConfig();
+       
+        // the rule itself is always the last parameter.
+        if(!is_array($config['arguments'])) {
+           $config['arguments'] = array();
+        }
+       
+        $config['arguments'][] = $this;
+       
         return (bool)call_user_func_array(
             $config['callback'], array_merge(array($value), $config['arguments'])
         );
@@ -256,9 +264,6 @@ class HTML_QuickForm2_Rule_Callback extends HTML_QuickForm2_Rule
         if(!is_array($args)) {
             $args = array($args);
         }
-        
-        // the rule itself is always the last parameter.
-        $args[] = $this;
         
         $config = $this->getConfig();
         $config['arguments'] = $args;

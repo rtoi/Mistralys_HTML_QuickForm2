@@ -308,10 +308,9 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
     */
     public function removeChild(HTML_QuickForm2_Node $element)
     {
-
         if ($element->getContainer() !== $this) {
             throw new HTML_QuickForm2_NotFoundException(
-                "Element with name '".$element->getName()."' was not found"
+                "Element with name '".$element->getName()."' cannot be removed: it does not have the same container."
             );
         }
         $unset = false;

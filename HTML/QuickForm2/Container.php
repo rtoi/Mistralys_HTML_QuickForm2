@@ -63,6 +63,10 @@
 abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
     implements IteratorAggregate, Countable
 {
+    const ERROR_CANNOT_FIND_CHILD_ELEMENT_INDEX = 38501;
+    
+    const ERROR_REMOVE_CHILD_HAS_OTHER_CONTAINER = 38502;
+    
    /**
     * Array of elements contained in this container
     * @var HTML_QuickForm2_Node[]
@@ -219,6 +223,12 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
     {
         return $this->elements;
     }
+    
+    const POSITION_APPEND = 'append';
+    
+    const POSITION_PREPEND = 'prepend';
+    
+    const POSITION_INSERT_BEFORE = 'insert_before';
 
    /**
     * Appends an element to the container
@@ -233,18 +243,89 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
     */
     public function appendChild(HTML_QuickForm2_Node $element)
     {
+        return $this->insertChildAtPosition($element, self::POSITION_APPEND);
+    }
+    
+    public function prependChild(HTML_QuickForm2_Node $element)
+    {
+        return $this->insertChildAtPosition($element, self::POSITION_PREPEND);
+    }
+    
+   /**
+    * Retrieves the numeric index of the specified element in
+    * the container's elements collection.
+    * 
+    * @param HTML_QuickForm2_Node $element
+    * @throws HTML_QuickForm2_NotFoundException
+    * @return int
+    */
+    protected function getChildIndex(HTML_QuickForm2_Node $element) : int
+    {
+        $offset = 0;
+        
+        foreach($this as $child)
+        {
+            if($child === $element) {
+                return $offset;
+            }
+            
+            $offset++;
+        }
+        
+        throw new HTML_QuickForm2_NotFoundException(
+            sprintf(
+                "Cannot get child element index: No element with name [%s] could be found.",
+                $element->getName()
+            ),
+            self::ERROR_CANNOT_FIND_CHILD_ELEMENT_INDEX
+        );
+    }
+    
+   /**
+    * Inserts the specified element at the provided position in the
+    * container's elements collection.
+    * 
+    * @param HTML_QuickForm2_Node $element
+    * @param string $position
+    * @param HTML_QuickForm2_Node|NULL $target The target element if the position requires one
+    * @return HTML_QuickForm2_Node
+    * @see HTML_QuickForm2_Container::insertBefore()
+    * @see HTML_QuickForm2_Container::prependChild()
+    * @see HTML_QuickForm2_Container::appendChild()
+    */
+    protected function insertChildAtPosition(HTML_QuickForm2_Node $element, string $position, HTML_QuickForm2_Node $target=null)
+    {
         if ($this === $element->getContainer()) {
             $this->removeChild($element);
         }
         
         $element->setContainer($this);
         
-
-        $this->elements[] = $element;
+        switch($position)
+        {
+            case self::POSITION_APPEND:
+                $this->elements[] = $element;
+                break;
+                
+            case self::POSITION_PREPEND:
+                array_unshift($this->elements, $element);
+                break;
+                
+            case self::POSITION_INSERT_BEFORE:
+                if($target === null) {
+                    return $this->appendChild($element);
+                }
+                
+                array_splice($this->elements, $this->getChildIndex($target), 0, array($element));
+                break;
+        }
         
         $this->invalidateLookup();
         
-        $this->getForm()->getEventHandler()->triggerNodeAdded($element);
+        $form = $this->getForm();
+        if($form) {
+            $form->getEventHandler()->triggerNodeAdded($element);
+        }
         
         return $element;
     }
@@ -297,6 +378,32 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
             ));
         }
     }
+    
+   /**
+    * Like {@link HTML_Quickform2_Container::addElement()}, but adds the
+    * element at the top of the elements list of the container.
+    * 
+    * @param string|HTML_QuickForm2_Node $elementOrType Either type name (treated
+    *               case-insensitively) or an element instance
+    * @param string                      $name          Element name
+    * @param string|array                $attributes    Element attributes
+    * @param array                       $data          Element-specific data
+    * 
+    * @return HTML_QuickForm2_Node
+    * @throws   HTML_QuickForm2_InvalidArgumentException
+    * @throws   HTML_QuickForm2_NotFoundException
+    */
+    public function prependElement(
+        $elementOrType, $name = null, $attributes = null, array $data = array()
+    ) {
+        if ($elementOrType instanceof HTML_QuickForm2_Node) {
+            return $this->prependChild($elementOrType);
+        } else {
+            return $this->prependChild(HTML_QuickForm2_Factory::createElement(
+                $elementOrType, $name, $attributes, $data
+            ));
+        }
+    }
 
    /**
     * Removes the element from this container
@@ -310,9 +417,14 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
     {
         if ($element->getContainer() !== $this) {
             throw new HTML_QuickForm2_NotFoundException(
-                "Element with name '".$element->getName()."' cannot be removed: it does not have the same container."
+                sprintf(
+                    "Element with name [%s] cannot be removed: it does not have the same container.",
+                    $element->getName()
+                ),
+                self::ERROR_REMOVE_CHILD_HAS_OTHER_CONTAINER
             );
         }
+        
         $unset = false;
         foreach ($this as $key => $child) {
             if ($child === $element) {
@@ -324,6 +436,7 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
         }
         if ($unset) {
             $this->elements = array_values($this->elements);
+            $this->invalidateLookup();
         }
         return $element;
     }
@@ -428,24 +541,7 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
     */
     public function insertBefore(HTML_QuickForm2_Node $element, HTML_QuickForm2_Node $reference = null)
     {
-        if (null === $reference) {
-            return $this->appendChild($element);
-        }
-        $offset = 0;
-        foreach ($this as $child) {
-            if ($child === $reference) {
-                if ($this === $element->getContainer()) {
-                    $this->removeChild($element);
-                }
-                $element->setContainer($this);
-                array_splice($this->elements, $offset, 0, array($element));
-                return $element;
-            }
-            $offset++;
-        }
-        throw new HTML_QuickForm2_NotFoundException(
-            "Reference element with name '".$reference->getName()."' was not found"
-        );
+        return $this->insertChildAtPosition($element, self::POSITION_INSERT_BEFORE, $reference);
     }
 
    /**

@@ -259,15 +259,27 @@ class HTML_QuickForm2_ContainerTest extends PHPUnit_Framework_TestCase
 
         try {
             $c1->removeChild($e1);
-        } catch (HTML_QuickForm2_NotFoundException $e) {
-            $this->assertRegExp('/Element(.*)was not found/', $e->getMessage());
+        } 
+        catch (HTML_QuickForm2_NotFoundException $e) 
+        {
+            $this->assertEquals(
+                HTML_QuickForm2_Container::ERROR_REMOVE_CHILD_HAS_OTHER_CONTAINER, 
+                $e->getCode()
+            );
+            
             try {
                 $c1->removeChild($e2);
-            } catch (HTML_QuickForm2_NotFoundException $e) {
-                $this->assertRegExp('/Element(.*)was not found/', $e->getMessage());
+            } 
+            catch (HTML_QuickForm2_NotFoundException $e) 
+            {
+                $this->assertEquals(
+                    HTML_QuickForm2_Container::ERROR_REMOVE_CHILD_HAS_OTHER_CONTAINER,
+                    $e->getCode()
+                );
                 return;
             }
         }
+        
         $this->fail('Expected HTML_QuickForm2_NotFoundException was not thrown');
     }
 
@@ -312,11 +324,19 @@ class HTML_QuickForm2_ContainerTest extends PHPUnit_Framework_TestCase
         try {
             $c1->insertBefore($e2, $e3);
         } catch (HTML_QuickForm2_NotFoundException $e) {
-            $this->assertEquals("Reference element with name '".$e3->getName()."' was not found", $e->getMessage());
+            $this->assertEquals(
+                $e->getCode(), 
+                HTML_QuickForm2_Container::ERROR_CANNOT_FIND_CHILD_ELEMENT_INDEX,
+                'Not the expected error code'
+            );
             try {
                 $c2->insertBefore($e2, $e1);
             } catch (HTML_QuickForm2_NotFoundException $e) {
-                $this->assertEquals("Reference element with name '".$e1->getName()."' was not found", $e->getMessage());
+                $this->assertEquals(
+                    $e->getCode(),
+                    HTML_QuickForm2_Container::ERROR_CANNOT_FIND_CHILD_ELEMENT_INDEX, 
+                    'Not the expected error code'
+                );
                 return;
             }
         }

@@ -31,11 +31,15 @@ class HTML_QuickForm2_ContainerOverloadTest extends PHPUnit_Framework_TestCase
     {
         $c = new HTML_QuickForm2_ContainerImpl('cCOT1');
         $el1 = $c->addText('eCOT1', array('size' => 30), array('label' => 'Label'));
-        $this->assertSame($el1, $c->getElementById('eCOT1-0'));
-
+        $el1id = $el1->getId();
+        
+        $this->assertSame($el1, $c->getElementById($el1id));
+        
         $f = $c->addFieldset('fCOT1', null, array('label' => 'Fieldset'));
         $el2 = $f->addTextarea('eCOT2');
-        $this->assertSame($el2, $c->getElementById('eCOT2-0'));
+        $el2id = $el2->getId();
+        
+        $this->assertSame($el2, $c->getElementById($el2id));
     }
 
 
@@ -43,9 +47,13 @@ class HTML_QuickForm2_ContainerOverloadTest extends PHPUnit_Framework_TestCase
     {
         $c = new HTML_QuickForm2_ContainerImpl('cCOT0');
         $el1 = $c->addCheckbox('chCOT[]');
+        $el1id = $el1->getId();
+        
         $el2 = $c->addCheckbox('chCOT[]');
-        $this->assertSame($el1, $c->getElementById('chCOT-0-0'));
-        $this->assertSame($el2, $c->getElementById('chCOT-1-0'));
+        $el2id = $el2->getId();
+        
+        $this->assertSame($el1, $c->getElementById($el1id));
+        $this->assertSame($el2, $c->getElementById($el2id));
     }
 
     public function testAddUnknownType()
@@ -70,9 +78,9 @@ class HTML_QuickForm2_ContainerOverloadTest extends PHPUnit_Framework_TestCase
         $el1 = $c->addSuper_Box('sBox_1');
         $el2 = $c->addsuper_box('sBox_2');
         $el3 = $c->addSuper_box('sBox_3');
-        $this->assertSame($el1, $c->getElementById('sBox_1-0'));
-        $this->assertSame($el2, $c->getElementById('sBox_2-0'));
-        $this->assertSame($el3, $c->getElementById('sBox_3-0'));
+        $this->assertSame($el1, $c->getElementById($el1->getId()));
+        $this->assertSame($el2, $c->getElementById($el2->getId()));
+        $this->assertSame($el3, $c->getElementById($el3->getId()));
 
         try {
             $c->addSuper_Select('sSel_1');

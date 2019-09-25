@@ -69,6 +69,18 @@ if (null === HTML_Common2::getOption('language')) {
  */
 abstract class HTML_QuickForm2_Node extends HTML_Common2
 {
+    const ERROR_CANNOT_REMOVE_NAME_ATTRIBUTE = 38601;
+    
+    const ERROR_CANNOT_REMOVE_ID_ATTRIBUTE = 38602;
+    
+    const ERROR_ID_CANNOT_CONTAIN_SPACES = 38603;
+    
+    const ERROR_CANNOT_SET_CHILD_AS_OWN_CONTAINER = 38604;
+    
+    const ERROR_ADDRULE_INVALID_ARGUMENTS = 38605;
+    
+    const ERROR_FILTER_INVALID_CALLBACK = 38606;
+    
    /**
     * Array containing the parts of element ids
     * @var array
@@ -151,7 +163,8 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2
         if ('name' == $name) {
             if (null === $value) {
                 throw new HTML_QuickForm2_InvalidArgumentException(
-                    "Required attribute 'name' can not be removed"
+                    "Required attribute 'name' can not be removed",
+                    self::ERROR_CANNOT_REMOVE_NAME_ATTRIBUTE
                 );
             } else {
                 $this->setName($value);
@@ -159,7 +172,8 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2
         } elseif ('id' == $name) {
             if (null === $value) {
                 throw new HTML_QuickForm2_InvalidArgumentException(
-                    "Required attribute 'id' can not be removed"
+                    "Required attribute 'id' can not be removed",
+                    self::ERROR_CANNOT_REMOVE_ID_ATTRIBUTE
                 );
             } else {
                 $this->setId($value);
@@ -390,7 +404,8 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2
         // so we don't do stricter checks here
         } elseif (strpbrk($id, " \r\n\t\x0C")) {
             throw new HTML_QuickForm2_InvalidArgumentException(
-                "The value of 'id' attribute should not contain space characters"
+                "The value of 'id' attribute should not contain space characters",
+                self::ERROR_ID_CANNOT_CONTAIN_SPACES,
             );
         } else {
             self::storeId($id);
@@ -514,23 +529,53 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2
     */
     protected function setContainer(HTML_QuickForm2_Container $container = null)
     {
-        if (null !== $container) {
-            $check = $container;
-            do {
-                if ($this === $check) {
-                    throw new HTML_QuickForm2_InvalidArgumentException(
-                        'Cannot set an element or its child as its own container'
-                    );
-                }
-            } while ($check = $check->getContainer());
-            if (null !== $this->container && $container !== $this->container) {
-                $this->container->removeChild($this);
-            }
+        if($this->hasContainerParent($container)) {
+            throw new HTML_QuickForm2_InvalidArgumentException(
+                'Cannot set an element or its child as its own container',
+                self::ERROR_CANNOT_SET_CHILD_AS_OWN_CONTAINER
+            );
         }
+        
+        $previous = $this->getContainer();
+        
+        // this element already has that same container
+        if($previous === $container) {
+            return;
+        }
+        
+        // tell the original container to remove this element
+        if($previous !== null) {
+            $previous->removeChild($this);
+        }
+        
         $this->container = $container;
-        if (null !== $container) {
+
+        if( $container !== null) {
             $this->updateValue();
         }
+        
+        return;
+    }
+    
+    public function hasContainerParent(HTML_QuickForm2_Container $container = null)
+    {
+        if($container === null) {
+            return false;
+        }
+        
+        $check = $container;
+        
+        // go up through all parent containers from this
+        // container, to ensure we are not adding a container
+        // that is already used as parent in the tree.
+        do {
+            if($this === $check) {
+                return true;
+            }
+        }
+        while($check = $check->getContainer());
+        
+        return false;
     }
 
 
@@ -593,7 +638,8 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2
         } else {
             throw new HTML_QuickForm2_InvalidArgumentException(
                 'addRule() expects either a rule type or ' .
-                'a HTML_QuickForm2_Rule instance'
+                'a HTML_QuickForm2_Rule instance',
+                self::ERROR_ADDRULE_INVALID_ARGUMENTS
             );
         }
 
@@ -783,7 +829,8 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2
         $callbackName = null;
         if (!is_callable($callback, false, $callbackName)) {
             throw new HTML_QuickForm2_InvalidArgumentException(
-                "Filter should be a valid callback, '{$callbackName}' was given"
+                "Filter should be a valid callback, '{$callbackName}' was given",
+                self::ERROR_FILTER_INVALID_CALLBACK
             );
         }
         $this->filters[] = array($callback, $options);
@@ -815,7 +862,8 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2
         $callbackName = null;
         if (!is_callable($callback, false, $callbackName)) {
             throw new HTML_QuickForm2_InvalidArgumentException(
-                "Filter should be a valid callback, '{$callbackName}' was given"
+                "Filter should be a valid callback, '{$callbackName}' was given",
+                self::ERROR_FILTER_INVALID_CALLBACK
             );
         }
         $this->recursiveFilters[] = array($callback, $options);
@@ -967,9 +1015,9 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2
    /**
     * Retrieves the parent form of the node.
     * @throws Exception
-    * @return HTML_QuickForm2
+    * @return HTML_QuickForm2|NULL
     */
-    public function getForm()
+    public function getForm() : ?HTML_QuickForm2
     {
         $container = $this->getContainer();
         
@@ -985,7 +1033,7 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2
             return $this;
         }
         
-        throw new Exception('The node has no form.');
+        return null;
     }
     
     public function preRender()

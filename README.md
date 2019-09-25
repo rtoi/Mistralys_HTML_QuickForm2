@@ -23,9 +23,11 @@ Performance tweaks:
   * Container getElementById() method 
   * Auto-generated element IDs
 
-**NOTE**: Element IDs are generated a bit differently in this fork. If your clientside form 
-handling does not rely on the naming scheme of the generated IDs, it will not be an issue.
+Element ID generation:
 
+The element ID generation mechanism has been modified, so it is no longer possible
+to rely on a specific naming scheme to predict the automatic element IDs. In practice,
+this was impractical at best anyway, and the new system has big performance gains. 
 
 # Documentation
 

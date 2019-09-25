@@ -152,6 +152,15 @@ class HTML_QuickForm2_Element_InputFile extends HTML_QuickForm2_Element_Input
         // method="get", enctype should be set to multipart/form-data.
         
         $form = $this->getForm();
+        if($form === null) {
+            throw new HTML_QuickForm2_Exception(
+                sprintf(
+                    'Cannot pre-render element [%s]: it has no form.',
+                    $this->getName()
+                )    
+            );
+        }
+        
         if ('get' == strtolower($form->getAttribute('method'))) {
             throw new HTML_QuickForm2_InvalidArgumentException(
                 'File upload elements can only be added to forms with post submit method'

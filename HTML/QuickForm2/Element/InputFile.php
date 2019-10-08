@@ -121,6 +121,8 @@ class HTML_QuickForm2_Element_InputFile extends HTML_QuickForm2_Element_Input
     */
     public function getRawValue()
     {
+        $this->checkPrerequisites();
+        
         return $this->value;
     }
 
@@ -148,28 +150,44 @@ class HTML_QuickForm2_Element_InputFile extends HTML_QuickForm2_Element_Input
     
     public function preRender()
     {
-        // request #16807: file uploads should not be added to forms with
-        // method="get", enctype should be set to multipart/form-data.
-        
+        $this->checkPrerequisites();
+    }
+
+   /**
+    * request #16807: file uploads should not be added to forms with
+    * method="get", enctype should be set to multipart/form-data.
+    * 
+    * @throws HTML_QuickForm2_Exception
+    * @throws HTML_QuickForm2_InvalidArgumentException
+    */
+    protected function checkPrerequisites()
+    {
         $form = $this->getForm();
         if($form === null) {
             throw new HTML_QuickForm2_Exception(
                 sprintf(
                     'Cannot pre-render element [%s]: it has no form.',
                     $this->getName()
-                )    
+                )
             );
         }
         
-        if ('get' == strtolower($form->getAttribute('method'))) {
+        if(strtolower($form->getAttribute('method')) == 'get') 
+        {
             throw new HTML_QuickForm2_InvalidArgumentException(
                 'File upload elements can only be added to forms with post submit method'
             );
         }
         
-        if ($form->getAttribute('enctype') != 'multipart/form-data') {
+        $this->checkEncoding();
+    }
+    
+    protected function checkEncoding()
+    {
+        $form = $this->getForm();
+        if($form !== null && $form->getAttribute('enctype') != 'multipart/form-data') {
             $form->setAttribute('enctype', 'multipart/form-data');
-        }
+        } 
     }
 
     protected function updateValue()
@@ -201,6 +219,8 @@ class HTML_QuickForm2_Element_InputFile extends HTML_QuickForm2_Element_Input
     */
     protected function validate()
     {
+        $this->checkPrerequisites();
+        
         if (strlen($this->error)) {
             return false;
         }

@@ -83,7 +83,7 @@ class HTML_QuickForm2_Element_InputFileTest extends PHPUnit_Framework_TestCase
     public function testBuiltinValidation()
     {
         $form = new HTML_QuickForm2('upload', 'post', null, false);
-        $foo  = $form->appendChild(new HTML_QuickForm2_Element_InputFile('foo'));
+        $form->appendChild(new HTML_QuickForm2_Element_InputFile('foo'));
         $this->assertTrue($form->validate());
 
         $toobig = $form->appendChild(new HTML_QuickForm2_Element_InputFile('toobig'));
@@ -96,7 +96,7 @@ class HTML_QuickForm2_Element_InputFileTest extends PHPUnit_Framework_TestCase
     */
     public function testInvalidMessageProvider()
     {
-        $invalid = new HTML_QuickForm2_Element_InputFile('invalid', null, array('messageProvider' => array()));
+        new HTML_QuickForm2_Element_InputFile('invalid', null, array('messageProvider' => array()));
     }
 
     public static function callbackMessageProvider($messageId, $langId)
@@ -136,24 +136,60 @@ class HTML_QuickForm2_Element_InputFileTest extends PHPUnit_Framework_TestCase
     */
     public function testRequest16807()
     {
-        $form = new HTML_QuickForm2('broken', 'get');
+        $form = new HTML_QuickForm2('broken1', 'get');
 
-        try {
-            $form->addFile('upload', array('id' => 'upload'));
-            $this->fail('Expected HTML_QuickForm2_InvalidArgumentException was not thrown');
-        } catch (HTML_QuickForm2_InvalidArgumentException $e) {}
+        $this->expectException(HTML_QuickForm2_InvalidArgumentException::class);
+        
+        $upload = $form->addFile('upload', array('id' => 'upload'));
+        
+        $upload->getValue();
+    }
+    
+   /**
+    * Ensure that the form action is checked on retrieving the value
+    */
+    public function testRequest16807_2()
+    {
+        $form = new HTML_QuickForm2('broken2', 'get');
+        
+        /* HTML_QuickForm2_Container_Group */
+        $group = $form->addElement('group', 'fileGroup');
 
-        $group = HTML_QuickForm2_Factory::createElement('group', 'fileGroup');
-        $group->addFile('upload', array('id' => 'upload'));
-        try {
-            $form->appendChild($group);
-            $this->fail('Expected HTML_QuickForm2_InvalidArgumentException was not thrown');
-        } catch (HTML_QuickForm2_InvalidArgumentException $e) {}
-
+        $upload = $group->addFile('upload', array('id' => 'upload'));
+        
+        $this->expectException(HTML_QuickForm2_InvalidArgumentException::class);
+        
+        $upload->getValue();
+    }
+    
+   /**
+    * Ensure that the form action is checked on render
+    */
+    public function testRequest16807_3()
+    {
+        $form = new HTML_QuickForm2('broken2', 'get');
+        
+        $form->addFile('upload', array('id' => 'upload'));
+        
+        $this->expectException(HTML_QuickForm2_InvalidArgumentException::class);
+        
+        $renderer = HTML_QuickForm2_Renderer::factory('Array');
+        
+        $form->render($renderer);
+    }
+    
+    public function testRequest16807_4()
+    {
         $post = new HTML_QuickForm2('okform', 'post');
+        
         $this->assertNull($post->getAttribute('enctype'));
-        $post->addFile('upload');
+        
+        $upload = $post->addFile('upload');
+        
+        // the check is done whenever the value is accessed,
+        // or the form is validated / rendered.
+        $upload->getValue();
+        
         $this->assertEquals('multipart/form-data', $post->getAttribute('enctype'));
     }
 }
-?>

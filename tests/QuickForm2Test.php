@@ -66,8 +66,8 @@ class HTML_QuickForm2Test extends PHPUnit_Framework_TestCase
         $form4 = new HTML_QuickForm2('notrack', 'get');
         $this->assertEquals(0, count($form4->getDataSources()));
 
-        $form2 = new HTML_QuickForm2('notrack', 'get', null, false);
-        $this->assertEquals(1, count($form2->getDataSources()));
+        $form5 = new HTML_QuickForm2('notrack', 'get', null, false);
+        $this->assertEquals(1, count($form5->getDataSources()));
     }
 
     public function testConstructorSetsIdAndMethod()

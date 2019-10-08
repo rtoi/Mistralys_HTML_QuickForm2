@@ -3,7 +3,13 @@
 This fork focuses on quality of life improvements, as well as performance enhancements when working 
 with large forms, or many parallel forms. 
 
-Additions:
+## Composer compatible
+
+Install via package name `mistralys/html_quickform2`.
+
+See https://packagist.org/packages/mistralys/html_quickform2
+
+## Additions
 
   * Elements: set/getRuntimeProperty() method to store data at runtime
   * Default array datasource: setValues() method 
@@ -18,12 +24,12 @@ Additions:
   * Select optgroups: getLabel() method
   * Select element and optgroups: countOptions() method with recursive capability
 
-Performance tweaks:
+## Performance tweaks
 
   * Container getElementById() method 
   * Auto-generated element IDs
 
-Element ID generation:
+## Element ID generation
 
 The element ID generation mechanism has been modified, so it is no longer possible
 to rely on a specific naming scheme to predict the automatic element IDs. In practice,

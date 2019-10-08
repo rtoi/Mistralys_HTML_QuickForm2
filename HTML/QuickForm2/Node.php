@@ -405,7 +405,7 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2
         } elseif (strpbrk($id, " \r\n\t\x0C")) {
             throw new HTML_QuickForm2_InvalidArgumentException(
                 "The value of 'id' attribute should not contain space characters",
-                self::ERROR_ID_CANNOT_CONTAIN_SPACES,
+                self::ERROR_ID_CANNOT_CONTAIN_SPACES
             );
         } else {
             self::storeId($id);

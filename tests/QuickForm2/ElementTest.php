@@ -19,6 +19,8 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(__FILE__)) . '/TestHelper.php';
 
@@ -50,9 +52,9 @@ class HTML_QuickForm2_ElementImpl extends HTML_QuickForm2_Element
 /**
  * Unit test for HTML_QuickForm2_Element class,
  */
-class HTML_QuickForm2_ElementTest extends PHPUnit_Framework_TestCase
+class HTML_QuickForm2_ElementTest extends TestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         $_REQUEST = array(
             '_qf__form1' => ''
@@ -64,7 +66,7 @@ class HTML_QuickForm2_ElementTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    public function tearDown()
+    protected function tearDown() : void
     {
         HTML_Common2::setOption('id_force_append_index', true);
     }
@@ -126,11 +128,11 @@ class HTML_QuickForm2_ElementTest extends PHPUnit_Framework_TestCase
         foreach ($names as $name) {
             $el = new HTML_QuickForm2_ElementImpl($name);
             $this->assertNotEquals('', $el->getId(), 'Should have an auto-generated \'id\' attribute');
-            $this->assertNotContains($el->getId(), $usedIds);
+            $this->assertContains($el->getId(), $usedIds);
             $usedIds[] = $el->getId();
             // Duplicate name...
             $el2 = new HTML_QuickForm2_ElementImpl($name);
-            $this->assertNotContains($el2->getId(), $usedIds);
+            $this->assertStringNotContainsString($el2->getId(), $usedIds);
             $usedIds[] = $el2->getId();
         }
     }

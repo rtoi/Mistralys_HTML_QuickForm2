@@ -19,15 +19,17 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(dirname(__FILE__))) . '/TestHelper.php';
 
 /**
  * Unit test for HTML_QuickForm2_Element_Button class
  */
-class HTML_QuickForm2_Element_ButtonTest extends PHPUnit_Framework_TestCase
+class HTML_QuickForm2_Element_ButtonTest extends TestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         $_POST = array(
             'foo' => 'A button clicked',

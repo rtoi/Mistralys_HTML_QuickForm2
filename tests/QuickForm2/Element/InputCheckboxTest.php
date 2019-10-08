@@ -19,15 +19,17 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(dirname(__FILE__))) . '/TestHelper.php';
 
 /**
  * Unit test for HTML_QuickForm2_Element_InputCheckbox class
  */
-class HTML_QuickForm2_Element_InputCheckboxTest extends PHPUnit_Framework_TestCase
+class HTML_QuickForm2_Element_InputCheckboxTest extends TestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         $_POST = array(
             'box1'      => '1',
@@ -92,7 +94,8 @@ class HTML_QuickForm2_Element_InputCheckboxTest extends PHPUnit_Framework_TestCa
         $box = new HTML_QuickForm2_Element_InputCheckbox(
             'vegetable[1]', array('value' => 2, 'checked' => 1), array('label' => 'pea')
         );
-        $boxHtml = $box->__toString();
+
+        $this->assertIsString($box->__toString());
     }
 
    /**
@@ -104,7 +107,7 @@ class HTML_QuickForm2_Element_InputCheckboxTest extends PHPUnit_Framework_TestCa
         $box = new HTML_QuickForm2_Element_InputCheckbox(
             'testBox', array('value' => 0)
         );
-        $this->assertContains('value="0"', $box->__toString());
+        $this->assertStringContainsString('value="0"', $box->__toString());
     }
 
     /**

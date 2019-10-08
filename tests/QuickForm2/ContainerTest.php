@@ -19,6 +19,8 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(__FILE__)) . '/TestHelper.php';
 
@@ -82,7 +84,7 @@ class RuleRequest17576 extends HTML_QuickForm2_Rule
 /**
  * Unit test for HTML_QuickForm2_Container class
  */
-class HTML_QuickForm2_ContainerTest extends PHPUnit_Framework_TestCase
+class HTML_QuickForm2_ContainerTest extends TestCase
 {
     public function testCanSetName()
     {

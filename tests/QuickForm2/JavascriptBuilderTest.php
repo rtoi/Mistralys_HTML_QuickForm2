@@ -19,15 +19,17 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(__FILE__)) . '/TestHelper.php';
 
 /**
  * Unit test for HTML_QuickForm2_JavascriptBuilder class
  */
-class HTML_QuickForm2_JavascriptBuilderTest extends PHPUnit_Framework_TestCase
+class HTML_QuickForm2_JavascriptBuilderTest extends TestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         HTML_Common2::setOption('nonce', null);
     }
@@ -66,18 +68,18 @@ class HTML_QuickForm2_JavascriptBuilderTest extends PHPUnit_Framework_TestCase
 
         $libraries = $builder->getLibraries(false, false);
         $this->assertArrayHasKey('base', $libraries);
-        $this->assertNotContains('<script', $libraries['base']);
+        $this->assertStringNotContainsString('<script', $libraries['base']);
 
         $libraries = $builder->getLibraries(false, true);
-        $this->assertContains('<script', $libraries['base']);
+        $this->assertStringContainsString('<script', $libraries['base']);
 
         $libraries = $builder->getLibraries(true, false);
-        $this->assertContains('qf.Validator', $libraries);
-        $this->assertNotContains('<script', $libraries);
+        $this->assertStringContainsString('qf.Validator', $libraries);
+        $this->assertStringNotContainsString('<script', $libraries);
 
         $libraries = $builder->getLibraries(true, true);
-        $this->assertContains('qf.Validator', $libraries);
-        $this->assertContains('<script', $libraries);
+        $this->assertStringContainsString('qf.Validator', $libraries);
+        $this->assertStringContainsString('<script', $libraries);
     }
 
     public function testInlineLibraryNonce()
@@ -100,10 +102,9 @@ class HTML_QuickForm2_JavascriptBuilderTest extends PHPUnit_Framework_TestCase
         $builder = new HTML_QuickForm2_JavascriptBuilder();
         $builder->addLibrary('missing', 'missing.js');
 
-        try {
-            $libraries = $builder->getLibraries(true);
-            $this->fail('Expected HTML_QuickForm2_NotFoundException was not thrown');
-        } catch (HTML_QuickForm2_NotFoundException $e) { }
+        $this->expectException(HTML_QuickForm2_NotFoundException::class);
+        
+        $builder->getLibraries(true);
     }
 
     public function testFormJavascript()
@@ -136,22 +137,22 @@ class HTML_QuickForm2_JavascriptBuilderTest extends PHPUnit_Framework_TestCase
         $builder->addElementJavascript('setupCodeTwo');
 
         $scriptOne = $builder->getFormJavascript('formOne', false);
-        $this->assertContains('jsRuleOne', $scriptOne);
-        $this->assertContains('setupCodeOne', $scriptOne);
-        $this->assertNotContains('jsRuleTwo', $scriptOne);
-        $this->assertNotContains('setupCodeTwo', $scriptOne);
-        $this->assertNotContains('<script', $scriptOne);
+        $this->assertStringContainsString('jsRuleOne', $scriptOne);
+        $this->assertStringContainsString('setupCodeOne', $scriptOne);
+        $this->assertStringNotContainsString('jsRuleTwo', $scriptOne);
+        $this->assertStringNotContainsString('setupCodeTwo', $scriptOne);
+        $this->assertStringNotContainsString('<script', $scriptOne);
 
         $scriptTwo = $builder->getFormJavascript('formTwo', true);
-        $this->assertNotContains('jsRuleOne', $scriptTwo);
-        $this->assertNotContains('setupCodeOne', $scriptTwo);
-        $this->assertContains('jsRuleTwo', $scriptTwo);
-        $this->assertContains('setupCodeTwo', $scriptTwo);
-        $this->assertContains('<script', $scriptTwo);
+        $this->assertStringNotContainsString('jsRuleOne', $scriptTwo);
+        $this->assertStringNotContainsString('setupCodeOne', $scriptTwo);
+        $this->assertStringContainsString('jsRuleTwo', $scriptTwo);
+        $this->assertStringContainsString('setupCodeTwo', $scriptTwo);
+        $this->assertStringContainsString('<script', $scriptTwo);
 
         $scriptBoth = $builder->getFormJavascript();
-        $this->assertContains('jsRuleOne', $scriptBoth);
-        $this->assertContains('setupCodeTwo', $scriptBoth);
+        $this->assertStringContainsString('jsRuleOne', $scriptBoth);
+        $this->assertStringContainsString('setupCodeTwo', $scriptBoth);
     }
 
     public function testFormJavascriptNonce()
@@ -160,7 +161,7 @@ class HTML_QuickForm2_JavascriptBuilderTest extends PHPUnit_Framework_TestCase
         $builder->addElementJavascript('Some setup code');
 
         $script = $builder->getFormJavascript();
-        $this->assertContains('Some setup code', $script);
+        $this->assertStringContainsString('Some setup code', $script);
         $this->assertNotRegExp('/<script[^>]*nonce/', $script);
 
         HTML_Common2::setOption(

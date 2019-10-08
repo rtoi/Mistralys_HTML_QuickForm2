@@ -19,13 +19,15 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(dirname(__FILE__))) . '/TestHelper.php';
 
 /**
  * Unit test for HTML_QuickForm2_Rule_Regex class
  */
-class HTML_QuickForm2_Rule_RegexTest extends PHPUnit_Framework_TestCase
+class HTML_QuickForm2_Rule_RegexTest extends TestCase
 {
     public function testRegexIsRequired()
     {
@@ -175,7 +177,7 @@ class HTML_QuickForm2_Rule_RegexTest extends PHPUnit_Framework_TestCase
         $ruleCyr = new HTML_QuickForm2_Rule_Regex($mockEl, 'an error', '/\x{0445}\x{0443}\x{0439}/ui');
 
         $this->assertFalse($ruleCyr->validate());
-        $this->assertContains('/\\u0445\\u0443\\u0439/i.test(', $ruleCyr->getJavascript());
+        $this->assertStringContainsString('/\\u0445\\u0443\\u0439/i.test(', $ruleCyr->getJavascript());
     }
 }
 ?>

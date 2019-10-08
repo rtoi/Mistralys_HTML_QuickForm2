@@ -19,13 +19,15 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(__FILE__)) . '/TestHelper.php';
 
 /**
  * Unit test for HTML_QuickForm2_Container overloaded methods
  */
-class HTML_QuickForm2_ContainerOverloadTest extends PHPUnit_Framework_TestCase
+class HTML_QuickForm2_ContainerOverloadTest extends TestCase
 {
     public function testAddElements()
     {

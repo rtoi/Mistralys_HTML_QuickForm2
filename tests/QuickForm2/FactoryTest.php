@@ -19,13 +19,15 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(__FILE__)) . '/TestHelper.php';
 
 /**
  * Unit test for HTML_QuickForm2_Factory class
  */
-class HTML_QuickForm2_FactoryTest extends PHPUnit_Framework_TestCase
+class HTML_QuickForm2_FactoryTest extends TestCase
 {
     protected $phpError;
     protected $errorHandler;
@@ -36,13 +38,13 @@ class HTML_QuickForm2_FactoryTest extends PHPUnit_Framework_TestCase
         'getJavascriptTriggers', 'render'
     );
 
-    protected function setUp()
+    protected function setUp() : void
     {
         $this->phpError     = null;
         $this->errorHandler = false;
     }
 
-    protected function tearDown()
+    protected function tearDown() : void
     {
         if ($this->errorHandler) {
             restore_error_handler();
@@ -91,7 +93,7 @@ class HTML_QuickForm2_FactoryTest extends PHPUnit_Framework_TestCase
             $el = HTML_QuickForm2_Factory::createElement('foo3');
         } catch (HTML_QuickForm2_NotFoundException $e) {
             $this->assertRegexp('/File(.*)was not found/', $e->getMessage());
-            $this->assertContains('NonexistentClass.php', $this->phpError);
+            $this->assertStringContainsString('NonexistentClass.php', $this->phpError);
             return;
         }
         $this->fail('Expected HTML_QuickForm2_NotFoundException was not thrown');
@@ -105,7 +107,7 @@ class HTML_QuickForm2_FactoryTest extends PHPUnit_Framework_TestCase
             $el = HTML_QuickForm2_Factory::createElement('foo4');
         } catch (HTML_QuickForm2_NotFoundException $e) {
             $this->assertRegexp('/File(.*)was not found/', $e->getMessage());
-            $this->assertContains('NonexistentFile.php', $this->phpError);
+            $this->assertStringContainsString('NonexistentFile.php', $this->phpError);
             return;
         }
         $this->fail('Expected HTML_QuickForm2_NotFoundException was not thrown');
@@ -172,7 +174,7 @@ class HTML_QuickForm2_FactoryTest extends PHPUnit_Framework_TestCase
             $rule = HTML_QuickForm2_Factory::createRule('foo3', $mockNode);
         } catch (HTML_QuickForm2_NotFoundException $e) {
             $this->assertRegexp('/File(.*)was not found/', $e->getMessage());
-            $this->assertContains('NonexistentClass.php', $this->phpError);
+            $this->assertStringContainsString('NonexistentClass.php', $this->phpError);
             return;
         }
         $this->fail('Expected HTML_QuickForm2_NotFoundException was not thrown');
@@ -189,7 +191,7 @@ class HTML_QuickForm2_FactoryTest extends PHPUnit_Framework_TestCase
             $rule = HTML_QuickForm2_Factory::createRule('foo4', $mockNode);
         } catch (HTML_QuickForm2_NotFoundException $e) {
             $this->assertRegexp('/File(.*)was not found/', $e->getMessage());
-            $this->assertContains('NonexistentFile.php', $this->phpError);
+            $this->assertStringContainsString('NonexistentFile.php', $this->phpError);
             return;
         }
         $this->fail('Expected HTML_QuickForm2_NotFoundException was not thrown');

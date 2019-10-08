@@ -19,6 +19,8 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/TestHelper.php';
 
@@ -26,11 +28,11 @@ require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/TestHelper.php';
  * Unit test for HTML_QuickForm2_Controller_Action_Jump class
  */
 class HTML_QuickForm2_Controller_Action_JumpTest
-    extends PHPUnit_Framework_TestCase
+    extends TestCase
 {
     protected $mockJump;
 
-    public function setUp()
+    protected function setUp() : void
     {
         $this->mockJump = $this->getMockBuilder('HTML_QuickForm2_Controller_Action_Jump')
             ->setMethods(array('doRedirect'))
@@ -123,7 +125,7 @@ class HTML_QuickForm2_Controller_Action_JumpTest
         );
         $controller->addHandler('jump', $this->mockJump);
 
-        $this->assertContains(
+        $this->assertStringContainsString(
             $controller->getPage('first')->getButtonName('display'),
             $controller->getPage('second')->handle('jump')
         );
@@ -138,7 +140,7 @@ class HTML_QuickForm2_Controller_Action_JumpTest
         $noPropController = new HTML_QuickForm2_Controller('foo', true, false);
         $noPropController->addPage($noPropPage);
         $noPropController->addHandler('jump', $this->mockJump);
-        $this->assertNotContains(
+        $this->assertStringNotContainsString(
             HTML_QuickForm2_Controller::KEY_ID . '=',
             $noPropPage->handle('jump')
         );
@@ -150,7 +152,7 @@ class HTML_QuickForm2_Controller_Action_JumpTest
         $propController = new HTML_QuickForm2_Controller('bar', true, true);
         $propController->addPage($propPage);
         $propController->addHandler('jump', $this->mockJump);
-        $this->assertContains(
+        $this->assertStringContainsString(
             HTML_QuickForm2_Controller::KEY_ID . '=bar',
             $propPage->handle('jump')
         );
@@ -184,10 +186,10 @@ class HTML_QuickForm2_Controller_Action_JumpTest
                 ->getMock()
         );
         $controller->addHandler('jump', $this->mockJump);
-        $this->assertContains('mysessionid=', $controller->getPage('dest')->handle('jump'));
+        $this->assertStringContainsString('mysessionid=', $controller->getPage('dest')->handle('jump'));
 
         ini_set('session.use_only_cookies', true);
-        $this->assertNotContains('mysessionid=', $controller->getPage('dest')->handle('jump'));
+        $this->assertStringNotContainsString('mysessionid=', $controller->getPage('dest')->handle('jump'));
 
         ini_set('session.use_only_cookies', $old);
     }

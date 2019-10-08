@@ -19,13 +19,15 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(dirname(__FILE__))) . '/TestHelper.php';
 
 /**
  * Unit test for HTML_QuickForm2_Element_InputHidden class
  */
-class HTML_QuickForm2_Element_InputHiddenTest extends PHPUnit_Framework_TestCase
+class HTML_QuickForm2_Element_InputHiddenTest extends TestCase
 {
     public function testCannotBeFrozen()
     {
@@ -34,11 +36,10 @@ class HTML_QuickForm2_Element_InputHiddenTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($hidden->toggleFrozen());
     }
 
-    /**
-     * @expectedException HTML_QuickForm2_InvalidArgumentException
-     */
     public function testCannotSetError()
     {
+        $this->expectException(HTML_QuickForm2_InvalidArgumentException::class);
+        
         $hidden = new HTML_QuickForm2_Element_InputHidden('noError');
         $hidden->setError('a message');
     }

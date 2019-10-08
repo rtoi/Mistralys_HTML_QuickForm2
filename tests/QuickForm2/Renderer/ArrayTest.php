@@ -19,13 +19,15 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(dirname(__FILE__))) . '/TestHelper.php';
 
 /**
  * Unit test for HTML_QuickForm2_Renderer_Array class
  */
-class HTML_QuickForm2_Renderer_ArrayTest extends PHPUnit_Framework_TestCase
+class HTML_QuickForm2_Renderer_ArrayTest extends TestCase
 {
     private function _assertHasKeys($array, $keys)
     {
@@ -120,9 +122,10 @@ class HTML_QuickForm2_Renderer_ArrayTest extends PHPUnit_Framework_TestCase
     public function testRenderGroupedErrors()
     {
         $form     = new HTML_QuickForm2('arrayGroupedErrors');
-        $element  = $form->addText('testArrayGroupedErrors')->setError('Some error');
+        $form->addText('testArrayGroupedErrors')->setError('Some error');
+        
         $renderer = HTML_QuickForm2_Renderer::factory('array')
-                        ->setOption('group_errors', false);
+        ->setOption('group_errors', false);
 
         $this->assertArrayNotHasKey('errors', $form->render($renderer)->toArray());
 
@@ -149,8 +152,8 @@ class HTML_QuickForm2_Renderer_ArrayTest extends PHPUnit_Framework_TestCase
     public function testRenderWithStyle()
     {
         $form = new HTML_QuickForm2('arrayStyle');
-        $text1 = $form->addText('foo', array('id' => 'testArrayWithStyle'));
-        $text2 = $form->addText('bar', array('id' => 'testArrayWithoutStyle'));
+        $form->addText('foo', array('id' => 'testArrayWithStyle'));
+        $form->addText('bar', array('id' => 'testArrayWithoutStyle'));
         $renderer = HTML_Quickform2_Renderer::factory('array')
             ->setStyleForId('testArrayWithStyle', 'weird');
 
@@ -167,7 +170,7 @@ class HTML_QuickForm2_Renderer_ArrayTest extends PHPUnit_Framework_TestCase
                         ->setOption('static_labels', false);
 
         $array = $element->render($renderer)->toArray();
-        $this->assertInternalType('array', $array['label']);
+        $this->assertIsArray($array['label']);
 
         $array = $element->render(
                     $renderer->setOption('static_labels', true)->reset()

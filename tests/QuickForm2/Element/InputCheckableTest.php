@@ -19,13 +19,15 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(dirname(__FILE__))) . '/TestHelper.php';
 
 /**
  * Unit test for HTML_QuickForm2_Element_InputCheckable class
  */
-class HTML_QuickForm2_Element_InputCheckableTest extends PHPUnit_Framework_TestCase
+class HTML_QuickForm2_Element_InputCheckableTest extends TestCase
 {
     public function testConstructorSetsContent()
     {
@@ -112,7 +114,7 @@ class HTML_QuickForm2_Element_InputCheckableTest extends PHPUnit_Framework_TestC
         $aRadio = $form->appendChild(
                             new HTML_QuickForm2_Element_InputCheckable('aRadio')
                       )->setAttribute('value', 1);
-        $this->assertContains('checked', $aRadio->__toString());
+        $this->assertStringContainsString('checked', $aRadio->__toString());
     }
 
 }

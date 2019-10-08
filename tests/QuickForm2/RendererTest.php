@@ -19,6 +19,8 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(__FILE__)) . '/TestHelper.php';
 
@@ -79,7 +81,7 @@ class HTML_QuickForm2_FakeRenderer_AnotherHelloPlugin
 /**
  * Unit test for HTML_QuickForm2_Renderer class
  */
-class HTML_QuickForm2_RendererTest extends PHPUnit_Framework_TestCase
+class HTML_QuickForm2_RendererTest extends TestCase
 {
     public function testRegisterRenderer()
     {

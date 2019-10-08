@@ -19,15 +19,17 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(dirname(__FILE__))) . '/TestHelper.php';
 
 /**
  * Unit test for superglobal-based data source
  */
-class HTML_QuickForm2_DataSource_SuperGlobalTest extends PHPUnit_Framework_TestCase
+class HTML_QuickForm2_DataSource_SuperGlobalTest extends TestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         $_GET = array(
             'foo' => 'some value',

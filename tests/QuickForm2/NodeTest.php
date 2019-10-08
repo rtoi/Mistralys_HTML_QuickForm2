@@ -19,6 +19,8 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(__FILE__)) . '/TestHelper.php';
 
@@ -51,7 +53,7 @@ class HTML_QuickForm2_NodeImpl extends HTML_QuickForm2_Node
 /**
  * Unit test for HTML_QuickForm2_Node class,
  */
-class HTML_QuickForm2_NodeTest extends PHPUnit_Framework_TestCase
+class HTML_QuickForm2_NodeTest extends TestCase
 {
     public function testCanSetLabel()
     {
@@ -227,11 +229,12 @@ class HTML_QuickForm2_NodeTest extends PHPUnit_Framework_TestCase
     * Disallow spaces in values of 'id' attributes
     *
     * @dataProvider invalidIdProvider
-    * @expectedException HTML_QuickForm2_InvalidArgumentException
     * @link http://pear.php.net/bugs/17576
     */
     public function testRequest18683($id)
     {
+        $this->expectException(HTML_QuickForm2_InvalidArgumentException::class);
+        
         $node = new HTML_QuickForm2_NodeImpl();
         $node->setId($id);
     }

@@ -19,13 +19,15 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(dirname(__FILE__))) . '/TestHelper.php';
 
 /**
  * Unit test for HTML_QuickForm2_Rule_Compare class
  */
-class HTML_QuickForm2_Rule_CompareTest extends PHPUnit_Framework_TestCase
+class HTML_QuickForm2_Rule_CompareTest extends TestCase
 {
     public function testOperandRequired()
     {
@@ -198,7 +200,7 @@ class HTML_QuickForm2_Rule_CompareTest extends PHPUnit_Framework_TestCase
             ->setConstructorArgs(array('bar', array('id' => 'bar')))
             ->getMock();
         $compare = new HTML_QuickForm2_Rule_Compare($foo, '...', $bar);
-        $this->assertContains('["foo","bar"]', $compare->getJavascript());
+        $this->assertStringContainsString('["foo","bar"]', $compare->getJavascript());
     }
 }
 ?>

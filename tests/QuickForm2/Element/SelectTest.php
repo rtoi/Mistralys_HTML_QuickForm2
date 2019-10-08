@@ -19,6 +19,8 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(dirname(__FILE__))) . '/TestHelper.php';
 
@@ -36,9 +38,9 @@ abstract class HTML_QuickForm2_Element_SelectTest_AttributeParser extends HTML_C
 /**
  * Unit test for HTML_QuickForm2_Element_Select class
  */
-class HTML_QuickForm2_Element_SelectTest extends PHPUnit_Framework_TestCase
+class HTML_QuickForm2_Element_SelectTest extends TestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         $_POST = array(
             'single1' => '1'
@@ -310,10 +312,10 @@ class HTML_QuickForm2_Element_SelectTest extends PHPUnit_Framework_TestCase
 
         $sel->toggleFrozen(true);
         $selFrozen = $sel->__toString();
-        $this->assertContains('TwoWithZero', $selFrozen);
-        $this->assertContains('value="02"', $selFrozen);
-        $this->assertNotContains('TwoWithoutZero', $selFrozen);
-        $this->assertNotContains('value="2"', $selFrozen);
+        $this->assertStringContainsString('TwoWithZero', $selFrozen);
+        $this->assertStringContainsString('value="02"', $selFrozen);
+        $this->assertStringNotContainsString('TwoWithoutZero', $selFrozen);
+        $this->assertStringNotContainsString('value="2"', $selFrozen);
     }
 
    /**

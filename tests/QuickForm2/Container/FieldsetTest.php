@@ -19,13 +19,15 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(dirname(__FILE__))) . '/TestHelper.php';
 
 /**
  * Unit test for HTML_QuickForm2_Element_Fieldset class
  */
-class HTML_QuickForm2_Element_FieldsetTest extends PHPUnit_Framework_TestCase
+class HTML_QuickForm2_Element_FieldsetTest extends TestCase
 {
     public function testFieldsetIsEmptyByDefault()
     {

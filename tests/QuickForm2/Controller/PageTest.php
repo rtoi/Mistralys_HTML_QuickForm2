@@ -19,13 +19,15 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(dirname(__FILE__))) . '/TestHelper.php';
 
 /**
  * Unit test for HTML_QuickForm2_Controller_Page class
  */
-class HTML_QuickForm2_Controller_PageTest extends PHPUnit_Framework_TestCase
+class HTML_QuickForm2_Controller_PageTest extends TestCase
 {
     public function testPopulateFormOnce()
     {
@@ -81,7 +83,7 @@ class HTML_QuickForm2_Controller_PageTest extends PHPUnit_Framework_TestCase
 
         ob_start();
         $mockPage->handle('display');
-        $this->assertContains($mockPage->getForm()->__toString(), ob_get_contents());
+        $this->assertStringContainsString($mockPage->getForm()->__toString(), ob_get_contents());
         ob_end_clean();
     }
 
@@ -100,7 +102,7 @@ class HTML_QuickForm2_Controller_PageTest extends PHPUnit_Framework_TestCase
 
         $mockPage->setDefaultAction('bar');
         $this->assertEquals($mockPage->getButtonName('bar'), $default->getName());
-        $this->assertContains('base64', $default->getAttribute('src'));
+        $this->assertStringContainsString('base64', $default->getAttribute('src'));
     }
 
     public function testDefaultActionIsFirstElement()

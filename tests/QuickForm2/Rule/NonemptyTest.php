@@ -19,13 +19,15 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(dirname(__FILE__))) . '/TestHelper.php';
 
 /**
  * Unit test for HTML_QuickForm2_Rule_Nonempty class
  */
-class HTML_QuickForm2_Rule_NonemptyTest extends PHPUnit_Framework_TestCase
+class HTML_QuickForm2_Rule_NonemptyTest extends TestCase
 {
     function testValidateGenericElement()
     {
@@ -96,13 +98,17 @@ class HTML_QuickForm2_Rule_NonemptyTest extends PHPUnit_Framework_TestCase
     public function testPositiveNumberRequired()
     {
         $mockEl = $this->getMockBuilder('HTML_QuickForm2_Element')
-            ->setMethods(array('getType',
-                                 'getRawValue', 'setValue', '__toString'))
-            ->getMock();
-        try {
-            $rule = new HTML_QuickForm2_Rule_Nonempty($mockEl, 'an error', -1);
-            $this->fail('Expected HTML_QuickForm2_InvalidArgumentException was not thrown');
-        } catch (HTML_QuickForm2_InvalidArgumentException $e) {}
+        ->setMethods(array(
+            'getType',
+            'getRawValue', 
+            'setValue', 
+            '__toString'
+        ))
+        ->getMock();
+      
+        $this->expectException(HTML_QuickForm2_InvalidArgumentException::class);
+        
+        new HTML_QuickForm2_Rule_Nonempty($mockEl, 'an error', -1);
     }
 
    /**
@@ -171,7 +177,7 @@ class HTML_QuickForm2_Rule_NonemptyTest extends PHPUnit_Framework_TestCase
         $bar = $mockContainer->addElement('text', 'bar', array('id' => 'bar'));
 
         $nonEmpty = new HTML_QuickForm2_Rule_Nonempty($mockContainer, 'an error');
-        $this->assertContains('["foo","bar"]', $nonEmpty->getJavascript());
+        $this->assertStringContainsString('["foo","bar"]', $nonEmpty->getJavascript());
     }
 }
 ?>

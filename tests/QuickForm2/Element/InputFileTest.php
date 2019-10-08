@@ -19,15 +19,17 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(dirname(__FILE__))) . '/TestHelper.php';
 
 /**
  * Unit test for HTML_QuickForm2_Element_InputFile class
  */
-class HTML_QuickForm2_Element_InputFileTest extends PHPUnit_Framework_TestCase
+class HTML_QuickForm2_Element_InputFileTest extends TestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         $_FILES = array(
             'foo' => array(
@@ -88,14 +90,13 @@ class HTML_QuickForm2_Element_InputFileTest extends PHPUnit_Framework_TestCase
 
         $toobig = $form->appendChild(new HTML_QuickForm2_Element_InputFile('toobig'));
         $this->assertFalse($form->validate());
-        $this->assertContains('987654', $toobig->getError());
+        $this->assertStringContainsString('987654', $toobig->getError());
     }
 
-   /**
-    * @expectedException HTML_QuickForm2_InvalidArgumentException
-    */
     public function testInvalidMessageProvider()
     {
+        $this->expectException(HTML_QuickForm2_InvalidArgumentException::class);
+        
         new HTML_QuickForm2_Element_InputFile('invalid', null, array('messageProvider' => array()));
     }
 

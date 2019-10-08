@@ -19,13 +19,15 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(dirname(__FILE__))) . '/TestHelper.php';
 
 /**
  * Unit test for HTML_QuickForm2_Element_Input class
  */
-class HTML_QuickForm2_Element_StaticTest extends PHPUnit_Framework_TestCase
+class HTML_QuickForm2_Element_StaticTest extends TestCase
 {
     public function testSetContent()
     {
@@ -77,13 +79,13 @@ class HTML_QuickForm2_Element_StaticTest extends PHPUnit_Framework_TestCase
     public function testCannotValidate()
     {
         $static = new HTML_QuickForm2_Element_Static('novalidate');
-        try {
-            $rule = $this->getMockBuilder('HTML_QuickForm2_Rule')
-                ->setMethods(array('validateOwner'))
-                ->setConstructorArgs(array($static, 'a message'))
-                ->getMock();
-            $this->fail('Expected HTML_QuickForm2_InvalidArgumentException was not thrown');
-        } catch (HTML_QuickForm2_InvalidArgumentException $e) { }
+        
+        $this->expectException(HTML_QuickForm2_InvalidArgumentException::class);
+        
+        $this->getMockBuilder('HTML_QuickForm2_Rule')
+        ->setMethods(array('validateOwner'))
+        ->setConstructorArgs(array($static, 'a message'))
+        ->getMock();
     }
 
     public function testCanRemoveName()
@@ -113,11 +115,10 @@ class HTML_QuickForm2_Element_StaticTest extends PHPUnit_Framework_TestCase
         $this->assertRegexp('!<div[^<>]*class="foo"[^<>]*>bar</div>!', $div->__toString());
     }
 
-   /**
-    * @expectedException HTML_QuickForm2_InvalidArgumentException
-    */
     public function testDisallowedTagNames()
     {
+        $this->expectException(HTML_QuickForm2_InvalidArgumentException::class);
+        
         $static = new HTML_QuickForm2_Element_Static('foo', null, array('tagName' => 'input'));
     }
 

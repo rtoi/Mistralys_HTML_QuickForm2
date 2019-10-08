@@ -19,6 +19,8 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(dirname(__FILE__))) . '/TestHelper.php';
 
@@ -38,7 +40,7 @@ class HTML_QuickForm2_Element_InputImpl extends HTML_QuickForm2_Element_Input
 /**
  * Unit test for HTML_QuickForm2_Element_Input class
  */
-class HTML_QuickForm2_Element_InputTest extends PHPUnit_Framework_TestCase
+class HTML_QuickForm2_Element_InputTest extends TestCase
 {
     public function testTypeAttributeIsReadonly()
     {

@@ -19,13 +19,15 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(dirname(__FILE__))) . '/TestHelper.php';
 
 /**
  * Unit test for HTML_QuickForm2_Rule_Required class
  */
-class HTML_QuickForm2_Rule_RequiredTest extends PHPUnit_Framework_TestCase
+class HTML_QuickForm2_Rule_RequiredTest extends TestCase
 {
     protected $nodeAbstractMethods = array(
         'updateValue', 'getId', 'getName', 'getType', 'getRawValue', 'setId',
@@ -89,14 +91,16 @@ class HTML_QuickForm2_Rule_RequiredTest extends PHPUnit_Framework_TestCase
 
    /**
     * @link http://pear.php.net/bugs/18133
-    * @expectedException HTML_QuickForm2_InvalidArgumentException
     */
     public function testCannotHaveEmptyMessage()
     {
+        $this->expectException(HTML_QuickForm2_InvalidArgumentException::class);
+        
         $mockNode = $this->getMockBuilder('HTML_QuickForm2_Node')
             ->setMethods($this->nodeAbstractMethods)
             ->getMock();
-        $required = new HTML_QuickForm2_Rule_Required($mockNode);
+
+        new HTML_QuickForm2_Rule_Required($mockNode);
     }
 }
 ?>

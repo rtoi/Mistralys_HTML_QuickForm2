@@ -19,13 +19,15 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(dirname(__FILE__))) . '/TestHelper.php';
 
 /**
  * Unit test for array-based data source
  */
-class HTML_QuickForm2_DataSource_ArrayTest extends PHPUnit_Framework_TestCase
+class HTML_QuickForm2_DataSource_ArrayTest extends TestCase
 {
    /**
     * data source being tested
@@ -33,7 +35,7 @@ class HTML_QuickForm2_DataSource_ArrayTest extends PHPUnit_Framework_TestCase
     */
     protected $ds;
 
-    public function setUp()
+    protected function setUp() : void
     {
         $this->ds = new HTML_QuickForm2_DataSource_Array(array(
             'foo' => 'some value',

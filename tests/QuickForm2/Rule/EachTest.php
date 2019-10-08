@@ -19,13 +19,15 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(dirname(__FILE__))) . '/TestHelper.php';
 
 /**
  * Unit test for HTML_QuickForm2_Rule_Each class
  */
-class HTML_QuickForm2_Rule_EachTest extends PHPUnit_Framework_TestCase
+class HTML_QuickForm2_Rule_EachTest extends TestCase
 {
     public function testTemplateRuleNeeded()
     {
@@ -36,13 +38,13 @@ class HTML_QuickForm2_Rule_EachTest extends PHPUnit_Framework_TestCase
             $each = new HTML_QuickForm2_Rule_Each($mockEl);
             $this->fail('Expected HTML_QuickForm2_InvalidArgumentException was not thrown');
         } catch (HTML_QuickForm2_InvalidArgumentException $e) {
-            $this->assertContains('Each Rule requires a template Rule to validate with', $e->getMessage());
+            $this->assertStringContainsString('Each Rule requires a template Rule to validate with', $e->getMessage());
         }
         try {
             $each2 = new HTML_QuickForm2_Rule_Each($mockEl, '', 'A rule?');
             $this->fail('Expected HTML_QuickForm2_InvalidArgumentException was not thrown');
         } catch (HTML_QuickForm2_InvalidArgumentException $e) {
-            $this->assertContains('Each Rule requires a template Rule to validate with', $e->getMessage());
+            $this->assertStringContainsString('Each Rule requires a template Rule to validate with', $e->getMessage());
         }
     }
 
@@ -55,7 +57,7 @@ class HTML_QuickForm2_Rule_EachTest extends PHPUnit_Framework_TestCase
             $each = new HTML_QuickForm2_Rule_Each($mockEl, 'an error', $mockEl->createRule('required', 'an error'));
             $this->fail('Expected HTML_QuickForm2_InvalidArgumentException was not thrown');
         } catch (HTML_QuickForm2_InvalidArgumentException $e) {
-            $this->assertContains('Cannot use "required" Rule as a template', $e->getMessage());
+            $this->assertStringContainsString('Cannot use "required" Rule as a template', $e->getMessage());
         }
     }
 
@@ -71,7 +73,7 @@ class HTML_QuickForm2_Rule_EachTest extends PHPUnit_Framework_TestCase
             );
             $this->fail('Expected HTML_QuickForm2_InvalidArgumentException was not thrown');
         } catch (HTML_QuickForm2_InvalidArgumentException $e) {
-            $this->assertContains('Each Rule can only validate Containers', $e->getMessage());
+            $this->assertStringContainsString('Each Rule can only validate Containers', $e->getMessage());
         }
     }
 
@@ -183,7 +185,7 @@ class HTML_QuickForm2_Rule_EachTest extends PHPUnit_Framework_TestCase
              ->will($this->returnValue('staticCallback'));
 
         $each = new HTML_QuickForm2_Rule_Each($mockContainer, 'an error', $rule);
-        $this->assertNotContains('staticCallback', $each->getJavascript());
+        $this->assertStringNotContainsString('staticCallback', $each->getJavascript());
     }
 
     public function testValidationTriggers()
@@ -201,7 +203,7 @@ class HTML_QuickForm2_Rule_EachTest extends PHPUnit_Framework_TestCase
         $rule->expects($this->any())->method('getJavascriptCallback')
              ->will($this->returnValue('a callback'));
         $each = new HTML_QuickForm2_Rule_Each($mockContainer, 'an error', $rule);
-        $this->assertContains('["foo","bar"]', $each->getJavascript());
+        $this->assertStringContainsString('["foo","bar"]', $each->getJavascript());
     }
 }
 ?>

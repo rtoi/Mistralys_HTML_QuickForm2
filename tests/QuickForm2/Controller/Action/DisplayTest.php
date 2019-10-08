@@ -19,6 +19,8 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/TestHelper.php';
 
@@ -26,7 +28,7 @@ require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/TestHelper.php';
  * Unit test for HTML_QuickForm2_Controller_Action_Display class
  */
 class HTML_QuickForm2_Controller_Action_DisplayTest
-    extends PHPUnit_Framework_TestCase
+    extends TestCase
 {
    /**
     * Do not allow displaying a wizard page if preceding page(s) are not valid

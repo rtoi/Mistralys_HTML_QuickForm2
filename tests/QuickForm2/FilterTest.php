@@ -19,6 +19,8 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use PHPUnit\Framework\TestCase;
+
 /** Sets up includes */
 require_once dirname(dirname(__FILE__)) . '/TestHelper.php';
 
@@ -42,9 +44,9 @@ function repeatFilter($value)
 /**
  * Unit test for HTML_QuickForm2_Rule class
  */
-class HTML_QuickForm2_FilterTest extends PHPUnit_Framework_TestCase
+class HTML_QuickForm2_FilterTest extends TestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         $_REQUEST['_qf__filters'] = '';
         $_POST = array(

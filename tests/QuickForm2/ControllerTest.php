@@ -39,6 +39,9 @@ class HTML_QuickForm2_ControllerTest extends TestCase
 
     public function testFindID1()
     {
+        $_SESSION = array();
+        $_REQUEST = array();
+        
         $this->expectException(HTML_QuickForm2_NotFoundException::class);
         
         new HTML_QuickForm2_Controller();
@@ -46,7 +49,10 @@ class HTML_QuickForm2_ControllerTest extends TestCase
     
     public function testFindID2()
     {
-        $_REQUEST[HTML_QuickForm2_Controller::KEY_ID] = 'foo';
+        $_SESSION = array();
+        $_REQUEST = array(
+            HTML_QuickForm2_Controller::KEY_ID => 'foo'
+        );
         
         $this->expectException(HTML_QuickForm2_NotFoundException::class);
         
@@ -55,10 +61,17 @@ class HTML_QuickForm2_ControllerTest extends TestCase
     
     public function testFindID3()
     {
-        $_SESSION[sprintf(HTML_QuickForm2_Controller::KEY_CONTAINER, 'foo')] = array(
-            'datasources' => array(),
-            'values'      => array(),
-            'valid'       => array()
+        $_REQUEST = array(
+            HTML_QuickForm2_Controller::KEY_ID => 'foo'
+        );
+        
+        $_SESSION = array(
+            sprintf(HTML_QuickForm2_Controller::KEY_CONTAINER, 'foo') => 
+            array(
+                'datasources' => array(),
+                'values'      => array(),
+                'valid'       => array()
+            )
         );
         
         $controller = new HTML_QuickForm2_Controller(null, true, false);
@@ -71,6 +84,7 @@ class HTML_QuickForm2_ControllerTest extends TestCase
     public function testContainer()
     {
         $_SESSION = array();
+        $_REQUEST = array();
 
         $controller = new HTML_QuickForm2_Controller('foo');
         $controller->getSessionContainer();
@@ -129,6 +143,7 @@ class HTML_QuickForm2_ControllerTest extends TestCase
 
     public function testGetActionName()
     {
+        $_SESSION = array();
         $_REQUEST = array(
             sprintf(HTML_QuickForm2_Controller_Page::KEY_NAME, 'foo', 'bar')         => 'Button value',
             sprintf(HTML_QuickForm2_Controller_Page::KEY_NAME, 'baz', 'quux') . '_x' => 15

@@ -114,7 +114,7 @@ class HTML_QuickForm2Test extends TestCase
             
             $data = $form->getDataReason();
             $this->assertEquals($def['trackVarFound'], $data['trackVarFound'], 'Tracking var should have been found. '.$descr);
-            $this->assertEquals($def['postNotEmpty'], $data['postNotEmpty'], 'Post should be empty. '.$descr);
+            $this->assertEquals($def['postNotEmpty'], $data['postNotEmpty'], 'Post should be empty. '.$descr.' '.json_encode($_POST));
             $this->assertEquals($def['getNotEmpty'], $data['getNotEmpty'], 'Get should not be empty. '.$descr);
             
             $number++;

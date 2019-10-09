@@ -124,15 +124,19 @@ class HTML_QuickForm2_ElementTest extends TestCase
             '', 'value', 'array[]', 'array[8]', 'array[60000]', 'array[20]',
             'array[name][]', 'bigger[name][5]', 'bigger[name][]', 'bigger[name][6]'
         );
+        
         $usedIds = array();
-        foreach ($names as $name) {
+        
+        foreach($names as $name) 
+        {
             $el = new HTML_QuickForm2_ElementImpl($name);
             $this->assertNotEquals('', $el->getId(), 'Should have an auto-generated \'id\' attribute');
-            $this->assertContains($el->getId(), $usedIds);
             $usedIds[] = $el->getId();
+            $this->assertContains($el->getId(), $usedIds);
+            
             // Duplicate name...
             $el2 = new HTML_QuickForm2_ElementImpl($name);
-            $this->assertStringNotContainsString($el2->getId(), $usedIds);
+            $this->assertNotContains($el2->getId(), $usedIds);
             $usedIds[] = $el2->getId();
         }
     }

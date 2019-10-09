@@ -37,25 +37,32 @@ class HTML_QuickForm2_ControllerTest extends TestCase
         $this->assertFalse($controller->propagateId());
     }
 
-    public function testFindID()
+    public function testFindID1()
     {
-        try {
-            $controller = new HTML_QuickForm2_Controller();
-            $this->fail('Expected HTML_QuickForm2_NotFoundException was not thrown');
-        } catch (HTML_QuickForm2_NotFoundException $e) {}
-
+        $this->expectException(HTML_QuickForm2_NotFoundException::class);
+        
+        new HTML_QuickForm2_Controller();
+    }
+    
+    public function testFindID2()
+    {
         $_REQUEST[HTML_QuickForm2_Controller::KEY_ID] = 'foo';
-        try {
-            $controller = new HTML_QuickForm2_Controller();
-            $this->fail('Expected HTML_QuickForm2_NotFoundException was not thrown');
-        } catch (HTML_QuickForm2_NotFoundException $e) {}
-
+        
+        $this->expectException(HTML_QuickForm2_NotFoundException::class);
+        
+        new HTML_QuickForm2_Controller();
+    }
+    
+    public function testFindID3()
+    {
         $_SESSION[sprintf(HTML_QuickForm2_Controller::KEY_CONTAINER, 'foo')] = array(
             'datasources' => array(),
             'values'      => array(),
             'valid'       => array()
         );
+        
         $controller = new HTML_QuickForm2_Controller(null, true, false);
+        
         $this->assertEquals('foo', $controller->getId());
         $this->assertTrue($controller->isWizard());
         $this->assertTrue($controller->propagateId());
@@ -66,7 +73,8 @@ class HTML_QuickForm2_ControllerTest extends TestCase
         $_SESSION = array();
 
         $controller = new HTML_QuickForm2_Controller('foo');
-        $container  = $controller->getSessionContainer();
+        $controller->getSessionContainer();
+        
         $this->assertNotEquals(array(), $_SESSION);
 
         $controller->destroySessionContainer();

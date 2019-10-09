@@ -48,10 +48,14 @@ class HTML_QuickForm2Test extends TestCase
         $_REQUEST = array(
             '_qf__track' => ''
         );
+        
         $_GET = array(
             'key' => 'value'
         );
+        
         $_POST = array();
+        
+        $_FILES = array();
     }
 
     public function testTrackSubmit()
@@ -106,7 +110,7 @@ class HTML_QuickForm2Test extends TestCase
 
             $data = $form->getDataReason();
             
-            $descr = 'Test #'.$number.' - '.strtoupper($def['method']).': '.$def['label'].' POST:'.json_encode($_POST).' FILES:'.json_encode($_FILES).' GET:'.json_encode($_GET).' DATA:'.json_encode($data);
+            $descr = 'Test #'.$number.' - '.strtoupper($def['method']).': '.$def['label'];
             
             $this->assertEquals(
                 $def['count'], 

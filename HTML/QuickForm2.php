@@ -50,6 +50,8 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
     */
     protected $eventHandler;
     
+    protected $dataReason;
+    
    /**
     * Class constructor, form's "id" and "method" attributes can only be set here
     *
@@ -86,16 +88,18 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
         // submitted form values, if data is present.
         if($trackSubmit && $trackVarFound || !$trackSubmit && ($getNotEmpty || $postNotEmpty))
         {
-            if($id == 'notrack') {
-                print_r(array('trackvarfound' => $trackVarFound, 'getnotempty' => $getNotEmpty, 'postnotempty' => $postNotEmpty));
-            }
-            
             $this->addDataSource(new HTML_QuickForm2_DataSource_SuperGlobal(
                 $method,
                 get_magic_quotes_gpc()
             ));
         }
 
+        $this->dataReason = array(
+            'trackVarFound' => $trackVarFound,
+            'getNotEmpty' => $getNotEmpty,
+            'postNotEmpty' => $postNotEmpty
+        );
+        
         if($trackSubmit) {
             $this->appendChild(HTML_QuickForm2_Factory::createElement(
                 'hidden', '_qf__' . $id, array('id' => 'qf:' . $id)
@@ -103,6 +107,11 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
         }
         
         $this->addFilter(array($this, 'skipInternalFields'));
+    }
+    
+    public function getDataReason()
+    {
+        return $this->dataReason;
     }
 
     protected function onAttributeChange($name, $value = null)

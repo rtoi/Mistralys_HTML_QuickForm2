@@ -56,22 +56,71 @@ class HTML_QuickForm2Test extends TestCase
 
     public function testTrackSubmit()
     {
-        $form1 = new HTML_QuickForm2('track', 'post');
-        $this->assertEquals(1, count($form1->getDataSources()));
+        $tests = array(
+            array(
+                'label' => 'Datasource should be present because tracking var is found.',
+                'method' => 'post',
+                'id' => 'track',
+                'tracking' => true,
+                'count' => 1,
+                'trackVarFound' => true,
+                'getNotEmpty' => false,
+                'postNotEmpty' => false
+            ),
+            array(
+                'label' => 'Datasource should not be present because tracking var is disabled, and POST is empty.',
+                'method' => 'post',
+                'id' => 'track',
+                'tracking' => false,
+                'count' => 0,
+                'trackVarFound' => true,
+                'getNotEmpty' => false,
+                'postNotEmpty' => false
+            ),
+            array(
+                'label' => 'Datasource should be present because tracking var is found, regardless of method.',
+                'method' => 'get',
+                'id' => 'track',
+                'tracking' => true,
+                'count' => 1,
+                'trackVarFound' => true,
+                'getNotEmpty' => true,
+                'postNotEmpty' => false
+            ),
+            array(
+                'label' => 'Datasource should be present because GET is not empty, even though tracking var is disabled.',
+                'method' => 'get',
+                'id' => 'track',
+                'tracking' => false,
+                'count' => 1,
+                'trackVarFound' => true,
+                'getNotEmpty' => true,
+                'postNotEmpty' => false
+            ),
+        );
+        
+        $number = 1;
+        foreach($tests as $def)
+        {
+            $form = new HTML_QuickForm2($def['id'], $def['method'], null, $def['tracking']);
 
-        $form2 = new HTML_QuickForm2('track', 'post', null, false);
-        $this->assertEquals(0, count($form2->getDataSources()));
-
-        $form3 = new HTML_QuickForm2('track', 'get');
-        $this->assertEquals(1, count($form3->getDataSources()));
-
-        $form4 = new HTML_QuickForm2('notrack', 'get');
-        $this->assertEquals(0, count($form4->getDataSources()));
-
-        $form5 = new HTML_QuickForm2('notrack', 'get', null, false);
-        $this->assertEquals(1, count($form5->getDataSources()));
+            $descr = 'Test #'.$number.' - '.strtoupper($def['method']).': '.$def['label'];
+            
+            $this->assertEquals(
+                $def['count'], 
+                count($form->getDataSources()), 
+                'Datsource count does not match. '.$descr
+            );
+            
+            $data = $form->getDataReason();
+            $this->assertEquals($def['trackVarFound'], $data['trackVarFound'], 'Tracking var should have been found. '.$descr);
+            $this->assertEquals($def['postNotEmpty'], $data['postNotEmpty'], 'Post should be empty. '.$descr);
+            $this->assertEquals($def['getNotEmpty'], $data['getNotEmpty'], 'Get should not be empty. '.$descr);
+            
+            $number++;
+        }
     }
-
+    
     public function testConstructorSetsIdAndMethod()
     {
         $form1 = new HTML_QuickForm2(null);

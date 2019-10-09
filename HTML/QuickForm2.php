@@ -49,7 +49,7 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
     * @var HTML_QuickForm2_EventHandler
     */
     protected $eventHandler;
-
+    
    /**
     * Class constructor, form's "id" and "method" attributes can only be set here
     *
@@ -66,27 +66,42 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
         $this->eventHandler = new HTML_QuickForm2_EventHandler($this);
         $method      = ('GET' == strtoupper($method))? 'get': 'post';
         $trackSubmit = empty($id) ? false : $trackSubmit;
+        
         $this->attributes = array_merge(
             self::prepareAttributes($attributes),
             array('method' => $method)
         );
+        
         parent::setId(empty($id) ? null : $id);
-        if (!isset($this->attributes['action'])) {
+        
+        if(!isset($this->attributes['action'])) {
             $this->attributes['action'] = $_SERVER['PHP_SELF'];
         }
-        if ($trackSubmit && isset($_REQUEST['_qf__' . $id]) ||
-            !$trackSubmit && ('get' == $method && !empty($_GET) ||
-                              'post' == $method && (!empty($_POST) || !empty($_FILES)))
-        ) {
+
+        $trackVarFound = isset($_REQUEST['_qf__' . $id]);
+        $getNotEmpty = 'get' == $method && !empty($_GET);
+        $postNotEmpty = 'post' == $method && (!empty($_POST) || !empty($_FILES));
+        
+        // automatically add the superglobals datasource to access
+        // submitted form values, if data is present.
+        if($trackSubmit && $trackVarFound || !$trackSubmit && ($getNotEmpty || $postNotEmpty))
+        {
+            if($id == 'notrack') {
+                print_r(array('trackvarfound' => $trackVarFound, 'getnotempty' => $getNotEmpty, 'postnotempty' => $postNotEmpty));
+            }
+            
             $this->addDataSource(new HTML_QuickForm2_DataSource_SuperGlobal(
-                $method, get_magic_quotes_gpc()
+                $method,
+                get_magic_quotes_gpc()
             ));
         }
-        if ($trackSubmit) {
+
+        if($trackSubmit) {
             $this->appendChild(HTML_QuickForm2_Factory::createElement(
                 'hidden', '_qf__' . $id, array('id' => 'qf:' . $id)
             ));
         }
+        
         $this->addFilter(array($this, 'skipInternalFields'));
     }
 

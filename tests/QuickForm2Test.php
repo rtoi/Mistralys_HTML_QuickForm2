@@ -58,7 +58,7 @@ class HTML_QuickForm2Test extends TestCase
     {
         $tests = array(
             array(
-                'label' => 'Datasource should be present because tracking var is found.',
+                'label' => 'Tracking enabled, and POST empty.',
                 'method' => 'post',
                 'id' => 'track',
                 'tracking' => true,
@@ -68,7 +68,7 @@ class HTML_QuickForm2Test extends TestCase
                 'postNotEmpty' => false
             ),
             array(
-                'label' => 'Datasource should not be present because tracking var is disabled, and POST is empty.',
+                'label' => 'Tracking disabled, and POST empty.',
                 'method' => 'post',
                 'id' => 'track',
                 'tracking' => false,
@@ -78,7 +78,7 @@ class HTML_QuickForm2Test extends TestCase
                 'postNotEmpty' => false
             ),
             array(
-                'label' => 'Datasource should be present because tracking var is found, regardless of method.',
+                'label' => 'Tracking enabled, GET not empty.',
                 'method' => 'get',
                 'id' => 'track',
                 'tracking' => true,
@@ -88,7 +88,7 @@ class HTML_QuickForm2Test extends TestCase
                 'postNotEmpty' => false
             ),
             array(
-                'label' => 'Datasource should be present because GET is not empty, even though tracking var is disabled.',
+                'label' => 'Tracking disabled, but GET not empty.',
                 'method' => 'get',
                 'id' => 'track',
                 'tracking' => false,
@@ -104,7 +104,9 @@ class HTML_QuickForm2Test extends TestCase
         {
             $form = new HTML_QuickForm2($def['id'], $def['method'], null, $def['tracking']);
 
-            $descr = 'Test #'.$number.' - '.strtoupper($def['method']).': '.$def['label'];
+            $data = $form->getDataReason();
+            
+            $descr = 'Test #'.$number.' - '.strtoupper($def['method']).': '.$def['label'].' POST:'.json_encode($_POST).' FILES:'.json_encode($_FILES).' GET:'.json_encode($_GET).' DATA:'.json_encode($data);
             
             $this->assertEquals(
                 $def['count'], 
@@ -112,9 +114,8 @@ class HTML_QuickForm2Test extends TestCase
                 'Datsource count does not match. '.$descr
             );
             
-            $data = $form->getDataReason();
             $this->assertEquals($def['trackVarFound'], $data['trackVarFound'], 'Tracking var should have been found. '.$descr);
-            $this->assertEquals($def['postNotEmpty'], $data['postNotEmpty'], 'Post should be empty. '.$descr.' '.json_encode($_POST));
+            $this->assertEquals($def['postNotEmpty'], $data['postNotEmpty'], 'Post should be empty. '.$descr);
             $this->assertEquals($def['getNotEmpty'], $data['getNotEmpty'], 'Get should not be empty. '.$descr);
             
             $number++;

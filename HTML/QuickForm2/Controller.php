@@ -100,7 +100,7 @@ class HTML_QuickForm2_Controller implements IteratorAggregate
    /**
     * Finds a controller name in $_REQUEST
     *
-    * @return string|null   Returns nulle if either a KEY_ID is not present
+    * @return string|null   Returns null if either a KEY_ID is not present
     *                       in $_REQUEST or KEY_CONTAINER is not present in
     *                       $_SESSION
     */

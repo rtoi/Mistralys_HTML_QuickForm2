@@ -14,7 +14,7 @@
  * @package   HTML_QuickForm2
  * @author    Alexey Borzov <avb@php.net>
  * @author    Bertrand Mansion <golgote@mamasam.com>
- * @copyright 2006-2019 Alexey Borzov <avb@php.net>, Bertrand Mansion <golgote@mamasam.com>
+ * @copyright 2006-2020 Alexey Borzov <avb@php.net>, Bertrand Mansion <golgote@mamasam.com>
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 

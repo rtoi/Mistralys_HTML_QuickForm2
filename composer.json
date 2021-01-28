@@ -33,7 +33,8 @@
         "pear/html_common2":   "^2.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "8.4"
+        "phpunit/phpunit": "8.4",
+        "phpstan/phpstan": ">=0.12.70"
     },
     "autoload": {
         "psr-0": {

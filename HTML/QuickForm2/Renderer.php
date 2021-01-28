@@ -368,4 +368,3 @@ abstract class HTML_QuickForm2_Renderer
     */
     abstract public function finishGroup(HTML_QuickForm2_Node $group);
 }
-?>

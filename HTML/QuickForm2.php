@@ -90,7 +90,7 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
         {
             $this->addDataSource(new HTML_QuickForm2_DataSource_SuperGlobal(
                 $method,
-                get_magic_quotes_gpc()
+                false
             ));
         }
 

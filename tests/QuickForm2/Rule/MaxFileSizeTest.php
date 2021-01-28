@@ -22,7 +22,7 @@
 use PHPUnit\Framework\TestCase;
 
 /** Sets up includes */
-require_once dirname(dirname(dirname(__FILE__))) . '/TestHelper.php';
+require_once dirname(dirname(__DIR__)) . '/TestHelper.php';
 
 /**
  * Unit test for HTML_QuickForm2_Rule_MaxFileSize class
@@ -87,7 +87,7 @@ class HTML_QuickForm2_Rule_MaxFileSizeTest extends TestCase
                  ->will($this->returnValue(array(
                     'name'     => 'pr0n.jpg',
                     'type'     => 'image/jpeg',
-                    'tmp_name' => dirname(dirname(__FILE__)) . '/_files/1024-bytes.upload',
+                    'tmp_name' => dirname(__DIR__) . '/_files/1024-bytes.upload',
                     'error'    => UPLOAD_ERR_OK,
                     'size'     => 1024
                  )));
@@ -107,7 +107,7 @@ class HTML_QuickForm2_Rule_MaxFileSizeTest extends TestCase
                  ->will($this->returnValue(array(
                     'name'     => 'pr0n.jpg',
                     'type'     => 'image/jpeg',
-                    'tmp_name' => dirname(dirname(__FILE__)) . '/_files/1024-bytes.upload',
+                    'tmp_name' => dirname(__DIR__) . '/_files/1024-bytes.upload',
                     'error'    => UPLOAD_ERR_OK,
                     'size'     => 1024
                  )));
@@ -132,7 +132,7 @@ class HTML_QuickForm2_Rule_MaxFileSizeTest extends TestCase
                  ->will($this->returnValue(array(
                     'name'     => 'pr0n.jpg',
                     'type'     => 'image/jpeg',
-                    'tmp_name' => dirname(dirname(__FILE__)) . '/_files/1024-bytes.upload',
+                    'tmp_name' => dirname(__DIR__) . '/_files/1024-bytes.upload',
                     'error'    => UPLOAD_ERR_OK,
                     'size'     => 1024
                  )));

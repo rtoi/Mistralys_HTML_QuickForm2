@@ -22,7 +22,7 @@
 use PHPUnit\Framework\TestCase;
 
 /** Sets up includes */
-require_once dirname(dirname(dirname(__FILE__))) . '/TestHelper.php';
+require_once dirname(dirname(__DIR__)) . '/TestHelper.php';
 
 class HTML_QuickForm2_Element_DateTest extends TestCase
 {

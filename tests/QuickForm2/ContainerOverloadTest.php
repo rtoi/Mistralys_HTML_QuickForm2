@@ -22,7 +22,7 @@
 use PHPUnit\Framework\TestCase;
 
 /** Sets up includes */
-require_once dirname(dirname(__FILE__)) . '/TestHelper.php';
+require_once dirname(__DIR__) . '/TestHelper.php';
 
 /**
  * Unit test for HTML_QuickForm2_Container overloaded methods

@@ -64,8 +64,8 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
     implements IteratorAggregate, Countable
 {
     const ERROR_CANNOT_FIND_CHILD_ELEMENT_INDEX = 38501;
-    
     const ERROR_REMOVE_CHILD_HAS_OTHER_CONTAINER = 38502;
+    const ERROR_UNDEFINED_CLASS_METHOD = 38503;
     
    /**
     * Array of elements contained in this container
@@ -470,7 +470,7 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
     
    /**
     * Stores the elements lookup table.
-    * @var HTML_QuickForm2_Node[]
+    * @var HTML_QuickForm2_Node[]|NULL
     * @see HTML_QuickForm2_Container::getLookup()
     */
     protected $lookup;
@@ -645,7 +645,11 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
                 return $this->addElement($type, $name, $attr, $data);
             }
         }
-        trigger_error("Fatal error: Call to undefined method ".get_class($this)."::".$m."()", E_USER_ERROR);
+
+        throw new HTML_QuickForm2_NotFoundException(
+            "Fatal error: Call to undefined method ".get_class($this)."::".$m."()",
+            self::ERROR_UNDEFINED_CLASS_METHOD
+        );
     }
 
    /**
@@ -668,9 +672,10 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
 
     public function __toString()
     {
-        // pear-package-only HTML_QuickForm2_Loader::loadClass('HTML_QuickForm2_Renderer');
+        $renderer = HTML_QuickForm2_Renderer::factory('default');
 
-        $renderer = $this->render(HTML_QuickForm2_Renderer::factory('default'));
+        $this->render($renderer);
+
         return $renderer->__toString()
                . $renderer->getJavascriptBuilder()->getSetupCode(null, true);
     }

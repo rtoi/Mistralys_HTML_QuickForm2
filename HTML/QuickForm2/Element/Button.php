@@ -49,7 +49,7 @@ class HTML_QuickForm2_Element_Button extends HTML_QuickForm2_Element
 
    /**
     * Element's submit value
-    * @var  string
+    * @var  string|null
     */
     protected $submitValue = null;
 
@@ -159,4 +159,3 @@ class HTML_QuickForm2_Element_Button extends HTML_QuickForm2_Element
         $this->submitValue = null;
     }
 }
-?>

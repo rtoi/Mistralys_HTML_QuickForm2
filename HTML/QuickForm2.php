@@ -88,10 +88,7 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
         // submitted form values, if data is present.
         if($trackSubmit && $trackVarFound || !$trackSubmit && ($getNotEmpty || $postNotEmpty))
         {
-            $this->addDataSource(new HTML_QuickForm2_DataSource_SuperGlobal(
-                $method,
-                false
-            ));
+            $this->addDataSource(new HTML_QuickForm2_DataSource_SuperGlobal($method));
         }
 
         $this->dataReason = array(

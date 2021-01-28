@@ -91,28 +91,18 @@ class HTML_QuickForm2_DataSource_SuperGlobalTest extends TestCase
 
     public function testRequestMethodGet()
     {
-        $ds1 = new HTML_QuickForm2_DataSource_SuperGlobal('GET', false);
+        $ds1 = new HTML_QuickForm2_DataSource_SuperGlobal('GET');
         $this->assertEquals('some value', $ds1->getValue('foo'));
         $this->assertEquals('o\\\'really', $ds1->getValue('bar'));
         $this->assertEquals('me\\\\please', $ds1->getValue('baz[unescape]'));
-
-        $ds2 = new HTML_QuickForm2_DataSource_SuperGlobal('GET', true);
-        $this->assertEquals('some value', $ds2->getValue('foo'));
-        $this->assertEquals('o\'really', $ds2->getValue('bar'));
-        $this->assertEquals('me\\please', $ds2->getValue('baz[unescape]'));
     }
 
     public function testRequestMethodPost()
     {
-        $ds1 = new HTML_QuickForm2_DataSource_SuperGlobal('POST', false);
+        $ds1 = new HTML_QuickForm2_DataSource_SuperGlobal('POST');
         $this->assertEquals('post value', $ds1->getValue('foo'));
         $this->assertEquals('yes\\\'really', $ds1->getValue('bar'));
         $this->assertEquals('or\\\\else', $ds1->getValue('baz[unescape]'));
-
-        $ds2 = new HTML_QuickForm2_DataSource_SuperGlobal('POST', true);
-        $this->assertEquals('post value', $ds2->getValue('foo'));
-        $this->assertEquals('yes\'really', $ds2->getValue('bar'));
-        $this->assertEquals('or\\else', $ds2->getValue('baz[unescape]'));
     }
 
     public function testGetUploadReturnsNullForAbsentValue()
@@ -125,7 +115,8 @@ class HTML_QuickForm2_DataSource_SuperGlobalTest extends TestCase
 
     public function testGetUpload()
     {
-        $ds1 = new HTML_QuickForm2_DataSource_SuperGlobal('POST', false);
+        $ds1 = new HTML_QuickForm2_DataSource_SuperGlobal('POST');
+
         $this->assertEquals(array(
             'name'      => 'file.doc',
             'tmp_name'  => '/tmp/nothing',
@@ -133,6 +124,7 @@ class HTML_QuickForm2_DataSource_SuperGlobalTest extends TestCase
             'size'      => 1234,
             'error'     => UPLOAD_ERR_OK
         ), $ds1->getUpload('foo'));
+
         $this->assertEquals(array(
             'name'      => 'a\\\'thing\\\'.foobar',
             'tmp_name'  => 'C:\\windows\\temp\\whatever',
@@ -140,6 +132,7 @@ class HTML_QuickForm2_DataSource_SuperGlobalTest extends TestCase
             'size'      => 4321,
             'error'     => UPLOAD_ERR_OK
         ), $ds1->getUpload('bar[key]'));
+
         $this->assertEquals(array(
             'name'      => 'grimoire.txt',
             'tmp_name'  => '/mount/tmp/asdzxc',
@@ -147,15 +140,6 @@ class HTML_QuickForm2_DataSource_SuperGlobalTest extends TestCase
             'size'      => 65536,
             'error'     => UPLOAD_ERR_OK
         ), $ds1->getUpload('baz[two][three]'));
-
-        $ds2 = new HTML_QuickForm2_DataSource_SuperGlobal('POST', true);
-        $this->assertEquals(array(
-            'name'      => 'a\'thing\'.foobar',
-            'tmp_name'  => 'C:\\windows\\temp\\whatever',
-            'type'      => 'application/foobar',
-            'size'      => 4321,
-            'error'     => UPLOAD_ERR_OK
-        ), $ds2->getUpload('bar[key]'));
     }
 
    /**
@@ -173,4 +157,3 @@ class HTML_QuickForm2_DataSource_SuperGlobalTest extends TestCase
         ), $ds->getUpload('baz[escape][o\'really]'));
     }
 }
-?>

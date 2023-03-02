@@ -136,7 +136,7 @@ class HTML_QuickForm2_Element_SelectTest extends TestCase
         $this->assertEquals('Value', $sel3->getValue());
         $this->assertMatchesRegularExpression(
             '!<option[^>]+selected="selected"[^>]*>Text</option>!',
-            $sel3->__toString()
+            (string)$sel3
         );
     }
 
@@ -157,6 +157,14 @@ class HTML_QuickForm2_Element_SelectTest extends TestCase
     {
         $sel = new HTML_QuickForm2_Element_Select();
         $sel->addOption('Text', '');
+
+        $this->assertStringContainsString('value=""', (string)$sel);
+    }
+
+    public function testNULLValue() : void
+    {
+        $sel = new HTML_QuickForm2_Element_Select();
+        $sel->addOption('Text', null);
 
         $this->assertStringContainsString('value=""', (string)$sel);
     }

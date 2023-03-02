@@ -19,10 +19,7 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
-// pear-package-only /**
-// pear-package-only  * Implements a recursive iterator for options arrays
-// pear-package-only  */
-// pear-package-only require_once 'HTML/QuickForm2/Element/Select/OptionIterator.php';
+declare(strict_types=1);
 
 /**
  * Collection of <option>s and <optgroup>s
@@ -101,40 +98,55 @@ class HTML_QuickForm2_Element_Select_OptionContainer extends HTML_Common2
     * Please note that if you pass 'selected' attribute in the $attributes
     * parameter then this option's value will be added to <select>'s values.
     *
-    * @param string       $text       Option text
-    * @param string       $value      'value' attribute for <option> tag
-    * @param string|array $attributes Additional attributes for <option> tag
+    * @param string|int|float $text Option text
+    * @param string|int|float|NULL $value 'value' attribute for <option> tag
+    * @param string|array|NULL $attributes Additional attributes for <option> tag
     *                     (either as a string or as an associative array)
     */
-    public function addOption($text, $value, $attributes = null)
+    public function addOption($text, $value, $attributes = null) : void
     {
-        if (null === $attributes) {
-            $attributes = array('value' => (string)$value);
-        } else {
+        $text = (string)$text;
+        $value = (string)$value;
+
+        if (null === $attributes)
+        {
+            $attributes = array('value' => $value);
+        }
+        else
+        {
             $attributes = self::prepareAttributes($attributes);
-            if (isset($attributes['selected'])) {
+
+            if (isset($attributes['selected']))
+            {
                 // the 'selected' attribute will be set in __toString()
                 unset($attributes['selected']);
-                if (!in_array($value, $this->values)) {
+
+                if (!in_array($value, $this->values, true)) {
                     $this->values[] = $value;
                 }
             }
-            $attributes['value'] = (string)$value;
+
+            $attributes['value'] = $value;
         }
+
         if (!isset($attributes['disabled'])) {
-            $this->possibleValues[(string)$value] = true;
+            $this->possibleValues[$value] = true;
         }
-        $this->options[] = array('text' => $text, 'attr' => $attributes);
+
+        $this->options[] = array(
+            'text' => $text,
+            'attr' => $attributes
+        );
     }
     
     /**
      * Like addOption, but prepends the option to the beginning of the stack.
      *
-     * @param string $text
-     * @param string $value
-     * @param array $attributes
+     * @param string|int|float $text
+     * @param string|int|float|NULL $value
+     * @param array|string|NULL $attributes
      */
-    public function prependOption($text, $value, $attributes = null)
+    public function prependOption($text, $value, $attributes = null) : void
     {
         // let the original method do its thing
         $this->addOption($text, $value, $attributes);
@@ -149,7 +161,7 @@ class HTML_QuickForm2_Element_Select_OptionContainer extends HTML_Common2
      * by setting a custom class via {@see self::setOptGroupClass()}.
      *
      * @param string $label 'label' attribute for optgroup tag
-     * @param string|array $attributes Additional attributes for <optgroup> tag
+     * @param string|array|NULL $attributes Additional attributes for <optgroup> tag
      *                     (either as a string or as an associative array)
      *
      * @return HTML_QuickForm2_Element_Select_Optgroup
@@ -192,7 +204,9 @@ class HTML_QuickForm2_Element_Select_OptionContainer extends HTML_Common2
         $linebreak = self::getOption('linebreak');
         $html      = '';
         $strValues = array_map('strval', $this->values);
-        foreach ($this->options as $option) {
+
+        foreach ($this->options as $option)
+        {
             if (is_array($option)) {
                 if (in_array($option['attr']['value'], $strValues, true)) {
                     $option['attr']['selected'] = 'selected';
@@ -200,20 +214,21 @@ class HTML_QuickForm2_Element_Select_OptionContainer extends HTML_Common2
                 $html .= $indent . '<option' .
                          self::getAttributesString($option['attr']) .
                          '>' . $option['text'] . '</option>' . $linebreak;
-            } elseif ($option instanceof HTML_QuickForm2_Element_Select_OptionContainer) {
+            } elseif ($option instanceof self) {
                 $option->setIndentLevel($indentLvl + 1);
                 $html .= $option->__toString();
             }
         }
+
         return $html;
     }
 
    /**
     * Returns an iterator over contained elements
     *
-    * @return   HTML_QuickForm2_Element_Select_OptionIterator
+    * @return HTML_QuickForm2_Element_Select_OptionIterator
     */
-    public function getIterator()
+    public function getIterator() : HTML_QuickForm2_Element_Select_OptionIterator
     {
         return new HTML_QuickForm2_Element_Select_OptionIterator($this->options);
     }
@@ -223,7 +238,7 @@ class HTML_QuickForm2_Element_Select_OptionContainer extends HTML_Common2
     *
     * @return   RecursiveIteratorIterator
     */
-    public function getRecursiveIterator()
+    public function getRecursiveIterator() : RecursiveIteratorIterator
     {
         return new RecursiveIteratorIterator(
             new HTML_QuickForm2_Element_Select_OptionIterator($this->options),

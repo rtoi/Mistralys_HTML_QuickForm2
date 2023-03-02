@@ -140,6 +140,49 @@ class HTML_QuickForm2_Element_SelectTest extends TestCase
         );
     }
 
+    public function testPrependOption() : void
+    {
+        $sel = new HTML_QuickForm2_Element_Select();
+        $sel->addOption('Text', 'Value');
+        $sel->prependOption('First', 'Value');
+
+        $list = $sel->getOptionContainer()->getOptions();
+        $this->assertNotEmpty($list);
+        $this->assertArrayHasKey(0, $list);
+        $this->assertArrayHasKey('text', $list[0]);
+        $this->assertSame('First', $list[0]['text']);
+    }
+
+    public function testEmptyValue() : void
+    {
+        $sel = new HTML_QuickForm2_Element_Select();
+        $sel->addOption('Text', '');
+
+        $this->assertStringContainsString('value=""', (string)$sel);
+    }
+
+    public function testCountOptions() : void
+    {
+        $sel = new HTML_QuickForm2_Element_Select();
+        $sel->addOption('Text 1', 'text1');
+        $sel->addOption('Text 2', 'text2');
+        $sel->addOption('Text 3', 'text3');
+
+        $this->assertSame(3, $sel->countOptions());
+    }
+
+    public function testCountOptionsRecursive() : void
+    {
+        $sel = new HTML_QuickForm2_Element_Select();
+
+        $group = $sel->addOptgroup('Group 1');
+        $group->addOption('Text 1', 'text1');
+        $group->addOption('Text 2', 'text2');
+        $group->addOption('Text 3', 'text3');
+
+        $this->assertSame(3, $sel->countOptions());
+    }
+
     public function testAddOptgroup()
     {
         $sel = new HTML_QuickForm2_Element_Select();

@@ -480,25 +480,34 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2 implements RuntimePrope
         return $this;
     }
 
-
    /**
     * Changes the element's frozen status
     *
-    * @param bool $freeze Whether the element should be frozen or editable. If
+    * @param bool|NULL $freeze Whether the element should be frozen or editable. If
     *                     omitted, the method will not change the frozen status,
     *                     just return its current value
     *
     * @return   bool    Old value of element's frozen status
     */
-    public function toggleFrozen($freeze = null)
+    public function toggleFrozen(?bool $freeze = null) : bool
     {
         $old = $this->frozen;
+
         if (null !== $freeze) {
-            $this->frozen = (bool)$freeze;
+            $this->frozen = $freeze;
         }
+
         return $old;
     }
 
+    /**
+     * Whether the element is currently frozen.
+     * @return bool
+     */
+    public function isFrozen() : bool
+    {
+        return $this->frozen;
+    }
 
    /**
     * Changes the element's persistent freeze behaviour
@@ -512,12 +521,14 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2 implements RuntimePrope
     *
     * @return   bool    Old value of "persistent freeze" flag
     */
-    public function persistentFreeze($persistent = null)
+    public function persistentFreeze(?bool $persistent = null) : bool
     {
         $old = $this->persistent;
+
         if (null !== $persistent) {
-            $this->persistent = (bool)$persistent;
+            $this->persistent = $persistent;
         }
+
         return $old;
     }
 

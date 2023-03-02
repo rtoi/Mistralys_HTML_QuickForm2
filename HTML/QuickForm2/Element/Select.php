@@ -105,10 +105,9 @@ class HTML_QuickForm2_Element_Select extends HTML_QuickForm2_Element
      */
     protected function initSelect() : void
     {
-
     }
 
-    public function getType()
+    public function getType() : string
     {
         return 'select';
     }

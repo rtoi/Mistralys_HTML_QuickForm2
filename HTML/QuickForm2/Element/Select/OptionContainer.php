@@ -42,7 +42,9 @@
 class HTML_QuickForm2_Element_Select_OptionContainer extends HTML_Common2
     implements IteratorAggregate, Countable
 {
-   /**
+    public const ERROR_INVALID_OPTGROUP_CLASS = 131001;
+
+    /**
     * List of options and optgroups in this container
     *
     * Options are stored as arrays (for performance reasons), optgroups as
@@ -50,20 +52,24 @@ class HTML_QuickForm2_Element_Select_OptionContainer extends HTML_Common2
     *
     * @var array
     */
-    protected $options = array();
+    protected array $options = array();
 
    /**
     * Reference to parent <select>'s values
     * @var array
     */
-    protected $values;
+    protected array $values;
 
    /**
     * Reference to parent <select>'s possible values
     * @var array
     */
-    protected $possibleValues;
+    protected array $possibleValues;
 
+    /**
+     * @var class-string
+     */
+    protected string $optGroupClass = HTML_QuickForm2_Element_Select_Optgroup::class;
 
    /**
     * Class constructor
@@ -71,10 +77,22 @@ class HTML_QuickForm2_Element_Select_OptionContainer extends HTML_Common2
     * @param array &$values         Reference to values of parent <select> element
     * @param array &$possibleValues Reference to possible values of parent <select> element
     */
-    public function __construct(&$values, &$possibleValues)
+    public function __construct(array &$values, array &$possibleValues)
     {
         $this->values         =& $values;
         $this->possibleValues =& $possibleValues;
+
+        parent::__construct();
+    }
+
+    /**
+     * @param class-string $class
+     * @return $this
+     */
+    public function setOptGroupClass(string $class) : self
+    {
+        $this->optGroupClass = $class;
+        return $this;
     }
 
    /**
@@ -125,23 +143,36 @@ class HTML_QuickForm2_Element_Select_OptionContainer extends HTML_Common2
         $last = array_pop($this->options);
         array_unshift($this->options, $last);
     }
-    
-   /**
-    * Adds a new optgroup
-    *
-    * @param string       $label      'label' attribute for optgroup tag
-    * @param string|array $attributes Additional attributes for <optgroup> tag
-    *                     (either as a string or as an associative array)
-    *
-    * @return   HTML_QuickForm2_Element_Select_Optgroup
-    */
-    public function addOptgroup($label, $attributes = null)
+
+    /**
+     * Adds a new optgroup. The optgroup class can be customized
+     * by setting a custom class via {@see self::setOptGroupClass()}.
+     *
+     * @param string $label 'label' attribute for optgroup tag
+     * @param string|array $attributes Additional attributes for <optgroup> tag
+     *                     (either as a string or as an associative array)
+     *
+     * @return HTML_QuickForm2_Element_Select_Optgroup
+     * @throws HTML_QuickForm2_InvalidArgumentException {@see self::ERROR_INVALID_OPTGROUP_CLASS}
+     */
+    public function addOptgroup(string $label, $attributes = null) : HTML_QuickForm2_Element_Select_Optgroup
     {
-        $optgroup = new HTML_QuickForm2_Element_Select_Optgroup(
+        $class = $this->optGroupClass;
+
+        $optgroup = new $class(
             $this->values, $this->possibleValues, $label, $attributes
         );
-        $this->options[] = $optgroup;
-        return $optgroup;
+
+        if($optgroup instanceof HTML_QuickForm2_Element_Select_Optgroup)
+        {
+            $this->options[] = $optgroup;
+            return $optgroup;
+        }
+
+        throw new HTML_QuickForm2_InvalidArgumentException(
+            'Invalid option group class',
+            self::ERROR_INVALID_OPTGROUP_CLASS
+        );
     }
 
    /**
@@ -149,7 +180,7 @@ class HTML_QuickForm2_Element_Select_OptionContainer extends HTML_Common2
     *
     * @return   array
     */
-    public function getOptions()
+    public function getOptions() : array
     {
         return $this->options;
     }
@@ -205,7 +236,7 @@ class HTML_QuickForm2_Element_Select_OptionContainer extends HTML_Common2
     *
     * @return   int
     */
-    public function count()
+    public function count() : int
     {
         return count($this->options);
     }
@@ -215,10 +246,10 @@ class HTML_QuickForm2_Element_Select_OptionContainer extends HTML_Common2
      * If the recursive flag is true, this will count all
      * options in optgroups as well.
      *
-     * @param string $recursive
+     * @param bool $recursive
      * @return int
      */
-    public function countOptions($recursive=true)
+    public function countOptions(bool $recursive=true) : int
     {
         $count = 0;
         
@@ -236,4 +267,3 @@ class HTML_QuickForm2_Element_Select_OptionContainer extends HTML_Common2
         return $count;
     }
 }
-?>

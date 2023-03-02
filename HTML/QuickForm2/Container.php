@@ -85,7 +85,7 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
         return $this;
     }
 
-    public function toggleFrozen($freeze = null)
+    public function toggleFrozen(?bool $freeze = null) : bool
     {
         if (null !== $freeze) {
             foreach ($this as $child) {
@@ -95,7 +95,7 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
         return parent::toggleFrozen($freeze);
     }
 
-    public function persistentFreeze($persistent = null)
+    public function persistentFreeze(?bool $persistent = null) : bool
     {
         if (null !== $persistent) {
             foreach ($this as $child) {

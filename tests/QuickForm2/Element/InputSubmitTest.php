@@ -21,9 +21,6 @@
 
 use PHPUnit\Framework\TestCase;
 
-/** Sets up includes */
-require_once dirname(dirname(__DIR__)) . '/TestHelper.php';
-
 /**
  * Unit test for HTML_QuickForm2_Element_InputSubmit class
  */
@@ -36,9 +33,10 @@ class HTML_QuickForm2_Element_InputSubmitTest extends TestCase
         );
     }
 
-    public function testCannotBeFrozen()
+    public function testCannotBeFrozen() : void
     {
         $submit = new HTML_QuickForm2_Element_InputSubmit('foo');
+        $this->assertFalse($submit->isFreezable());
         $this->assertFalse($submit->toggleFrozen(true));
         $this->assertFalse($submit->toggleFrozen());
     }
@@ -60,4 +58,3 @@ class HTML_QuickForm2_Element_InputSubmitTest extends TestCase
         $this->assertNull($foo->getValue());
     }
 }
-?>

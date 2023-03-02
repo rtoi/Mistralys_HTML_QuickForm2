@@ -21,9 +21,6 @@
 
 use PHPUnit\Framework\TestCase;
 
-/** Sets up includes */
-require_once dirname(dirname(__DIR__)) . '/TestHelper.php';
-
 /**
  * Unit test for HTML_QuickForm2_Element_Button class
  */
@@ -43,9 +40,10 @@ class HTML_QuickForm2_Element_ButtonTest extends TestCase
         $this->assertMatchesRegularExpression('!<button[^>]*>Some string</button>!', $button->__toString());
     }
 
-    public function testCannotBeFrozen()
+    public function testCannotBeFrozen() : void
     {
         $button = new HTML_QuickForm2_Element_Button('foo');
+        $this->assertFalse($button->isFreezable());
         $this->assertFalse($button->toggleFrozen(true));
         $this->assertFalse($button->toggleFrozen());
     }

@@ -21,9 +21,6 @@
 
 use PHPUnit\Framework\TestCase;
 
-/** Sets up includes */
-require_once dirname(dirname(__DIR__)) . '/TestHelper.php';
-
 /**
  * Unit test for HTML_QuickForm2_Element_Input class
  */
@@ -68,9 +65,10 @@ class HTML_QuickForm2_Element_StaticTest extends TestCase
         $this->assertEquals('ok', $baz->getValue());
     }
 
-    public function testFrozenNoEffect()
+    public function testFrozenNoEffect() : void
     {
         $obj = new HTML_QuickForm2_Element_Static();
+        $this->assertFalse($obj->isFreezable());
         $obj->setContent('<b>content</b>');
         $obj->toggleFrozen(true);
         $this->assertEquals('<b>content</b>', (string)$obj);
@@ -147,4 +145,3 @@ class HTML_QuickForm2_Element_StaticTest extends TestCase
         $this->assertEquals('not empty', $static->getContent());
     }
 }
-?>

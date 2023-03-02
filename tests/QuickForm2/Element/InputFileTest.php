@@ -62,6 +62,7 @@ class HTML_QuickForm2_Element_InputFileTest extends TestCase
     public function testCannotBeFrozen()
     {
         $upload = new HTML_QuickForm2_Element_InputFile('foo');
+        $this->assertFalse($upload->isFreezable());
         $this->assertFalse($upload->toggleFrozen(true));
         $this->assertFalse($upload->toggleFrozen());
     }

@@ -45,15 +45,7 @@ class HTML_QuickForm2_Element_InputImage extends HTML_QuickForm2_Element_Input
     */
     protected $coordinates = null;
 
-   /**
-    * Image buttons can not be frozen
-    *
-    * @param bool $freeze Whether element should be frozen or editable. This
-    *                     parameter is ignored in case of image elements
-    *
-    * @return   bool    Always returns false
-    */
-    public function toggleFrozen($freeze = null)
+    public function isFreezable(): bool
     {
         return false;
     }

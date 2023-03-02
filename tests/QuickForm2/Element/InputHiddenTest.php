@@ -29,14 +29,15 @@ require_once dirname(dirname(__DIR__)) . '/TestHelper.php';
  */
 class HTML_QuickForm2_Element_InputHiddenTest extends TestCase
 {
-    public function testCannotBeFrozen()
+    public function testCannotBeFrozen() : void
     {
         $hidden = new HTML_QuickForm2_Element_InputHidden('foo');
+        $this->assertFalse($hidden->isFreezable());
         $this->assertFalse($hidden->toggleFrozen(true));
         $this->assertFalse($hidden->toggleFrozen());
     }
 
-    public function testCannotSetError()
+    public function testCannotSetError() : void
     {
         $this->expectException(HTML_QuickForm2_InvalidArgumentException::class);
         
@@ -44,4 +45,3 @@ class HTML_QuickForm2_Element_InputHiddenTest extends TestCase
         $hidden->setError('a message');
     }
 }
-?>

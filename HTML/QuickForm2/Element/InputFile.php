@@ -104,12 +104,9 @@ class HTML_QuickForm2_Element_InputFile extends HTML_QuickForm2_Element_Input
     * file somewhere and store the file info in session. This is way outside
     * the scope of this class.
     *
-    * @param bool $freeze Whether element should be frozen or editable. This
-    *                     parameter is ignored in case of file uploads
-    *
-    * @return   bool    Always returns false
+    * @return bool
     */
-    public function toggleFrozen($freeze = null)
+    public function isFreezable(): bool
     {
         return false;
     }

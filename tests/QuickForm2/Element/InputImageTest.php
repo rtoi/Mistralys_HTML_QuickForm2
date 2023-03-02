@@ -40,9 +40,10 @@ class HTML_QuickForm2_Element_InputImageTest extends TestCase
         );
     }
 
-    public function testCannotBeFrozen()
+    public function testCannotBeFrozen() : void
     {
         $image = new HTML_QuickForm2_Element_InputImage('foo');
+        $this->assertFalse($image->isFreezable());
         $this->assertFalse($image->toggleFrozen(true));
         $this->assertFalse($image->toggleFrozen());
     }

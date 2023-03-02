@@ -58,15 +58,7 @@ class HTML_QuickForm2_Element_Button extends HTML_QuickForm2_Element
         return $this->getAttribute('type');
     }
 
-   /**
-    * Buttons can not be frozen
-    *
-    * @param bool $freeze Whether element should be frozen or editable. This
-    *                     parameter is ignored in case of buttons
-    *
-    * @return   bool    Always returns false
-    */
-    public function toggleFrozen($freeze = null)
+    public function isFreezable(): bool
     {
         return false;
     }

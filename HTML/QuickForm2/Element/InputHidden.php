@@ -39,15 +39,7 @@ class HTML_QuickForm2_Element_InputHidden extends HTML_QuickForm2_Element_Input
 {
     protected $attributes = array('type' => 'hidden');
 
-   /**
-    * Hidden elements can not be frozen
-    *
-    * @param bool $freeze Whether element should be frozen or editable. This
-    *                     parameter is ignored in case of hidden elements
-    *
-    * @return   bool    Always returns false
-    */
-    public function toggleFrozen($freeze = null)
+    public function isFreezable(): bool
     {
         return false;
     }

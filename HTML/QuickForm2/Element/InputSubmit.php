@@ -46,20 +46,12 @@ class HTML_QuickForm2_Element_InputSubmit extends HTML_QuickForm2_Element_Input
     protected $submitValue = null;
 
 
-   /**
-    * Submit buttons can not be frozen
-    *
-    * @param bool $freeze Whether element should be frozen or editable. This
-    *                     parameter is ignored in case of submit elements
-    *
-    * @return   bool    Always returns false
-    */
-    public function toggleFrozen($freeze = null)
+    public function isFreezable(): bool
     {
         return false;
     }
 
-   /**
+    /**
     * Submit's value cannot be set via this method
     *
     * @param mixed $value Element's value, this parameter is ignored

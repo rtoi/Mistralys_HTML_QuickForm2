@@ -132,11 +132,11 @@ class HTML_QuickForm2_ContainerTest extends TestCase
         try {
             $obj->removeAttribute('name');
         } catch (HTML_QuickForm2_InvalidArgumentException $e) {
-            $this->assertRegExp('/Required attribute(.*)can not be removed/', $e->getMessage());
+            $this->assertMatchesRegularExpression('/Required attribute(.*)can not be removed/', $e->getMessage());
             try {
                 $obj->removeAttribute('id');
             } catch (HTML_QuickForm2_InvalidArgumentException $e) {
-                $this->assertRegExp('/Required attribute(.*)can not be removed/', $e->getMessage());
+                $this->assertMatchesRegularExpression('/Required attribute(.*)can not be removed/', $e->getMessage());
                 return;
             }
         }
@@ -553,7 +553,7 @@ class HTML_QuickForm2_ContainerTest extends TestCase
 
         $container->addRule($ruleContainer, HTML_QuickForm2_Rule::CLIENT);
         $element->addRule($ruleElement, HTML_QuickForm2_Rule::CLIENT);
-        $this->assertRegexp(
+        $this->assertMatchesRegularExpression(
             '/elementCallback.*containerCallback/s',
             $container->render(HTML_QuickForm2_Renderer::factory('default'))
                       ->getJavascriptBuilder()->getFormJavascript()

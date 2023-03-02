@@ -212,7 +212,7 @@ class HTML_QuickForm2_Controller_Action_JumpTest
         $controller->addHandler('jump', $this->mockJump);
         $mockPage->getForm()->setAttribute('action', '/foo');
 
-        $this->assertNotRegexp('/^https:/i', $mockPage->handle('jump'));
+        $this->assertDoesNotMatchRegularExpression('/^https:/i', $mockPage->handle('jump'));
     }
 
    /**

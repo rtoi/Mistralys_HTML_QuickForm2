@@ -36,7 +36,7 @@ class HTML_QuickForm2_Rule_MimeTypeTest extends TestCase
             $mimeType = new HTML_QuickForm2_Rule_MimeType($file, 'an error');
             $this->fail('The expected HTML_QuickForm2_InvalidArgumentException was not thrown');
         } catch (HTML_QuickForm2_InvalidArgumentException $e) {
-            $this->assertRegexp('/MimeType Rule requires MIME type[(]s[)]/', $e->getMessage());
+            $this->assertMatchesRegularExpression('/MimeType Rule requires MIME type[(]s[)]/', $e->getMessage());
         }
     }
 
@@ -50,7 +50,7 @@ class HTML_QuickForm2_Rule_MimeTypeTest extends TestCase
             $mimeType = new HTML_QuickForm2_Rule_MimeType($mockEl, 'an error', 'text/plain');
             $this->fail('The expected HTML_QuickForm2_InvalidArgumentException was not thrown');
         } catch (HTML_QuickForm2_InvalidArgumentException $e) {
-            $this->assertRegexp('/MimeType Rule can only validate file upload fields/', $e->getMessage());
+            $this->assertMatchesRegularExpression('/MimeType Rule can only validate file upload fields/', $e->getMessage());
         }
     }
 

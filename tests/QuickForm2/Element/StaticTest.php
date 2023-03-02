@@ -105,14 +105,14 @@ class HTML_QuickForm2_Element_StaticTest extends TestCase
             'picture', array('alt' => 'foo', 'src' => 'pr0n.gif'),
             array('tagName' => 'img', 'forceClosingTag' => false)
         );
-        $this->assertRegexp('!<img[^<>]*alt="foo" src="pr0n.gif"[^<>]*/>!', $img->__toString());
+        $this->assertMatchesRegularExpression('!<img[^<>]*alt="foo" src="pr0n.gif"[^<>]*/>!', $img->__toString());
 
         $div = new HTML_QuickForm2_Element_Static(
             null, array('class' => 'foo'), array('tagName' => 'div')
         );
-        $this->assertRegexp('!<div[^<>]*class="foo"[^<>]*></div>!', $div->__toString());
+        $this->assertMatchesRegularExpression('!<div[^<>]*class="foo"[^<>]*></div>!', $div->__toString());
         $div->setContent('bar');
-        $this->assertRegexp('!<div[^<>]*class="foo"[^<>]*>bar</div>!', $div->__toString());
+        $this->assertMatchesRegularExpression('!<div[^<>]*class="foo"[^<>]*>bar</div>!', $div->__toString());
     }
 
     public function testDisallowedTagNames()

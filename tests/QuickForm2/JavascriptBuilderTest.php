@@ -87,14 +87,14 @@ class HTML_QuickForm2_JavascriptBuilderTest extends TestCase
         $builder = new HTML_QuickForm2_JavascriptBuilder();
 
         $libraries = $builder->getLibraries(true, true);
-        $this->assertNotRegExp('/<script[^>]*nonce/', $libraries);
+        $this->assertDoesNotMatchRegularExpression('/<script[^>]*nonce/', $libraries);
 
         HTML_Common2::setOption(
             'nonce',
             $nonce = base64_encode('HTML_QuickForm2_nonce' . microtime())
         );
         $libraries = $builder->getLibraries(true, true);
-        $this->assertRegExp('/<script[^>]*nonce="' . $nonce . '"/', $libraries);
+        $this->assertMatchesRegularExpression('/<script[^>]*nonce="' . $nonce . '"/', $libraries);
     }
 
     public function testInlineMissingLibrary()
@@ -162,14 +162,14 @@ class HTML_QuickForm2_JavascriptBuilderTest extends TestCase
 
         $script = $builder->getFormJavascript();
         $this->assertStringContainsString('Some setup code', $script);
-        $this->assertNotRegExp('/<script[^>]*nonce/', $script);
+        $this->assertDoesNotMatchRegularExpression('/<script[^>]*nonce/', $script);
 
         HTML_Common2::setOption(
             'nonce',
             $nonce = base64_encode('HTML_QuickForm2_nonce' . microtime())
         );
         $script = $builder->getFormJavascript();
-        $this->assertRegExp('/<script[^>]*nonce="' . $nonce . '"/', $script);
+        $this->assertMatchesRegularExpression('/<script[^>]*nonce="' . $nonce . '"/', $script);
     }
 }
 ?>

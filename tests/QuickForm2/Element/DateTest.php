@@ -70,7 +70,7 @@ class HTML_QuickForm2_Element_DateTest extends TestCase
         $date = new HTML_QuickForm2_Element_Date('MaxMinHour', null, array(
             'format' => 'H', 'minHour' => 22, 'maxHour' => 6
         ));
-        $this->assertRegexp(
+        $this->assertMatchesRegularExpression(
             '!<option value="22">22</option>.+<option value="6">06</option>!is',
             $date->__toString()
         );
@@ -89,7 +89,7 @@ class HTML_QuickForm2_Element_DateTest extends TestCase
         $date = new HTML_QuickForm2_Element_Date('MaxMinMonth', null, array(
             'format' => 'F', 'minMonth' => 10, 'maxMonth' => 3
         ));
-        $this->assertRegexp('!October.+March!is', $date->__toString());
+        $this->assertMatchesRegularExpression('!October.+March!is', $date->__toString());
         $this->assertStringNotContainsString('January', $date->__toString());
     }
 

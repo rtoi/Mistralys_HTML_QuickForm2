@@ -58,11 +58,11 @@ class HTML_QuickForm2_Rule_RequiredTest extends TestCase
         try {
             $rule->and_(new HTML_QuickForm2_Rule_Required($mockNode, 'element is required'));
         } catch (HTML_QuickForm2_InvalidArgumentException $e) {
-            $this->assertRegexp('/Cannot add a "required" rule/', $e->getMessage());
+            $this->assertMatchesRegularExpression('/Cannot add a "required" rule/', $e->getMessage());
             try {
                 $rule->or_(new HTML_QuickForm2_Rule_Required($mockNode, 'element is required'));
             } catch (HTML_QuickForm2_InvalidArgumentException $e) {
-                $this->assertRegexp('/Cannot add a "required" rule/', $e->getMessage());
+                $this->assertMatchesRegularExpression('/Cannot add a "required" rule/', $e->getMessage());
                 return;
             }
         }
@@ -83,7 +83,7 @@ class HTML_QuickForm2_Rule_RequiredTest extends TestCase
                     ->getMock()
             );
         } catch (HTML_QuickForm2_Exception $e) {
-            $this->assertRegexp('/Cannot add a rule to "required" rule/', $e->getMessage());
+            $this->assertMatchesRegularExpression('/Cannot add a rule to "required" rule/', $e->getMessage());
             return;
         }
         $this->fail('Expected HTML_QuickForm2_Exception was not thrown');

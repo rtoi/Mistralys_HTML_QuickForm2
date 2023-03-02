@@ -322,7 +322,7 @@ class HTML_QuickForm2_Element_GroupTest extends TestCase
 
         $group->addRule($ruleGroup, HTML_QuickForm2_Rule::CLIENT);
         $element->addRule($ruleElement, HTML_QuickForm2_Rule::CLIENT);
-        $this->assertRegexp(
+        $this->assertMatchesRegularExpression(
             '/elementCallback.*groupCallback/s',
             $group->render(HTML_QuickForm2_Renderer::factory('default'))
                   ->getJavascriptBuilder()->getFormJavascript()

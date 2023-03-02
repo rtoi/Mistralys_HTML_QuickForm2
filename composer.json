@@ -37,9 +37,9 @@
         "phpstan/phpstan": ">=1.10"
     },
     "autoload": {
-        "psr-0": {
-            "HTML_QuickForm2": ""
-        }
+        "classmap": [
+            "HTML"
+        ]
     },
     "autoload-dev": {
         "classmap": [

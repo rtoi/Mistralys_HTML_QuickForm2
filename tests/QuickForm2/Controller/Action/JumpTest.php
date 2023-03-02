@@ -159,42 +159,6 @@ class HTML_QuickForm2_Controller_Action_JumpTest
     }
 
    /**
-    * Do not add session ID to redirect URL when session.use_only_cookies is set
-    *
-    * @link http://pear.php.net/bugs/bug.php?id=3443
-    */
-    public function testBug3443()
-    {
-        if ('' != session_id()) {
-            $this->markTestSkipped('This test cannot be run with session started');
-        }
-        if (version_compare(phpversion(), '7.2', '>=')) {
-            $this->markTestSkipped('Cannot change session config in PHP 7.2+ after headers are sent');
-        }
-
-        $old = ini_set('session.use_only_cookies', false);
-        
-        if(!defined('SID')) {
-            define('SID', 'mysessionid=foobar');
-        }
-
-        $controller = new HTML_QuickForm2_Controller('testBug3443');
-        $controller->addPage(
-            $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
-                ->setMethods(array('populateForm'))
-                ->setConstructorArgs(array(new HTML_QuickForm2('dest')))
-                ->getMock()
-        );
-        $controller->addHandler('jump', $this->mockJump);
-        $this->assertStringContainsString('mysessionid=', $controller->getPage('dest')->handle('jump'));
-
-        ini_set('session.use_only_cookies', true);
-        $this->assertStringNotContainsString('mysessionid=', $controller->getPage('dest')->handle('jump'));
-
-        ini_set('session.use_only_cookies', $old);
-    }
-
-   /**
     * Uppercase 'OFF' in $_SERVER['HTTPS'] could cause a bogus redirect to https:// URL
     *
     * @link http://pear.php.net/bugs/bug.php?id=16328

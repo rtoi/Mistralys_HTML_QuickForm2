@@ -24,6 +24,9 @@
 // pear-package-only  */
 // pear-package-only require_once 'HTML/QuickForm2/Element/Select/OptionContainer.php';
 
+use HTML\QuickForm2\Traits\RuntimePropertiesInterface;
+use HTML\QuickForm2\Traits\RuntimePropertiesTrait;
+
 /**
  * Class representing an <optgroup> tag
  *
@@ -41,7 +44,10 @@
  */
 class HTML_QuickForm2_Element_Select_Optgroup
     extends HTML_QuickForm2_Element_Select_OptionContainer
+    implements RuntimePropertiesInterface
 {
+    use RuntimePropertiesTrait;
+
    /**
     * Class constructor
     *
@@ -62,12 +68,12 @@ class HTML_QuickForm2_Element_Select_Optgroup
     * Retrieves the optgroup's label.
     * @return string
     */
-    public function getLabel()
+    public function getLabel() : string
     {
         return $this->attributes['label'];
     }
 
-    public function __toString()
+    public function __toString() : string
     {
         $indent    = $this->getIndent();
         $linebreak = self::getOption('linebreak');
@@ -75,4 +81,3 @@ class HTML_QuickForm2_Element_Select_Optgroup
                $linebreak . parent::__toString() . $indent . '</optgroup>' . $linebreak;
     }
 }
-?>

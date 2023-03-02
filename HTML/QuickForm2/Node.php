@@ -27,6 +27,9 @@
 // By default, we generate element IDs with numeric indexes appended even for
 // elements with unique names. If you want IDs to be equal to the element
 // names by default, set this configuration option to false.
+use HTML\QuickForm2\Traits\RuntimePropertiesInterface;
+use HTML\QuickForm2\Traits\RuntimePropertiesTrait;
+
 if (null === HTML_Common2::getOption('id_force_append_index')) {
     HTML_Common2::setOption('id_force_append_index', true);
 }
@@ -67,8 +70,10 @@ if (null === HTML_Common2::getOption('language')) {
  * @version  Release: @package_version@
  * @link     https://pear.php.net/package/HTML_QuickForm2
  */
-abstract class HTML_QuickForm2_Node extends HTML_Common2
+abstract class HTML_QuickForm2_Node extends HTML_Common2 implements RuntimePropertiesInterface
 {
+    use RuntimePropertiesTrait;
+
     const ERROR_CANNOT_REMOVE_NAME_ATTRIBUTE = 38601;
     
     const ERROR_CANNOT_REMOVE_ID_ATTRIBUTE = 38602;
@@ -944,49 +949,6 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2
         }
         
         return false;
-    }
-    
-   /**
-    * Stores custom runtime properties for the element.
-    *
-    * @var array
-    * @see setRuntimeProperty()
-    * @see getRuntimeProperty()
-    */
-    protected $runtimeProperties = array();
-    
-   /**
-    * Sets a runtime property for the node, which can be retrieved
-    * again anytime. It is not used in the element in any way, but
-    * can be helpful attaching related data to an element.
-    *
-    * @param string $name
-    * @param mixed $value
-    * @return HTML_QuickForm2_Node
-    */
-    public function setRuntimeProperty($name, $value)
-    {
-        $this->runtimeProperties[$name] = $value;
-        
-        return $this;
-    }
-    
-   /**
-    * Retrieves the value of a previously set runtime property.
-    * If it does not exist, returns the default value which can
-    * optionally be specified as well.
-    *
-    * @param string $name
-    * @param mixed $default
-    * @return mixed
-    */
-    public function getRuntimeProperty($name, $default = null)
-    {
-        if (isset($this->runtimeProperties[$name])) {
-            return $this->runtimeProperties[$name];
-        }
-        
-        return $default;
     }
     
    /**

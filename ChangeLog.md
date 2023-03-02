@@ -1,7 +1,9 @@
 # Changes in HTML_QuickForm2
 
 ## v2.1.5
-- Elements: Added `isFrozen()`.
+- Nodes: Added `isFrozen()`.
+- Nodes: Added `isFreezable()`.
+- Nodes: Logic of `toggleFrozen()` now handled using `isFreezable()` without overrides.
 
 ## v2.1.4
 - Fixed autoloading; Switched to a classmap instead of PSR-0.

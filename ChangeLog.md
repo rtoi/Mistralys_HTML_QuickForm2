@@ -1,6 +1,6 @@
 # Changes in HTML_QuickForm2
 
-## v2.1.2
+## v2.1.3
 - Select Element: Added support for selects with a custom OptGroup class.
 - Select Element: Added runtime properties.
 - Select Element: Added `initSelect()` to avoid overriding the constructor 

@@ -481,7 +481,8 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2 implements RuntimePrope
     }
 
    /**
-    * Changes the element's frozen status
+    * Changes the element's frozen status, if it is freezable
+    * (see {@see self::isFreezable()}).
     *
     * @param bool|NULL $freeze Whether the element should be frozen or editable. If
     *                     omitted, the method will not change the frozen status,
@@ -493,11 +494,16 @@ abstract class HTML_QuickForm2_Node extends HTML_Common2 implements RuntimePrope
     {
         $old = $this->frozen;
 
-        if (null !== $freeze) {
+        if (null !== $freeze && $this->isFreezable()) {
             $this->frozen = $freeze;
         }
 
         return $old;
+    }
+
+    public function isFreezable() : bool
+    {
+        return true;
     }
 
     /**

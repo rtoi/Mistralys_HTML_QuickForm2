@@ -1,5 +1,8 @@
 # Changes in HTML_QuickForm2
 
+## v2.1.4
+- Fixed autoloading; Switched to a classmap instead of PSR-0.
+
 ## v2.1.3
 - Select Element: Added support for selects with a custom OptGroup class.
 - Select Element: Added runtime properties.

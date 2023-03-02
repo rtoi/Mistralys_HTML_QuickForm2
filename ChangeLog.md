@@ -1,10 +1,12 @@
 # Changes in HTML_QuickForm2
 
-## v2.1.2 
-- Added support for select items with a custom OptGroup class.
-- Tests now run correctly in PHPUnit versions up to 9.6.
-- Added `initSelect()` to the select element class to avoid overriding 
-  the constructor when extending the class.
+## v2.1.2
+- Select Element: Added support for selects with a custom OptGroup class.
+- Select Element: Added runtime properties.
+- Select Element: Added `initSelect()` to avoid overriding the constructor 
+  when extending the class.
+- Traits: Added the `RuntimePropertiesTrait` and matching interface.
+- Unit Tests: Tests now run correctly in PHPUnit versions up to 9.6.
 
 ## v2.1.2 
 - This release integrates all essential changesets from the main branch.

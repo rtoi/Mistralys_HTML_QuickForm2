@@ -4,6 +4,7 @@
 - Nodes: Added `isFrozen()`.
 - Nodes: Added `isFreezable()`.
 - Nodes: Logic of `toggleFrozen()` now handled using `isFreezable()` without overrides.
+- Select Element: `addOption()` now accepts numeric and `null` values.
 
 ## v2.1.4
 - Fixed autoloading; Switched to a classmap instead of PSR-0.

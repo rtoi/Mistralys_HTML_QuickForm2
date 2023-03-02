@@ -94,6 +94,18 @@ class HTML_QuickForm2_Element_Select extends HTML_QuickForm2_Element
         unset($data['options']);
         parent::__construct($name, $attributes, $data);
         $this->loadOptions($options);
+        $this->initSelect();
+    }
+
+    /**
+     * Overridable by extending classes to avoid having
+     * to redeclare the constructor.
+     *
+     * @return void
+     */
+    protected function initSelect() : void
+    {
+
     }
 
     public function getType()

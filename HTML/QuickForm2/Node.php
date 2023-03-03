@@ -30,13 +30,13 @@
 use HTML\QuickForm2\Traits\RuntimePropertiesInterface;
 use HTML\QuickForm2\Traits\RuntimePropertiesTrait;
 
-if (null === HTML_Common2::getOption('id_force_append_index')) {
-    HTML_Common2::setOption('id_force_append_index', true);
+if (null === BaseHTMLElement::getOption('id_force_append_index')) {
+    BaseHTMLElement::setOption('id_force_append_index', true);
 }
 
 // set the default language for various elements' messages
-if (null === HTML_Common2::getOption('language')) {
-    HTML_Common2::setOption('language', 'en');
+if (null === BaseHTMLElement::getOption('language')) {
+    BaseHTMLElement::setOption('language', 'en');
 }
 
 // pear-package-only /**
@@ -70,7 +70,7 @@ if (null === HTML_Common2::getOption('language')) {
  * @version  Release: @package_version@
  * @link     https://pear.php.net/package/HTML_QuickForm2
  */
-abstract class HTML_QuickForm2_Node extends HTML_Common2 implements RuntimePropertiesInterface
+abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePropertiesInterface
 {
     use RuntimePropertiesTrait;
 

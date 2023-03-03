@@ -21,34 +21,6 @@
 
 use PHPUnit\Framework\TestCase;
 
-/** Sets up includes */
-require_once dirname(__DIR__) . '/TestHelper.php';
-
-/**
- * A non-abstract subclass of Element
- *
- * Element class is still abstract, we should "implement" the remaining methods.
- * Note the default implementation of setValue() / getValue(), needed to test
- * setting the value from Data Source
- */
-class HTML_QuickForm2_ElementImpl extends HTML_QuickForm2_Element
-{
-    protected $value;
-
-    public function getType() { return 'concrete'; }
-    public function __toString() { return ''; }
-
-    public function getRawValue()
-    {
-        return $this->value;
-    }
-
-    public function setValue($value)
-    {
-        $this->value = $value;
-    }
-}
-
 /**
  * Unit test for HTML_QuickForm2_Element class,
  */
@@ -68,7 +40,7 @@ class HTML_QuickForm2_ElementTest extends TestCase
 
     protected function tearDown() : void
     {
-        HTML_Common2::setOption('id_force_append_index', true);
+        BaseHTMLElement::setOption('id_force_append_index', true);
     }
 
     public function testCanSetName()
@@ -214,7 +186,7 @@ class HTML_QuickForm2_ElementTest extends TestCase
 
     public function testGenerateIdsWithoutIndexes()
     {
-        HTML_Common2::setOption('id_force_append_index', false);
+        BaseHTMLElement::setOption('id_force_append_index', false);
 
         $name = 'finno_' . mt_rand(0, 1000);
         $el = new HTML_QuickForm2_ElementImpl($name);
@@ -226,7 +198,7 @@ class HTML_QuickForm2_ElementTest extends TestCase
 
     public function testUniqueIdsGeneratedWithoutIndexes()
     {
-        HTML_Common2::setOption('id_force_append_index', false);
+        BaseHTMLElement::setOption('id_force_append_index', false);
 
         $this->testUniqueIdsGenerated();
     }

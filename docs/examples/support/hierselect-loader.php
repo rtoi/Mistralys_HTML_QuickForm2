@@ -64,7 +64,7 @@ class OptionLoader
           2 => 'HTML_BBCodeParser',
           3 => 'HTML_CSS',
           4 => 'HTML_Common',
-          5 => 'HTML_Common2',
+          5 => 'BaseHTMLElement',
           6 => 'HTML_Crypt',
           7 => 'HTML_Entities',
           8 => 'HTML_Form',

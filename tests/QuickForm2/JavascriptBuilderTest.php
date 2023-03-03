@@ -31,7 +31,7 @@ class HTML_QuickForm2_JavascriptBuilderTest extends TestCase
 {
     protected function setUp() : void
     {
-        HTML_Common2::setOption('nonce', null);
+        BaseHTMLElement::setOption('nonce', null);
     }
 
     public function testEncode()
@@ -89,7 +89,7 @@ class HTML_QuickForm2_JavascriptBuilderTest extends TestCase
         $libraries = $builder->getLibraries(true, true);
         $this->assertDoesNotMatchRegularExpression('/<script[^>]*nonce/', $libraries);
 
-        HTML_Common2::setOption(
+        BaseHTMLElement::setOption(
             'nonce',
             $nonce = base64_encode('HTML_QuickForm2_nonce' . microtime())
         );
@@ -164,7 +164,7 @@ class HTML_QuickForm2_JavascriptBuilderTest extends TestCase
         $this->assertStringContainsString('Some setup code', $script);
         $this->assertDoesNotMatchRegularExpression('/<script[^>]*nonce/', $script);
 
-        HTML_Common2::setOption(
+        BaseHTMLElement::setOption(
             'nonce',
             $nonce = base64_encode('HTML_QuickForm2_nonce' . microtime())
         );

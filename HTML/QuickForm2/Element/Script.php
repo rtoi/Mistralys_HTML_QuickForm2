@@ -55,9 +55,9 @@ class HTML_QuickForm2_Element_Script extends HTML_QuickForm2_Element_Static
     */
     public function __toString()
     {
-        $cr         = HTML_Common2::getOption('linebreak');
+        $cr         = BaseHTMLElement::getOption('linebreak');
         $attributes = ' type="text/javascript"';
-        if (null !== ($nonce = HTML_Common2::getOption('nonce'))) {
+        if (null !== ($nonce = BaseHTMLElement::getOption('nonce'))) {
             $attributes .= ' nonce="' . $nonce . '"';
         }
         return "<script{$attributes}>{$cr}//<![CDATA[{$cr}"

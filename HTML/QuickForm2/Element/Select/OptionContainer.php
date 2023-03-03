@@ -36,7 +36,7 @@ declare(strict_types=1);
  * @link     https://pear.php.net/package/HTML_QuickForm2
  * @internal
  */
-class HTML_QuickForm2_Element_Select_OptionContainer extends HTML_Common2
+class HTML_QuickForm2_Element_Select_OptionContainer extends BaseHTMLElement
     implements IteratorAggregate, Countable
 {
     public const ERROR_INVALID_OPTGROUP_CLASS = 131001;

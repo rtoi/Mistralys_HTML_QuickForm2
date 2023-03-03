@@ -182,7 +182,7 @@ class HTML_QuickForm2_Element_Static extends HTML_QuickForm2_Element
         $prefix = $this->getIndent();
         if ($comment = $this->getComment()) {
             $prefix .= '<!-- ' . $comment . ' -->'
-                       . HTML_Common2::getOption('linebreak') . $this->getIndent();
+                       . BaseHTMLElement::getOption('linebreak') . $this->getIndent();
         }
 
         if (!$this->tagName) {

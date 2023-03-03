@@ -29,7 +29,7 @@ require_once dirname(dirname(__DIR__)) . '/TestHelper.php';
 /**
  * Let's just make parseAttributes() public rather than copy and paste regex
  */
-abstract class HTML_QuickForm2_Element_SelectTest_AttributeParser extends HTML_Common2
+abstract class HTML_QuickForm2_Element_SelectTest_AttributeParser extends BaseHTMLElement
 {
     public static function parseAttributes($attrString)
     {

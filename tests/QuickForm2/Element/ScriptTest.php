@@ -31,7 +31,7 @@ class HTML_QuickForm2_Element_ScriptTest extends TestCase
 {
     protected function setUp() : void
     {
-        HTML_Common2::setOption('nonce', null);
+        BaseHTMLElement::setOption('nonce', null);
     }
 
     public function testInlineScriptNonce()
@@ -42,7 +42,7 @@ class HTML_QuickForm2_Element_ScriptTest extends TestCase
         $script = $element->__toString();
         $this->assertDoesNotMatchRegularExpression('/<script[^>]*nonce/', $script);
 
-        HTML_Common2::setOption(
+        BaseHTMLElement::setOption(
             'nonce',
             $nonce = base64_encode('HTML_QuickForm2_nonce' . microtime())
         );

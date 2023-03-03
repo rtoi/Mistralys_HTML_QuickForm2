@@ -1,10 +1,13 @@
 # Changes in HTML_QuickForm2
 
 ## v2.1.5
-- Nodes: Added `isFrozen()`.
-- Nodes: Added `isFreezable()`.
-- Nodes: Logic of `toggleFrozen()` now handled using `isFreezable()` without overrides.
+- Elements: Added `isFrozen()`.
+- Elements: Added `isFreezable()`.
+- Elements: Logic of `toggleFrozen()` now handled using `isFreezable()` without overrides.
+- Elements: Added `appendComment()`.
+- Elements: `setComment()` now accepts a wider range of values, including `Stringable`.
 - Select Element: `addOption()` now accepts numeric and `null` values.
+- Composer: Removed the `HTML_Common2` dependency (code integrated for future changes).
 
 ## v2.1.4
 - Fixed autoloading; Switched to a classmap instead of PSR-0.

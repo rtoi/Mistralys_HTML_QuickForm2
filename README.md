@@ -14,21 +14,23 @@ See https://packagist.org/packages/mistralys/html_quickform2
 ## Additions
 
   * Elements: set/getRuntimeProperty() method to store data at runtime
-  * Default array datasource: setValues() method 
-  * Textarea element: setRows() / setColumns() methods
-  * Elements: makeOptional() method to remove any required rules
-  * Elements: hasErrors() method to check if an element has errors after validation
-  * Elements: getRules() method to retrieve all rules added to the element
-  * Elements: hasRules() method to check if an element has any rules 
-  * Rules: The callback rule now has a method getCallback() to retrieve the configured callback
-  * Text-based elements: addFilterTrim() method 
-  * Select element: prependOption() method to insert an element at the top
-  * Select optgroups: getLabel() method
-  * Select element and optgroups: countOptions() method with recursive capability
+  * Default array datasource: `setValues()` method 
+  * Textarea element: `setRows()` / `setColumns()` methods
+  * Elements: `makeOptional()` method to remove any required rules
+  * Elements: `hasErrors()` method to check if an element has errors after validation
+  * Elements: `getRules()` method to retrieve all rules added to the element
+  * Elements: `hasRules()` method to check if an element has any rules 
+  * Elements: `appendComment()` method to append text to an existing comment.
+  * Rules: The callback rule now has a method `getCallback()` to retrieve the configured callback.
+  * Text-based elements: `addFilterTrim()` method. 
+  * Select element: `prependOption()` method to insert an element at the top.
+  * Select element: Support for selects with a custom OptGroup class.
+  * Select element: OptGroups `getLabel()` method.
+  * Select element: `countOptions()` method with recursive capability.
 
 ## Performance tweaks
 
-  * Container getElementById() method 
+  * Container `getElementById()` method 
   * Auto-generated element IDs
 
 ## Element ID generation

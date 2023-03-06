@@ -1,5 +1,12 @@
 # Changes in HTML_QuickForm2
 
+## v2.1.6
+- Select Element: Added `getSelectedOption()`.
+- Select Element: Added `getOptionByValue()`.
+- Select Element: Options are now `SelectOption` objects with array access.
+- Select Element: Adding options now returns a `SelectOption` instance.
+- Code Quality: PHPStan analysis now clean up to level 5.
+
 ## v2.1.5
 - Elements: Added `isFrozen()`.
 - Elements: Added `isFreezable()`.

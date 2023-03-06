@@ -21,6 +21,8 @@
 
 declare(strict_types=1);
 
+use HTML\QuickForm2\Element\Select\SelectOption;
+
 /**
  * Class representing a <select> element
  *
@@ -132,10 +134,15 @@ class HTML_QuickForm2_Element_Select extends HTML_QuickForm2_Element
         if (null === ($value = $this->getValue())) {
             return '&nbsp;';
         }
+
         $valueHash = is_array($value)? array_flip($value): array($value => true);
         $options   = array();
-        foreach ($this->optionContainer->getRecursiveIterator() as $child) {
-            if (is_array($child) && isset($valueHash[$child['attr']['value']])
+
+        foreach ($this->optionContainer->getRecursiveIterator() as $child)
+        {
+            if (
+                $child instanceof SelectOption
+                && isset($valueHash[$child['attr']['value']])
                 && empty($child['attr']['disabled'])
             ) {
                 $options[] = $child['text'];
@@ -286,20 +293,22 @@ class HTML_QuickForm2_Element_Select extends HTML_QuickForm2_Element
     }
 
 
-   /**
-    * Adds a new option
-    *
-    * Please note that if you pass 'selected' attribute in the $attributes
-    * parameter then this option's value will be added to <select>'s values.
-    *
-    * @param string|int|float $text Option text
-    * @param string|int|float|NULL $value 'value' attribute for <option> tag
-    * @param string|array|NULL $attributes Additional attributes for <option> tag
-    *                     (either as a string or as an associative array)
-    */
-    public function addOption($text, $value, $attributes = null) : void
+    /**
+     * Adds a new option
+     *
+     * Please note that if you pass 'selected' attribute in the $attributes
+     * parameter then this option's value will be added to <select>'s values.
+     *
+     * @param string|int|float|Stringable $text Option text
+     * @param string|int|float|Stringable|NULL $value 'value' attribute for <option> tag
+     * @param string|array<string,string>|NULL $attributes Additional attributes for <option> tag
+     *                     (either as a string or as an associative array)
+     * @return SelectOption
+     * @throws HTML_QuickForm2_InvalidArgumentException {@see HTML_QuickForm2_Element_Select_OptionContainer::ERROR_INVALID_OPTION_CLASS}
+     */
+    public function addOption($text, $value, $attributes = null) : SelectOption
     {
-        $this->optionContainer->addOption($text, $value, $attributes);
+        return $this->optionContainer->addOption($text, $value, $attributes);
     }
 
     /**
@@ -308,10 +317,12 @@ class HTML_QuickForm2_Element_Select extends HTML_QuickForm2_Element
      * @param string|int|float $text
      * @param string|int|float|NULL $value
      * @param string|array|NULL $attributes
+     * @return SelectOption
+     * @throws HTML_QuickForm2_InvalidArgumentException {@see HTML_QuickForm2_Element_Select_OptionContainer::ERROR_INVALID_OPTION_CLASS}
      */
-    public function prependOption($text, $value, $attributes = null) : void
+    public function prependOption($text, $value, $attributes = null) : SelectOption
     {
-        $this->optionContainer->prependOption($text, $value, $attributes);
+        return $this->optionContainer->prependOption($text, $value, $attributes);
     }
 
     /**
@@ -327,6 +338,16 @@ class HTML_QuickForm2_Element_Select extends HTML_QuickForm2_Element
     public function addOptgroup(string $label, $attributes = null) : HTML_QuickForm2_Element_Select_Optgroup
     {
         return $this->optionContainer->addOptgroup($label, $attributes);
+    }
+
+    public function getSelectedOption() : ?SelectOption
+    {
+        return $this->getOptionByValue((string)$this->getValue());
+    }
+
+    public function getOptionByValue(string $value) : ?SelectOption
+    {
+        return $this->optionContainer->getOptionByValue($value);
     }
 
     protected function updateValue() : void

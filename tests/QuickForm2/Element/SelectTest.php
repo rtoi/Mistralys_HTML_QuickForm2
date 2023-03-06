@@ -19,6 +19,7 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use HTML\QuickForm2\Element\Select\SelectOption;
 use PHPUnit\Framework\TestCase;
 use QuickFormTests\CustomClasses\TestCustomOptGroup;
 use QuickFormTests\CustomClasses\TestSelectWithCustomGroups;
@@ -433,5 +434,39 @@ class HTML_QuickForm2_Element_SelectTest extends TestCase
             TestCustomOptGroup::class,
             $select->addOptgroup('Label')
         );
+    }
+
+    public function testGetOptionByValue() : void
+    {
+        $select = new HTML_QuickForm2_Element_Select('foo');
+        $select->addOption('Label', 'value');
+
+        $option = $select->getOptionByValue('value');
+
+        $this->assertInstanceOf(SelectOption::class, $option);
+        $this->assertSame('value', $option['attr']['value']);
+    }
+
+    public function testGetSelectedOption() : void
+    {
+        $select = new HTML_QuickForm2_Element_Select('foo');
+        $select->addOption('Label', 'value');
+
+        $this->assertNull($select->getSelectedOption());
+
+        $select->setValue('value');
+
+        $this->assertNotNull($select->getSelectedOption());
+    }
+
+    public function testGetSelectedOptionWithEmptyValue() : void
+    {
+        $select = new HTML_QuickForm2_Element_Select('foo');
+        $select->addOption('Please select...', '');
+        $select->addOption('Label', 'value');
+
+        $select->setValue('');
+
+        $this->assertNotNull($select->getSelectedOption());
     }
 }

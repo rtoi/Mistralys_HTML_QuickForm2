@@ -21,6 +21,8 @@
 
 declare(strict_types=1);
 
+use HTML\QuickForm2\Element\Select\SelectOption;
+
 /**
  * Collection of <option>s and <optgroup>s
  *
@@ -40,6 +42,7 @@ class HTML_QuickForm2_Element_Select_OptionContainer extends BaseHTMLElement
     implements IteratorAggregate, Countable
 {
     public const ERROR_INVALID_OPTGROUP_CLASS = 131001;
+    public const ERROR_INVALID_OPTION_CLASS = 131002;
 
     /**
     * List of options and optgroups in this container
@@ -68,6 +71,11 @@ class HTML_QuickForm2_Element_Select_OptionContainer extends BaseHTMLElement
      */
     protected string $optGroupClass = HTML_QuickForm2_Element_Select_Optgroup::class;
 
+    /**
+     * @var class-string
+     */
+    protected string $optionClass = SelectOption::class;
+
    /**
     * Class constructor
     *
@@ -83,6 +91,9 @@ class HTML_QuickForm2_Element_Select_OptionContainer extends BaseHTMLElement
     }
 
     /**
+     * Sets a custom class to use for any option groups added
+     * to the element. Must extend {@see HTML_QuickForm2_Element_Select_Optgroup}.
+     *
      * @param class-string $class
      * @return $this
      */
@@ -92,18 +103,33 @@ class HTML_QuickForm2_Element_Select_OptionContainer extends BaseHTMLElement
         return $this;
     }
 
-   /**
-    * Adds a new option
-    *
-    * Please note that if you pass 'selected' attribute in the $attributes
-    * parameter then this option's value will be added to <select>'s values.
-    *
-    * @param string|int|float $text Option text
-    * @param string|int|float|NULL $value 'value' attribute for <option> tag
-    * @param string|array|NULL $attributes Additional attributes for <option> tag
-    *                     (either as a string or as an associative array)
-    */
-    public function addOption($text, $value, $attributes = null) : void
+    /**
+     * Sets a custom class to use for any options added to the
+     * element. Must extend {@see SelectOption}.
+     *
+     * @param class-string $class
+     * @return $this
+     */
+    public function setOptionClass(string $class) : self
+    {
+        $this->optionClass = $class;
+        return $this;
+    }
+
+    /**
+     * Adds a new option
+     *
+     * Please note that if you pass 'selected' attribute in the $attributes
+     * parameter then this option's value will be added to <select>'s values.
+     *
+     * @param string|int|float|Stringable $text Option text
+     * @param string|int|float|Stringable|NULL $value 'value' attribute for <option> tag
+     * @param string|array<string,string>|NULL $attributes Additional attributes for <option> tag
+     *                     (either as a string or as an associative array)
+     * @return SelectOption
+     * @throws HTML_QuickForm2_InvalidArgumentException {@see self::ERROR_INVALID_OPTION_CLASS}
+     */
+    public function addOption($text, $value, $attributes = null) : SelectOption
     {
         $text = (string)$text;
         $value = (string)$value;
@@ -133,27 +159,41 @@ class HTML_QuickForm2_Element_Select_OptionContainer extends BaseHTMLElement
             $this->possibleValues[$value] = true;
         }
 
-        $this->options[] = array(
-            'text' => $text,
-            'attr' => $attributes
-        );
+        $class = $this->optionClass;
+        $option = new $class($text, $attributes);
+
+        if(!$option instanceof SelectOption)
+        {
+            throw new HTML_QuickForm2_InvalidArgumentException(
+                'Invalid custom select option class.',
+                self::ERROR_INVALID_OPTION_CLASS
+            );
+        }
+
+        $this->options[] = $option;
+
+        return $option;
     }
-    
+
     /**
      * Like addOption, but prepends the option to the beginning of the stack.
      *
      * @param string|int|float $text
      * @param string|int|float|NULL $value
-     * @param array|string|NULL $attributes
+     * @param array<string,string>|string|NULL $attributes
+     * @return SelectOption
+     * @throws HTML_QuickForm2_InvalidArgumentException {@see self::ERROR_INVALID_OPTION_CLASS}
      */
-    public function prependOption($text, $value, $attributes = null) : void
+    public function prependOption($text, $value, $attributes = null) : SelectOption
     {
         // let the original method do its thing
-        $this->addOption($text, $value, $attributes);
+        $option = $this->addOption($text, $value, $attributes);
         
         // and now remove it from the end and prepend it to the collection
         $last = array_pop($this->options);
         array_unshift($this->options, $last);
+
+        return $option;
     }
 
     /**
@@ -190,14 +230,14 @@ class HTML_QuickForm2_Element_Select_OptionContainer extends BaseHTMLElement
    /**
     * Returns an array of contained options
     *
-    * @return   array
+    * @return array<int,SelectOption|HTML_QuickForm2_Element_Select_Optgroup>
     */
     public function getOptions() : array
     {
         return $this->options;
     }
 
-    public function __toString()
+    public function __toString() : string
     {
         $indentLvl = $this->getIndentLevel();
         $indent    = $this->getIndent() . self::getOption('indent');
@@ -207,14 +247,13 @@ class HTML_QuickForm2_Element_Select_OptionContainer extends BaseHTMLElement
 
         foreach ($this->options as $option)
         {
-            if (is_array($option)) {
-                if (in_array($option['attr']['value'], $strValues, true)) {
-                    $option['attr']['selected'] = 'selected';
-                }
-                $html .= $indent . '<option' .
-                         self::getAttributesString($option['attr']) .
-                         '>' . $option['text'] . '</option>' . $linebreak;
-            } elseif ($option instanceof self) {
+            if ($option instanceof SelectOption)
+            {
+                $selected = in_array($option->getValue(), $strValues, true);
+                $html .= $indent.$option->render($selected).$linebreak;
+            }
+            elseif ($option instanceof self)
+            {
                 $option->setIndentLevel($indentLvl + 1);
                 $html .= $option->__toString();
             }
@@ -280,5 +319,32 @@ class HTML_QuickForm2_Element_Select_OptionContainer extends BaseHTMLElement
         }
         
         return $count;
+    }
+
+    /**
+     * Attempts to retrieve an option definition by the option value.
+     * @param string $value
+     * @return SelectOption|null
+     */
+    public function getOptionByValue(string $value) : ?SelectOption
+    {
+        foreach($this->options as $option)
+        {
+            if($option instanceof HTML_QuickForm2_Element_Select_Optgroup)
+            {
+                $selected = $option->getOptionByValue($value);
+                if($selected !== null) {
+                    return $selected;
+                }
+
+                continue;
+            }
+
+            if($option['attr']['value'] === $value) {
+                return $option;
+            }
+        }
+
+        return null;
     }
 }

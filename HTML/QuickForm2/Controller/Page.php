@@ -51,13 +51,13 @@ abstract class HTML_QuickForm2_Controller_Page
     * The form wrapped by this page
     * @var  HTML_QuickForm2
     */
-    protected $form = null;
+    protected HTML_QuickForm2 $form;
 
    /**
     * Controller this page belongs to
-    * @var  HTML_QuickForm2_Controller
+    * @var  HTML_QuickForm2_Controller|NULL
     */
-    protected $controller = null;
+    protected ?HTML_QuickForm2_Controller $controller = null;
 
    /**
     * Contains the mapping of action names to handlers (objects implementing HTML_QuickForm2_Controller_Action)
@@ -80,7 +80,7 @@ abstract class HTML_QuickForm2_Controller_Page
     *
     * @return   HTML_QuickForm2
     */
-    public function getForm()
+    public function getForm() : HTML_QuickForm2
     {
         return $this->form;
     }
@@ -98,9 +98,9 @@ abstract class HTML_QuickForm2_Controller_Page
    /**
     * Returns the controller owning this page
     *
-    * @return   HTML_QuickForm2_Controller
+    * @return   HTML_QuickForm2_Controller|NULL
     */
-    public function getController()
+    public function getController() : ?HTML_QuickForm2_Controller
     {
         return $this->controller;
     }
@@ -161,35 +161,40 @@ abstract class HTML_QuickForm2_Controller_Page
     * @return HTML_QuickForm2_Controller_DefaultAction Returns the image input used for default action
     */
     public function setDefaultAction(
-        $actionName,
-        $imageSrc = 'data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=='
-    ) {
-        // pear-package-only require_once 'HTML/QuickForm2/Controller/DefaultAction.php';
+        string $actionName,
+        string $imageSrc = 'data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=='
+    ) : HTML_QuickForm2_Controller_DefaultAction
+    {
+        $image = $this->form->getElementById('qf:default-action');
 
-        if (0 == count($this->form)) {
-            $image = $this->form->appendChild(
-                new HTML_QuickForm2_Controller_DefaultAction(
-                    $this->getButtonName($actionName), array('src' => $imageSrc)
-                )
-            );
-
-        // replace the existing DefaultAction
-        } elseif ($image = $this->form->getElementById('qf:default-action')) {
+        if ($image instanceof HTML_QuickForm2_Controller_DefaultAction)
+        {
             $image->setName($this->getButtonName($actionName))
                 ->setAttribute('src', $imageSrc);
-
+        }
         // Inject the element to the first position to improve chances that
         // it ends up on top in the output
-        } else {
+        elseif (count($this->form) === 0)
+        {
+            $image = new HTML_QuickForm2_Controller_DefaultAction(
+                $this->getButtonName($actionName), array('src' => $imageSrc)
+            );
+
+            $this->form->appendChild($image);
+        }
+        // replace the existing DefaultAction
+        else
+        {
             $it = $this->form->getIterator();
             $it->rewind();
-            $image = $this->form->insertBefore(
-                new HTML_QuickForm2_Controller_DefaultAction(
-                    $this->getButtonName($actionName), array('src' => $imageSrc)
-                ),
-                $it->current()
+
+            $image = new HTML_QuickForm2_Controller_DefaultAction(
+                $this->getButtonName($actionName), array('src' => $imageSrc)
             );
+
+            $this->form->insertBefore($image, $it->current());
         }
+
         return $image;
     }
 

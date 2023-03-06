@@ -143,8 +143,8 @@ class HTML_QuickForm2_Rule_Length extends HTML_QuickForm2_Rule
     *
     * As usual, global configuration overrides local one.
     *
-    * @param int|array $localConfig  Local length limits
-    * @param int|array $globalConfig Global length limits, usually provided to
+    * @param int|array|NULL $localConfig  Local length limits
+    * @param int|array|NULL $globalConfig Global length limits, usually provided to
     *                                {@link HTML_QuickForm2_Factory::registerRule()}
     *
     * @return   int|array   Merged length limits
@@ -153,10 +153,8 @@ class HTML_QuickForm2_Rule_Length extends HTML_QuickForm2_Rule
     {
         if (!isset($globalConfig)) {
             $length = $localConfig;
-
         } elseif (!is_array($globalConfig)) {
             $length = $globalConfig;
-
         } else {
             $length = self::mergeMinMaxLength(array(), $globalConfig);
             if (isset($localConfig)) {

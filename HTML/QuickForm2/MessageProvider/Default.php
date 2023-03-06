@@ -41,9 +41,9 @@ class HTML_QuickForm2_MessageProvider_Default implements HTML_QuickForm2_Message
 {
    /**
     * Singleton instance
-    * @var HTML_QuickForm2_MessageProvider_Default
+    * @var HTML_QuickForm2_MessageProvider_Default|NULL
     */
-    protected static $instance;
+    protected static ?HTML_QuickForm2_MessageProvider_Default $instance = null;
 
    /**
     * Localized messages for (currently) Date and InputFile Elements
@@ -53,7 +53,7 @@ class HTML_QuickForm2_MessageProvider_Default implements HTML_QuickForm2_Message
     *
     * @var array
     */
-    protected $messages = array(
+    protected array $messages = array(
         'file' => array(
             'en' => array(
                 UPLOAD_ERR_INI_SIZE   => 'The uploaded file exceeds size permitted by PHP configuration (%d bytes)',
@@ -321,9 +321,9 @@ class HTML_QuickForm2_MessageProvider_Default implements HTML_QuickForm2_Message
     *
     * @return HTML_QuickForm2_MessageProvider_Default
     */
-    public static function getInstance()
+    public static function getInstance() : HTML_QuickForm2_MessageProvider_Default
     {
-        if (empty(self::$instance)) {
+        if (!isset(self::$instance)) {
             self::$instance = new self();
         }
         return self::$instance;

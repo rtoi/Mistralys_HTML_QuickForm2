@@ -39,9 +39,9 @@ class HTML_QuickForm2_Container_Fieldset extends HTML_QuickForm2_Container
 {
    /**
     * Fieldsets don't have a 'name' attribute, so we only handle 'id'
-    * @var array
+    * @var string[]
     */
-    protected $watchedAttributes = array('id');
+    protected array $watchedAttributes = array('id');
 
     public function getType()
     {
@@ -49,7 +49,10 @@ class HTML_QuickForm2_Container_Fieldset extends HTML_QuickForm2_Container
     }
 
 
-    public function getName()
+    /**
+     * @return null
+     */
+    public function getName() : ?string
     {
         return null;
     }

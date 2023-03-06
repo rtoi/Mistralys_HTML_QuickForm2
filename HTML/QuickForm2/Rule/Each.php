@@ -51,15 +51,19 @@
  */
 class HTML_QuickForm2_Rule_Each extends HTML_QuickForm2_Rule
 {
-   /**
+    public const ERROR_INVALID_CONTAINER_INSTANCE = 131601;
+
+    /**
     * Validates the owner's children using the template Rule
     *
     * @return   bool    Whether all children are valid according to a template Rule
     */
-    protected function validateOwner()
+    protected function validateOwner() : bool
     {
         $rule = clone $this->getConfig();
-        foreach ($this->owner->getRecursiveIterator(RecursiveIteratorIterator::LEAVES_ONLY) as $child) {
+        $iterator = $this->getContainer()->getRecursiveIterator(RecursiveIteratorIterator::LEAVES_ONLY);
+
+        foreach ($iterator as $child) {
             try {
                 $rule->setOwner($child);
                 if (!$rule->validateOwner()) {
@@ -75,11 +79,13 @@ class HTML_QuickForm2_Rule_Each extends HTML_QuickForm2_Rule
     *
     * @return   string    Javascript function calling all children's callbacks
     */
-    protected function getJavascriptCallback()
+    protected function getJavascriptCallback() : string
     {
         $rule      = clone $this->getConfig();
         $callbacks = array();
-        foreach ($this->owner->getRecursiveIterator(RecursiveIteratorIterator::LEAVES_ONLY) as $child) {
+        $iterator = $this->getContainer()->getRecursiveIterator(RecursiveIteratorIterator::LEAVES_ONLY);
+
+        foreach ($iterator as $child) {
             try {
                 $rule->setOwner($child);
                 $callbacks[] = $rule->getJavascriptCallback();
@@ -133,5 +139,16 @@ class HTML_QuickForm2_Rule_Each extends HTML_QuickForm2_Rule
         }
         parent::setOwner($owner);
     }
+
+    public function getContainer() : HTML_QuickForm2_Container
+    {
+        if($this->owner instanceof HTML_QuickForm2_Container) {
+            return $this->owner;
+        }
+
+        throw new HTML_QuickForm2_InvalidArgumentException(
+            'The rule has no owner, or it is not a container.',
+            self::ERROR_INVALID_CONTAINER_INSTANCE
+        );
+    }
 }
-?>

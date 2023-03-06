@@ -43,11 +43,10 @@ class HTML_QuickForm2_Element_InputText extends HTML_QuickForm2_Element_Input
     
    /**
     * Adds a filter for the "trim" function.
-    * @return HTML_QuickForm2_Element_InputText
+    * @return $this
     */
-    public function addFilterTrim()
+    public function addFilterTrim() : self
     {
         return $this->addFilter('trim');
     }
 }
-?>

@@ -54,7 +54,7 @@
  * @license    https://opensource.org/licenses/bsd-license.php New BSD License
  * @version    Release: @package_version@
  * @link       https://pear.php.net/package/HTML_Common2
- * @implements ArrayAccess<string, string>
+ * @implements ArrayAccess<string|NULL,string>
  */
 abstract class BaseHTMLElement implements ArrayAccess
 {
@@ -200,7 +200,7 @@ abstract class BaseHTMLElement implements ArrayAccess
      * @var string[]
      * @see onAttributeChange()
      */
-    protected $watchedAttributes = [];
+    protected array $watchedAttributes = [];
 
     /**
      * Called if trying to change an attribute with name in $watchedAttributes
@@ -300,7 +300,7 @@ abstract class BaseHTMLElement implements ArrayAccess
      *
      * @return string Attribute string
      */
-    protected static function getAttributesString(array $attributes)
+    public static function getAttributesString(array $attributes) : string
     {
         $str     = '';
         $charset = self::getOption(self::OPTION_CHARSET);
@@ -642,7 +642,7 @@ abstract class BaseHTMLElement implements ArrayAccess
     /**
      * Assigns a value to the specified offset (i.e. attribute name)
      *
-     * @param string $offset The offset to assign the value to
+     * @param string|NULL $offset The offset to assign the value to
      * @param string $value  The value to set
      *
      * @return void

@@ -272,20 +272,23 @@ abstract class HTML_QuickForm2_Rule
     *
     * @return   boolean     Whether the element is valid
     */
-    public function validate()
+    public function validate() : bool
     {
         $globalValid = false;
         $localValid  = $this->validateOwner();
         foreach ($this->chainedRules as $item) {
             /* @var $multiplier HTML_QuickForm2_Rule */
             foreach ($item as $multiplier) {
-                if (!($localValid = $localValid && $multiplier->validate())) {
+                if (!($localValid = ($localValid && $multiplier->validate()))) {
                     break;
                 }
             }
-            if ($globalValid = $globalValid || $localValid) {
+
+            if($localValid) {
+                $globalValid = true;
                 break;
             }
+
             $localValid = true;
         }
         $globalValid or $this->setOwnerError();

@@ -310,52 +310,63 @@ class HTML_QuickForm2_JavascriptBuilder
     *
     * @return   string  value as Javascript literal
     */
-    public static function encode($value)
+    public static function encode($value) : string
     {
         if (is_null($value)) {
             return 'null';
+        }
 
-        } elseif (is_bool($value)) {
+        if (is_bool($value)) {
             return $value? 'true': 'false';
+        }
 
-        } elseif (is_int($value) || is_float($value)) {
-            return $value;
+        if (is_int($value) || is_float($value)) {
+            return (string)$value;
+        }
 
-        } elseif (is_string($value)) {
-            return '"' . strtr($value, array(
-                                "\r" => '\r',
-                                "\n" => '\n',
-                                "\t" => '\t',
-                                "'"  => "\\'",
-                                '"'  => '\"',
-                                '\\' => '\\\\'
-                              )) . '"';
+        if (is_string($value)) {
+            return
+                '"' .
+                strtr($value, array(
+                    "\r" => '\r',
+                    "\n" => '\n',
+                    "\t" => '\t',
+                    "'"  => "\\'",
+                    '"'  => '\"',
+                    '\\' => '\\\\'
+                )) .
+                '"';
+        }
 
-        } elseif (is_array($value)) {
+        if (is_array($value))
+        {
             // associative array, encoding as JS object
             if (count($value) && array_keys($value) !== range(0, count($value) - 1)) {
                 return '{' . implode(',', array_map(
-                    array('HTML_QuickForm2_JavascriptBuilder', 'encodeNameValue'),
+                    array(__CLASS__, 'encodeNameValue'),
                     array_keys($value), array_values($value)
                 )) . '}';
             }
+
             return '[' . implode(',', array_map(
-                array('HTML_QuickForm2_JavascriptBuilder', 'encode'),
+                array(__CLASS__, 'encode'),
                 $value
             )) . ']';
+        }
 
-        } elseif (is_object($value)) {
+        if (is_object($value))
+        {
             $vars = get_object_vars($value);
+
             return '{' . implode(',', array_map(
-                array('HTML_QuickForm2_JavascriptBuilder', 'encodeNameValue'),
+                array(__CLASS__, 'encodeNameValue'),
                 array_keys($vars), array_values($vars)
             )) . '}';
-
-        } else {
-            throw new HTML_QuickForm2_InvalidArgumentException(
-                'Cannot encode ' . gettype($value) . ' as Javascript value'
-            );
         }
+
+        throw new HTML_QuickForm2_InvalidArgumentException(
+            'Cannot encode ' . gettype($value) . ' as Javascript value'
+        );
     }
 
 
@@ -372,4 +383,3 @@ class HTML_QuickForm2_JavascriptBuilder
         return self::encode((string)$name) . ':' . self::encode($value);
     }
 }
-?>

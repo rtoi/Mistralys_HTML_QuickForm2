@@ -192,20 +192,19 @@ class HTML_QuickForm2_Renderer_Stub extends HTML_QuickForm2_Renderer
     /**
      * Starts rendering a group, called before processing grouped elements
      *
-     * @param HTML_QuickForm2_Node $group Group being rendered
+     * @param HTML_QuickForm2_Container_Group $group Group being rendered
      */
-    public function startGroup(HTML_QuickForm2_Node $group)
+    public function startGroup(HTML_QuickForm2_Container_Group $group) : void
     {
     }
 
     /**
      * Finishes rendering a group, called after processing grouped elements
      *
-     * @param HTML_QuickForm2_Node $group Group being rendered
+     * @param HTML_QuickForm2_Container_Group $group Group being rendered
      */
-    public function finishGroup(HTML_QuickForm2_Node $group)
+    public function finishGroup(HTML_QuickForm2_Container_Group $group) : void
     {
         $this->renderElement($group);
     }
 }
-?>

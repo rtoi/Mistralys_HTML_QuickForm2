@@ -45,15 +45,15 @@ class HTML_QuickForm2_Element_InputFile extends HTML_QuickForm2_Element_Input
 
    /**
     * Information on uploaded file, from submit data source
-    * @var array
+    * @var array|NULL
     */
-    protected $value = null;
+    protected ?array $value = null;
 
     protected $attributes = array('type' => 'file');
 
    /**
     * Message provider for upload error messages
-    * @var  callback|HTML_QuickForm2_MessageProvider
+    * @var  callable|HTML_QuickForm2_MessageProvider
     */
     protected $messageProvider;
 
@@ -250,14 +250,14 @@ class HTML_QuickForm2_Element_InputFile extends HTML_QuickForm2_Element_Input
         return parent::validate();
     }
 
-    public function addFilter($callback, array $options = array())
+    public function addFilter($callback, array $options = array()) : self
     {
         throw new HTML_QuickForm2_Exception(
             'InputFile elements do not support filters'
         );
     }
 
-    public function addRecursiveFilter($callback, array $options = array())
+    public function addRecursiveFilter($callback, array $options = array()) : self
     {
         throw new HTML_QuickForm2_Exception(
             'InputFile elements do not support filters'

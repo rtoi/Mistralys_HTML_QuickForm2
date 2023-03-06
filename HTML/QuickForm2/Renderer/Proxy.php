@@ -205,7 +205,7 @@ class HTML_QuickForm2_Renderer_Proxy extends HTML_QuickForm2_Renderer
         return $this->_renderer->getOption($name);
     }
 
-    public function getJavascriptBuilder()
+    public function getJavascriptBuilder() : HTML_QuickForm2_JavascriptBuilder
     {
         return $this->_renderer->getJavascriptBuilder();
     }
@@ -252,12 +252,12 @@ class HTML_QuickForm2_Renderer_Proxy extends HTML_QuickForm2_Renderer
         $this->_renderer->finishContainer($container);
     }
 
-    public function startGroup(HTML_QuickForm2_Node $group)
+    public function startGroup(HTML_QuickForm2_Container_Group $group) : void
     {
         $this->_renderer->startGroup($group);
     }
 
-    public function finishGroup(HTML_QuickForm2_Node $group)
+    public function finishGroup(HTML_QuickForm2_Container_Group $group) : void
     {
         $this->_renderer->finishGroup($group);
     }
@@ -274,4 +274,3 @@ class HTML_QuickForm2_Renderer_Proxy extends HTML_QuickForm2_Renderer
         );
     }
 }
-?>

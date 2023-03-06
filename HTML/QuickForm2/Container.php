@@ -71,7 +71,7 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
     * Array of elements contained in this container
     * @var HTML_QuickForm2_Node[]
     */
-    protected $elements = array();
+    protected array $elements = array();
 
     /**
      * The event handler instance for the form

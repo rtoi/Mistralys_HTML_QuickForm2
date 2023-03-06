@@ -41,9 +41,9 @@ class HTML_QuickForm2_Element_InputImage extends HTML_QuickForm2_Element_Input
 
    /**
     * Coordinates of user click within the image, array contains keys 'x' and 'y'
-    * @var  array
+    * @var  array|NULL
     */
-    protected $coordinates = null;
+    protected ?array $coordinates = null;
 
     public function isFreezable(): bool
     {

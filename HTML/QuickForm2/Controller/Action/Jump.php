@@ -192,7 +192,7 @@ class HTML_QuickForm2_Controller_Action_Jump
             $controllerId = '&' . HTML_QuickForm2_Controller::KEY_ID . '=' .
                             $page->getController()->getId();
         }
-        if (!defined('SID') || '' == SID || ini_get('session.use_only_cookies')) {
+        if (!defined('SID') || '' === SID || ini_get('session.use_only_cookies') !== '') {
             $sessionId = '';
         } else {
             $sessionId = '&' . SID;

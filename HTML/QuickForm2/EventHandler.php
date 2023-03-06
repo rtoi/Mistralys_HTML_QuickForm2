@@ -55,7 +55,9 @@
  */
 class HTML_QuickForm2_EventHandler
 {
-   /**
+    public const ERROR_UNEXPECTED_EVENT_INSTANCE_TYPE = 131501;
+
+    /**
     * @var HTML_QuickForm2
     */
     protected $form;
@@ -172,13 +174,23 @@ class HTML_QuickForm2_EventHandler
     * @param HTML_QuickForm2_Node $node
     * @return HTML_QuickForm2_Event_NodeAdded
     */
-    public function triggerNodeAdded(HTML_QuickForm2_Node $node)
+    public function triggerNodeAdded(HTML_QuickForm2_Node $node) : HTML_QuickForm2_Event_NodeAdded
     {
-        return $this->triggerEvent(
+        $event = $this->triggerEvent(
             'NodeAdded', 
             array(
                 'node' => $node
             )
+        );
+
+        if($event instanceof HTML_QuickForm2_Event_NodeAdded)
+        {
+            return $event;
+        }
+
+        throw new HTML_QuickForm2_Exception(
+            'Unexpected event class type instance created.',
+            self::ERROR_UNEXPECTED_EVENT_INSTANCE_TYPE
         );
     }
     

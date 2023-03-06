@@ -161,13 +161,20 @@ class HTML_QuickForm2_Container_Repeat extends HTML_QuickForm2_Container
      * @return HTML_QuickForm2_Container prototype
      * @throws HTML_QuickForm2_NotFoundException if prototype was not set
      */
-    protected function getPrototype()
+    protected function getPrototype() : HTML_QuickForm2_Container
     {
         if (empty($this->elements[0])) {
             throw new HTML_QuickForm2_NotFoundException(
                 "Repeat element needs a prototype, use setPrototype()"
             );
         }
+
+        if(!$this->elements[0] instanceof HTML_QuickForm2_Container) {
+            throw new HTML_QuickForm2_NotFoundException(
+                "Prototype is not a container element, use setPrototype()"
+            );
+        }
+
         return $this->elements[0];
     }
 
@@ -477,17 +484,17 @@ class HTML_QuickForm2_Container_Repeat extends HTML_QuickForm2_Container
         /* @var HTML_QuickForm2_Node $child */
         foreach ($this->getRecursiveIterator() as $child) {
             if (false !== strpos($backup[$key]['name'], self::INDEX_KEY)) {
-                $child->setName(str_replace(self::INDEX_KEY, $index, $backup[$key]['name']));
+                $child->setName(str_replace(self::INDEX_KEY, (string)$index, $backup[$key]['name']));
             }
             if ($child instanceof HTML_QuickForm2_Element_InputCheckable
                 && false !== strpos($backup[$key]['valueAttr'], self::INDEX_KEY)
             ) {
                 $child->setAttribute(
-                    'value', str_replace(self::INDEX_KEY, $index, $backup[$key]['valueAttr'])
+                    'value', str_replace(self::INDEX_KEY, (string)$index, $backup[$key]['valueAttr'])
                 );
             }
             if (array_key_exists('id', $backup[$key])) {
-                $child->setId(str_replace(self::INDEX_KEY, $index, $backup[$key]['id']));
+                $child->setId(str_replace(self::INDEX_KEY, (string)$index, $backup[$key]['id']));
             }
             if (array_key_exists('error', $backup[$key])) {
                 $child->setError();
@@ -589,7 +596,7 @@ class HTML_QuickForm2_Container_Repeat extends HTML_QuickForm2_Container
      *
      * @param HTML_QuickForm2_JavascriptBuilder $builder
      */
-    protected function renderClientRules(HTML_QuickForm2_JavascriptBuilder $builder)
+    protected function renderClientRules(HTML_QuickForm2_JavascriptBuilder $builder) : void
     {
         if ($this->toggleFrozen()) {
             return;

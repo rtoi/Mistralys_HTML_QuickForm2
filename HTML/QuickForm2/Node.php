@@ -85,8 +85,9 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
     const ERROR_ADDRULE_INVALID_ARGUMENTS = 38605;
     
     const ERROR_FILTER_INVALID_CALLBACK = 38606;
-    
-   /**
+    public const ERROR_INVALID_CALLBACK_RULE_INSTANCE = 38607;
+
+    /**
     * Array containing the parts of element ids
     * @var array
     */
@@ -106,9 +107,9 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
 
    /**
     * Element containing current
-    * @var HTML_QuickForm2_Container
+    * @var HTML_QuickForm2_Container|NULL
     */
-    protected $container = null;
+    protected ?HTML_QuickForm2_Container $container = null;
 
    /**
     * Contains options and data used for the element creation
@@ -118,9 +119,9 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
 
    /**
     * Validation rules for element
-    * @var  array
+    * @var  array<int,array{0:HTML_QuickForm2_Rule,1:int}>
     */
-    protected $rules = array();
+    protected array $rules = array();
 
    /**
     * An array of callback filters for element
@@ -146,9 +147,9 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
 
    /**
     * Changing 'name' and 'id' attributes requires some special handling
-    * @var array
+    * @var string[]
     */
-    protected $watchedAttributes = array('id', 'name');
+    protected array $watchedAttributes = array('id', 'name');
 
    /**
     * Intercepts setting 'name' and 'id' attributes
@@ -359,11 +360,11 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
    /**
     * Returns the element's name
     *
-    * @return   string
+    * @return string|NULL
     */
-    public function getName()
+    public function getName() : ?string
     {
-        return isset($this->attributes['name'])? $this->attributes['name']: null;
+        return $this->attributes['name'] ?? null;
     }
 
 
@@ -380,11 +381,11 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
    /**
     * Returns the element's id
     *
-    * @return   string
+    * @return   string|NULL
     */
-    public function getId()
+    public function getId() : ?string
     {
-        return isset($this->attributes['id'])? $this->attributes['id']: null;
+        return $this->attributes['id'] ?? null;
     }
 
 
@@ -456,14 +457,11 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
    /**
     * Returns the element's label(s)
     *
-    * @return   string|array
+    * @return   string|array|NULL
     */
     public function getLabel()
     {
-        if (isset($this->data['label'])) {
-            return $this->data['label'];
-        }
-        return null;
+        return $this->data['label'] ?? null;
     }
 
 
@@ -606,7 +604,7 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
     *
     * @return   HTML_QuickForm2_Container|null
     */
-    public function getContainer()
+    public function getContainer() : ?HTML_QuickForm2_Container
     {
         return $this->container;
     }
@@ -668,27 +666,32 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
         $this->rules[] = array($rule, $runAt);
         return $rule;
     }
-    
-   /**
-    * Adds a callback rule to the node.
-    * 
-    * @param string $message
-    * @param Callable $callback
-    * @param array|null $arguments
-    * @param int $runAt
-    * @return HTML_QuickForm2_Rule_Callback
-    */
-    public function addRuleCallback($message, $callback, $arguments=null, $runAt = HTML_QuickForm2_Rule::SERVER)
+
+    /**
+     * Adds a callback rule to the node.
+     *
+     * @param string|int|float|Stringable|NULL $message
+     * @param callable $callback
+     * @param mixed|null $arguments
+     * @return HTML_QuickForm2_Rule_Callback
+     *
+     * @throws HTML_QuickForm2_InvalidArgumentException
+     * @throws HTML_QuickForm2_NotFoundException
+     */
+    public function addRuleCallback($message, callable $callback, $arguments=null) : HTML_QuickForm2_Rule_Callback
     {
-        /* @var $rule HTML_QuickForm2_Rule_Callback */
-        
-        $rule = $this->addRule('callback', $message, $callback);
-        
-        if($arguments !== null) {
+        $rule = $this->addRule('callback', (string)$message, $callback);
+
+        if($rule instanceof HTML_QuickForm2_Rule_Callback)
+        {
             $rule->setArguments($arguments);
+            return $rule;
         }
         
-        return $rule;
+        throw new HTML_QuickForm2_InvalidArgumentException(
+            'Invalid rule created.',
+            self::ERROR_INVALID_CALLBACK_RULE_INSTANCE
+        );
     }
 
    /**
@@ -758,7 +761,7 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
     *
     * @param HTML_QuickForm2_JavascriptBuilder $builder
     */
-    protected function renderClientRules(HTML_QuickForm2_JavascriptBuilder $builder)
+    protected function renderClientRules(HTML_QuickForm2_JavascriptBuilder $builder) : void
     {
         if ($this->toggleFrozen()) {
             return;
@@ -766,7 +769,7 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
         $onblur = HTML_QuickForm2_Rule::ONBLUR_CLIENT ^ HTML_QuickForm2_Rule::CLIENT;
         foreach ($this->rules as $rule) {
             if ($rule[1] & HTML_QuickForm2_Rule::CLIENT) {
-                $builder->addRule($rule[0], $rule[1] & $onblur);
+                $builder->addRule($rule[0], ($rule[1] & $onblur) !== 0);
             }
         }
     }
@@ -839,14 +842,14 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
      * when getValue() is called.
      *
      *  @param callable $callback The PHP callback used for filter
-     * @param array    $options  Optional arguments for the callback. The first parameter
+     * @param array     $options  Optional arguments for the callback. The first parameter
      *                       will always be the element value, then these options will
      *                       be used as parameters for the callback.
      *
-     * @return HTML_QuickForm2_Node    The element
+     * @return $this
      * @throws   HTML_QuickForm2_InvalidArgumentException    If callback is incorrect
      */
-    public function addFilter($callback, array $options = array())
+    public function addFilter($callback, array $options = array()) : self
     {
         $callbackName = null;
         if (!is_callable($callback, false, $callbackName)) {
@@ -876,10 +879,10 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
      *                       will always be the element value, then these options will
      *                       be used as parameters for the callback.
      *
-     * @return HTML_QuickForm2_Node    The element
+     * @return $this
      * @throws   HTML_QuickForm2_InvalidArgumentException    If callback is incorrect
      */
-    public function addRecursiveFilter($callback, array $options = array())
+    public function addRecursiveFilter($callback, array $options = array()) : self
     {
         $callbackName = null;
         if (!is_callable($callback, false, $callbackName)) {

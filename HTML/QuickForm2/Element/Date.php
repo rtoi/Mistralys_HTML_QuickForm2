@@ -74,7 +74,7 @@ class HTML_QuickForm2_Element_Date extends HTML_QuickForm2_Container_Group
 
    /**
     * Message provider for option texts
-    * @var  callback|HTML_QuickForm2_MessageProvider
+    * @var  callable|HTML_QuickForm2_MessageProvider
     */
     protected $messageProvider;
 
@@ -347,43 +347,53 @@ class HTML_QuickForm2_Element_Date extends HTML_QuickForm2_Container_Group
     public function setValue($value)
     {
         if (empty($value)) {
-            $value = array();
-
-        } elseif (is_array($value)) {
-            $value = array_map(array($this, 'trimLeadingZeros'), $value);
-
-        } elseif (is_scalar($value)
-            || $value instanceof DateTime
-            || interface_exists('DateTimeInterface') && $value instanceof DateTimeInterface
-        ) {
-            if (!is_scalar($value)) {
-                $arr = explode('-', $value->format('w-j-n-Y-g-G-i-s-a-A-W'));
-            } else {
-                if (!is_numeric($value)) {
-                    $value = strtotime($value);
-                }
-                // might be a unix epoch, then we fill all possible values
-                $arr = explode('-', date('w-j-n-Y-g-G-i-s-a-A-W', (int)$value));
-            }
-            $value = array(
-                'D' => $arr[0],
-                'l' => $arr[0],
-                'd' => $arr[1],
-                'M' => $arr[2],
-                'm' => $arr[2],
-                'F' => $arr[2],
-                'Y' => $arr[3],
-                'y' => $arr[3],
-                'h' => $arr[4],
-                'g' => $arr[4],
-                'H' => $arr[5],
-                'i' => $this->trimLeadingZeros($arr[6]),
-                's' => $this->trimLeadingZeros($arr[7]),
-                'a' => $arr[8],
-                'A' => $arr[9],
-                'W' => $this->trimLeadingZeros($arr[10])
-            );
+            return parent::setValue(array());
         }
+
+        if (is_array($value)) {
+            return parent::setValue(array_map(array($this, 'trimLeadingZeros'), $value));
+        }
+
+        if($value instanceof DateTimeInterface)
+        {
+            $arr = explode('-', $value->format('w-j-n-Y-g-G-i-s-a-A-W'));
+        }
+        else if(is_scalar($value))
+        {
+            if (!is_numeric($value))
+            {
+                $timestamp = strtotime($value);
+
+                if($timestamp === false)
+                {
+                    return parent::setValue(array());
+                }
+
+                $value = $timestamp;
+            }
+                // might be a unix epoch, then we fill all possible values
+            $arr = explode('-', date('w-j-n-Y-g-G-i-s-a-A-W', (int)$value));
+        }
+
+        $value = array(
+            'D' => $arr[0],
+            'l' => $arr[0],
+            'd' => $arr[1],
+            'M' => $arr[2],
+            'm' => $arr[2],
+            'F' => $arr[2],
+            'Y' => $arr[3],
+            'y' => $arr[3],
+            'h' => $arr[4],
+            'g' => $arr[4],
+            'H' => $arr[5],
+            'i' => $this->trimLeadingZeros($arr[6]),
+            's' => $this->trimLeadingZeros($arr[7]),
+            'a' => $arr[8],
+            'A' => $arr[9],
+            'W' => $this->trimLeadingZeros($arr[10])
+        );
+
         return parent::setValue($value);
     }
 

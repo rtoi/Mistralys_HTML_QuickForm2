@@ -348,7 +348,7 @@ class HTML_QuickForm2_Renderer_Array extends HTML_QuickForm2_Renderer
         array_pop($this->containers);
     }
 
-    public function startGroup(HTML_QuickForm2_Node $group)
+    public function startGroup(HTML_QuickForm2_Container_Group $group) : void
     {
         $ary = $this->buildCommonContainerFields($group) + array(
             'required' => $group->isRequired(),
@@ -368,10 +368,9 @@ class HTML_QuickForm2_Renderer_Array extends HTML_QuickForm2_Renderer
         $this->pushContainer($ary);
     }
 
-    public function finishGroup(HTML_QuickForm2_Node $group)
+    public function finishGroup(HTML_QuickForm2_Container_Group $group) : void
     {
         $this->finishContainer($group);
     }
     /**#@-*/
 }
-?>

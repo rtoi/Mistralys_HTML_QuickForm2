@@ -67,7 +67,7 @@ class HTML_QuickForm2_Element_Hierselect extends HTML_QuickForm2_Container_Group
     * PHP callback function for getting additional options
     *
     * @see  loadOptions()
-    * @var  callback
+    * @var  callable|NULL
     */
     protected $callback = null;
 
@@ -75,9 +75,9 @@ class HTML_QuickForm2_Element_Hierselect extends HTML_QuickForm2_Container_Group
     * Javascript callback function for getting additional options
     *
     * @see  loadOptions()
-    * @var  string
+    * @var  string|NULL
     */
-    protected $jsCallback = null;
+    protected ?string $jsCallback = null;
 
    /**
     * Number of select elements in hierselect
@@ -159,24 +159,17 @@ class HTML_QuickForm2_Element_Hierselect extends HTML_QuickForm2_Container_Group
      * </code>
      *
      * @param array    $options    Array of options defining each element
-     * @param callback $callback   Callback function to load additional options.
+     * @param callable|NULL $callback   Callback function to load additional options.
      *      It will receive an array of keys and should return associative
      *      array ('option value' => 'option text')
-     * @param string   $jsCallback Javascript function to load additional options
+     * @param string|NULL   $jsCallback Javascript function to load additional options
      *      (presumably via some sort of AJAX request). It will receive an
      *      array of keys and should return {'values': [...], 'texts': [...]}
      *
      * @return  $this
-     * @throws  HTML_QuickForm2_InvalidArgumentException
      */
-    public function loadOptions(array $options, $callback = null, $jsCallback = null)
+    public function loadOptions(array $options, ?callable $callback = null, ?string $jsCallback = null) : self
     {
-        if (null !== $callback && !is_callable($callback, false, $callbackName)) {
-            throw new HTML_QuickForm2_InvalidArgumentException(
-                'Hierselect expects a valid callback for loading options, \'' .
-                $callbackName . '\' was given'
-            );
-        }
         $this->options    = $options;
         $this->callback   = $callback;
         $this->jsCallback = $jsCallback;
@@ -191,14 +184,23 @@ class HTML_QuickForm2_Element_Hierselect extends HTML_QuickForm2_Container_Group
    /**
     * Populates hierselect with Select elements
     */
-    private function _createSelects()
+    private function _createSelects() : void
     {
-        for ($i = count($this); $i < $this->size; $i++) {
+        for ($i = count($this); $i < $this->size; $i++)
+        {
             $data = $this->getData();
+
             unset($data['label']);
-            $this->appendChild(new HTML_QuickForm2_Element_Select(
-                $i, array('id' => self::generateId($this->getName() . "[{$i}]")) + $this->getAttributes(), $data
-            ));
+
+            $this->appendChild(
+                new HTML_QuickForm2_Element_Select(
+                    (string)$i,
+                    array(
+                        'id' => self::generateId($this->getName() . "[{$i}]")
+                    ) + $this->getAttributes(),
+                    $data
+                )
+            );
         }
     }
 
@@ -391,8 +393,10 @@ class HTML_QuickForm2_Element_Hierselect extends HTML_QuickForm2_Container_Group
         $jsBuilder = $renderer->getJavascriptBuilder();
         $jsBuilder->addLibrary('hierselect', 'quickform-hierselect.js');
         $jsBuilder->addElementJavascript($this->_generateInitScript());
-        $script = $this->appendChild(new HTML_QuickForm2_Element_Script('script'))
-                       ->setContent($this->_generateInlineScript());
+
+        $script = new HTML_QuickForm2_Element_Script('script');
+        $script->setContent($this->_generateInlineScript());
+        $this->appendChild($script);
 
         parent::render($renderer);
 

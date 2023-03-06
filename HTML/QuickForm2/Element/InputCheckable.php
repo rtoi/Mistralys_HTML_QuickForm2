@@ -66,11 +66,13 @@ class HTML_QuickForm2_Element_InputCheckable extends HTML_QuickForm2_Element_Inp
         $this->watchedAttributes[] = 'value';
     }
 
-    protected function onAttributeChange($name, $value = null)
+    protected function onAttributeChange($name, $value = null) : void
     {
-        if ('value' != $name) {
-            return parent::onAttributeChange($name, $value);
+        if ('value' !== $name) {
+            parent::onAttributeChange($name, $value);
+            return;
         }
+
         if (null === $value) {
             unset($this->attributes['value'], $this->attributes['checked']);
         } else {

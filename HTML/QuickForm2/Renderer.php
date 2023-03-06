@@ -84,9 +84,9 @@ abstract class HTML_QuickForm2_Renderer
 
    /**
     * Javascript builder object
-    * @var  HTML_QuickForm2_JavascriptBuilder
+    * @var  HTML_QuickForm2_JavascriptBuilder|NULL
     */
-    protected $jsBuilder;
+    protected ?HTML_QuickForm2_JavascriptBuilder $jsBuilder = null;
 
    /**
     * Creates a new renderer instance of the given type
@@ -277,10 +277,9 @@ abstract class HTML_QuickForm2_Renderer
     *
     * @return   HTML_QuickForm2_JavascriptBuilder
     */
-    public function getJavascriptBuilder()
+    public function getJavascriptBuilder() : HTML_QuickForm2_JavascriptBuilder
     {
-        if (empty($this->jsBuilder)) {
-            // pear-package-only HTML_QuickForm2_Loader::loadClass('HTML_QuickForm2_JavascriptBuilder');
+        if (!isset($this->jsBuilder)) {
             $this->jsBuilder = new HTML_QuickForm2_JavascriptBuilder();
         }
         return $this->jsBuilder;
@@ -357,14 +356,14 @@ abstract class HTML_QuickForm2_Renderer
    /**
     * Starts rendering a group, called before processing grouped elements
     *
-    * @param HTML_QuickForm2_Node $group Group being rendered
+    * @param HTML_QuickForm2_Container_Group $group Group being rendered
     */
-    abstract public function startGroup(HTML_QuickForm2_Node $group);
+    abstract public function startGroup(HTML_QuickForm2_Container_Group $group) : void;
 
    /**
     * Finishes rendering a group, called after processing grouped elements
     *
-    * @param HTML_QuickForm2_Node $group Group being rendered
+    * @param HTML_QuickForm2_Container_Group $group Group being rendered
     */
-    abstract public function finishGroup(HTML_QuickForm2_Node $group);
+    abstract public function finishGroup(HTML_QuickForm2_Container_Group $group) : void;
 }

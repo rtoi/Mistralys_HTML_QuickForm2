@@ -87,15 +87,15 @@ class HTML_QuickForm2_Controller implements IteratorAggregate
 
    /**
     * The action extracted from HTTP request: array('page', 'action')
-    * @var array
+    * @var array|NULL
     */
-    protected $actionName = null;
+    protected ?array $actionName = null;
 
    /**
     * A wrapper around session variable used to store form data
-    * @var HTML_QuickForm2_Controller_SessionContainer
+    * @var HTML_QuickForm2_Controller_SessionContainer|NULL
     */
-    protected $sessionContainer = null;
+    protected ?HTML_QuickForm2_Controller_SessionContainer $sessionContainer = null;
 
    /**
     * Finds a controller name in $_REQUEST
@@ -188,9 +188,9 @@ class HTML_QuickForm2_Controller implements IteratorAggregate
     *
     * @return   HTML_QuickForm2_Controller_SessionContainer
     */
-    public function getSessionContainer()
+    public function getSessionContainer() : HTML_QuickForm2_Controller_SessionContainer
     {
-        if (empty($this->sessionContainer)) {
+        if (!isset($this->sessionContainer)) {
             $this->sessionContainer = new HTML_QuickForm2_Controller_SessionContainer($this);
         }
         return $this->sessionContainer;
@@ -208,13 +208,14 @@ class HTML_QuickForm2_Controller implements IteratorAggregate
    /**
     * Extracts the name of the page and the action to perform with it from HTTP request data
     *
-    * @return array     first element is page name, second is action name
+    * @return array|NULL     first element is page name, second is action name
     */
-    public function getActionName()
+    public function getActionName() : ?array
     {
         if (is_array($this->actionName)) {
             return $this->actionName;
         }
+
         if (empty($this->pages)) {
             throw new HTML_QuickForm2_NotFoundException('No pages added to the form');
         }
@@ -296,9 +297,15 @@ class HTML_QuickForm2_Controller implements IteratorAggregate
     *
     * @param HTML_QuickForm2_Controller_Page $page
     */
-    public function addPage(HTML_QuickForm2_Controller_Page $page)
+    public function addPage(HTML_QuickForm2_Controller_Page $page) : void
     {
         $pageId = $page->getForm()->getId();
+        if(empty($pageId)) {
+            throw new HTML_QuickForm2_InvalidArgumentException(
+                "Empty page ID."
+            );
+        }
+
         if (!empty($this->pages[$pageId])) {
             throw new HTML_QuickForm2_InvalidArgumentException(
                 "Duplicate page ID '{$pageId}'"

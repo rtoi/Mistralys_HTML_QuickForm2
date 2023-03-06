@@ -39,9 +39,9 @@ class HTML_QuickForm2_Element_Input extends HTML_QuickForm2_Element
 {
    /**
     * 'type' attribute should not be changeable
-    * @var array
+    * @var string[]
     */
-    protected $watchedAttributes = array('id', 'name', 'type');
+    protected array $watchedAttributes = array('id', 'name', 'type');
 
     protected function onAttributeChange($name, $value = null)
     {

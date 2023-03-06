@@ -83,7 +83,7 @@ class HTML_QuickForm2_Rule_Nonempty extends HTML_QuickForm2_Rule
     * considered not empty if at least one option is selected, Container will
     * be considered not empty if at least one contained element is not empty.
     *
-    * @param int $config Minimum number of nonempty values
+    * @param int|string|NULL $config Minimum number of nonempty values
     *
     * @return   HTML_QuickForm2_Rule
     * @throws   HTML_QuickForm2_InvalidArgumentException    if a bogus limit was provided
@@ -92,13 +92,17 @@ class HTML_QuickForm2_Rule_Nonempty extends HTML_QuickForm2_Rule
     {
         if (is_null($config)) {
             $config = 1;
-        } elseif (1 > intval($config)) {
+        }
+
+        $config = (int)$config;
+
+        if (1 > $config) {
             throw new HTML_QuickForm2_InvalidArgumentException(
                 'Nonempty Rule accepts a positive count of nonempty values, ' .
                 preg_replace('/\s+/', ' ', var_export($config, true)) . ' given'
             );
         }
-        return parent::setConfig(intval($config));
+        return parent::setConfig($config);
     }
 
     protected function getJavascriptCallback()

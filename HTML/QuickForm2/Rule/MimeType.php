@@ -64,14 +64,14 @@ class HTML_QuickForm2_Rule_MimeType extends HTML_QuickForm2_Rule
    /**
     * Sets allowed MIME type(s) for the uploaded file
     *
-    * @param string|array $config Allowed MIME type or an array of types
+    * @param string|array|NULL $config Allowed MIME type or an array of types
     *
     * @return   HTML_QuickForm2_Rule
     * @throws   HTML_QuickForm2_InvalidArgumentException    if bogus configuration provided
     */
     public function setConfig($config)
     {
-        if (!is_string($config) && !is_array($config) || array() === $config) {
+        if ((!is_string($config) && !is_array($config)) || array() === $config) {
             throw new HTML_QuickForm2_InvalidArgumentException(
                 'MimeType Rule requires MIME type(s), ' .
                 preg_replace('/\s+/', ' ', var_export($config, true)) . ' given'

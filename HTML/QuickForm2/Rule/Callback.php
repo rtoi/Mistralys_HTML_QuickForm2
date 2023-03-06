@@ -211,16 +211,16 @@ class HTML_QuickForm2_Rule_Callback extends HTML_QuickForm2_Rule
    /**
     * Sets the callback to use for validation and its additional arguments
     *
-    * @param callback|array $config Callback or array ('callback' => validation callback
+    * @param callable|array $config Callback or array ('callback' => validation callback
     *                                                  [, 'arguments' => additional arguments]
     *                                                  [, 'js_callback' => javascript callback
     *                                                               for client-side validation])
     *
-    * @return   HTML_QuickForm2_Rule
+    * @return   $this
     * @throws   HTML_QuickForm2_InvalidArgumentException if callback is missing or invalid
     *               or additional arguments is not an array
     */
-    public function setConfig($config)
+    public function setConfig($config) : self
     {
         if (!is_array($config) || !isset($config['callback'])) {
             $config = array('callback' => $config);
@@ -252,17 +252,22 @@ class HTML_QuickForm2_Rule_Callback extends HTML_QuickForm2_Rule
         return $config['callback'];
     }
 
-   /**
-    * Sets the arguments for the callback. Every item in the array
-    * is an argument added to the callback, in the exact order they
-    * are found in the array. The first item stays the value to validate,
-    * and the last item is the rule instance itself.
-    * 
-    * @param array $args
-    * @return HTML_QuickForm2_Rule_Callback
-    */
-    public function setArguments($args)
+    /**
+     * Sets the arguments for the callback. Every item in the array
+     * is an argument added to the callback, in the exact order they
+     * are found in the array. The first item stays the value to validate,
+     * and the last item is the rule instance itself.
+     *
+     * @param mixed|NULL $args
+     * @return HTML_QuickForm2_Rule_Callback
+     * @throws HTML_QuickForm2_InvalidArgumentException
+     */
+    public function setArguments($args) : self
     {
+        if($args === null) {
+            return $this;
+        }
+
         // ensure we always have an array
         if(!is_array($args)) {
             $args = array($args);

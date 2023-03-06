@@ -41,9 +41,9 @@ class HTML_QuickForm2_Container_Group extends HTML_QuickForm2_Container
     * Group name
     * If set, group name will be used as prefix for contained
     * element names, like groupname[elementname].
-    * @var string
+    * @var string|NULL
     */
-    protected $name;
+    protected ?string $name = null;
 
    /**
     * Previous group name
@@ -170,7 +170,7 @@ class HTML_QuickForm2_Container_Group extends HTML_QuickForm2_Container
     }
 
 
-    public function getName()
+    public function getName() : ?string
     {
         return $this->name;
     }
@@ -326,14 +326,12 @@ class HTML_QuickForm2_Container_Group extends HTML_QuickForm2_Container
 
     public function __toString()
     {
-        // pear-package-only HTML_QuickForm2_Loader::loadClass('HTML_QuickForm2_Renderer');
-
         $renderer = $this->render(
             HTML_QuickForm2_Renderer::factory('default')
                 ->setTemplateForId($this->getId(), '{content}')
         );
+
         return $renderer->__toString()
                . $renderer->getJavascriptBuilder()->getSetupCode(null, true);
     }
 }
-?>

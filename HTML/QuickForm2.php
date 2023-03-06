@@ -40,9 +40,9 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
 
    /**
     * We do not allow setting "method" and "id" other than through constructor
-    * @var array
+    * @var string[]
     */
-    protected $watchedAttributes = array('id', 'method');
+    protected array $watchedAttributes = array('id', 'method');
     
    /**
     * The event handler instance for the form

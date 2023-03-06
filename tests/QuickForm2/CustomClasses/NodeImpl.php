@@ -13,7 +13,7 @@ class HTML_QuickForm2_NodeImpl extends HTML_QuickForm2_Node
     public function setValue($value) { return ''; }
     public function __toString() { return ''; }
 
-    public function getName() { return ''; }
+    public function getName() : string { return ''; }
     public function setName($name) { }
 
     protected function updateValue() { }

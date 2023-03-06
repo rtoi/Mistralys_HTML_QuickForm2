@@ -5,6 +5,7 @@
 - Select Element: Added `getOptionByValue()`.
 - Select Element: Options are now `SelectOption` objects with array access.
 - Select Element: Adding options now returns a `SelectOption` instance.
+- Select Element: Added `makeMultiple()` ([#2](https://github.com/Mistralys/HTML_QuickForm2/issues/2)).
 - Code Quality: PHPStan analysis now clean up to level 5.
 
 ## v2.1.5

@@ -394,4 +394,13 @@ class HTML_QuickForm2_Element_Select extends HTML_QuickForm2_Element
     {
         return $this->optionContainer->countOptions($recursive);
     }
+
+    /**
+     * Sets the "multiple" attribute.
+     * @return $this
+     */
+    public function makeMultiple() : self
+    {
+        return $this->setAttribute('multiple');
+    }
 }

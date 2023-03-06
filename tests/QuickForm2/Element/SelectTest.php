@@ -19,13 +19,12 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+declare(strict_types=1);
+
 use HTML\QuickForm2\Element\Select\SelectOption;
 use PHPUnit\Framework\TestCase;
 use QuickFormTests\CustomClasses\TestCustomOptGroup;
 use QuickFormTests\CustomClasses\TestSelectWithCustomGroups;
-
-/** Sets up includes */
-require_once dirname(dirname(__DIR__)) . '/TestHelper.php';
 
 /**
  * Let's just make parseAttributes() public rather than copy and paste regex
@@ -468,5 +467,13 @@ class HTML_QuickForm2_Element_SelectTest extends TestCase
         $select->setValue('');
 
         $this->assertNotNull($select->getSelectedOption());
+    }
+
+    public function testMakeMultiple() : void
+    {
+        $select = new HTML_QuickForm2_Element_Select('foo');
+        $select->makeMultiple();
+
+        $this->assertSame('multiple', $select->getAttribute('multiple'));
     }
 }

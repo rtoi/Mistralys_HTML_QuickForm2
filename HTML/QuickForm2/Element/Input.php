@@ -43,13 +43,14 @@ class HTML_QuickForm2_Element_Input extends HTML_QuickForm2_Element
     */
     protected array $watchedAttributes = array('id', 'name', 'type');
 
-    protected function onAttributeChange($name, $value = null)
+    protected function onAttributeChange(string $name, $value = null) : void
     {
-        if ('type' == $name) {
+        if ('type' === $name) {
             throw new HTML_QuickForm2_InvalidArgumentException(
                 "Attribute 'type' is read-only"
             );
         }
+
         parent::onAttributeChange($name, $value);
     }
 

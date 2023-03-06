@@ -88,15 +88,15 @@ class HTML_QuickForm2_Element_Static extends HTML_QuickForm2_Element
     * Overrides parent method to allow removal of 'name' attribute on Static
     * elements
     *
-    * @param string $name  Attribute name
-    * @param string $value Attribute value, null if attribute is being removed
+    * @param string $name Attribute name
+    * @param string|NULL $value Attribute value, null if attribute is being removed
     *
     * @throws   HTML_QuickForm2_InvalidArgumentException    if trying to
     *                                   remove a required attribute
     */
-    protected function onAttributeChange($name, $value = null)
+    protected function onAttributeChange(string $name, $value = null) : void
     {
-        if ('name' == $name && null === $value) {
+        if ('name' === $name && null === $value) {
             unset($this->attributes['name']);
         } else {
             parent::onAttributeChange($name, $value);

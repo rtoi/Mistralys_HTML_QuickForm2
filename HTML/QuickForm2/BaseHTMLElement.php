@@ -213,11 +213,11 @@ abstract class BaseHTMLElement implements ArrayAccess
      * (or not) the attribute.
      *
      * @param string      $name  Attribute name
-     * @param string|null $value Attribute value, null if attribute is being removed
+     * @param string|int|float|Stringable|null $value Attribute value, null if attribute is being removed
      *
      * @return void
      */
-    protected function onAttributeChange($name, $value = null)
+    protected function onAttributeChange(string $name, $value = null) : void
     {
     }
 

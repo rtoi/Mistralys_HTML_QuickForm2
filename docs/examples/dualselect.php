@@ -31,13 +31,14 @@ class HTML_QuickForm2_Element_DualSelect extends HTML_QuickForm2_Element_Select
      */
     protected array $watchedAttributes = array('id', 'name', 'multiple');
 
-    protected function onAttributeChange($name, $value = null)
+    protected function onAttributeChange(string $name, $value = null) : void
     {
-        if ('multiple' == $name && 'multiple' != $value) {
+        if ('multiple' === $name && 'multiple' !== $value) {
             throw new HTML_QuickForm2_InvalidArgumentException(
                 "Required 'multiple' attribute cannot be changed"
             );
         }
+
         parent::onAttributeChange($name, $value);
     }
 

@@ -50,15 +50,16 @@ class HTML_QuickForm2_Controller_DefaultAction
     * Disallow changing the 'id' attribute
     *
     * @param string $name  Attribute name
-    * @param string $value Attribute value, null if attribute is being removed
+    * @param string|int|float|Stringable|NULL $value Attribute value, null if attribute is being removed
     */
-    protected function onAttributeChange($name, $value = null)
+    protected function onAttributeChange(string $name, $value = null) : void
     {
-        if ('id' == $name) {
+        if ('id' === $name) {
             throw new HTML_QuickForm2_InvalidArgumentException(
                 "Attribute 'id' is read-only"
             );
         }
+
         parent::onAttributeChange($name, $value);
     }
 

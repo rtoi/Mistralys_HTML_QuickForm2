@@ -159,31 +159,36 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
     * setName() and setId() methods, respectively
     *
     * @param string $name  Attribute name
-    * @param string $value Attribute value, null if attribute is being removed
+    * @param string|int|float|Stringable|NULL $value Attribute value, null if attribute is being removed
     *
     * @throws   HTML_QuickForm2_InvalidArgumentException    if trying to
     *                                   remove a required attribute
     */
-    protected function onAttributeChange($name, $value = null)
+    protected function onAttributeChange(string $name, $value = null) : void
     {
-        if ('name' == $name) {
+        if ('name' === $name)
+        {
             if (null === $value) {
                 throw new HTML_QuickForm2_InvalidArgumentException(
                     "Required attribute 'name' can not be removed",
                     self::ERROR_CANNOT_REMOVE_NAME_ATTRIBUTE
                 );
-            } else {
-                $this->setName($value);
             }
-        } elseif ('id' == $name) {
+
+            $this->setName($value);
+            return;
+        }
+
+        if ('id' === $name)
+        {
             if (null === $value) {
                 throw new HTML_QuickForm2_InvalidArgumentException(
                     "Required attribute 'id' can not be removed",
                     self::ERROR_CANNOT_REMOVE_ID_ATTRIBUTE
                 );
-            } else {
-                $this->setId($value);
             }
+
+            $this->setId($value);
         }
     }
 

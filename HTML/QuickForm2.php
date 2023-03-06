@@ -111,7 +111,7 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
         return $this->dataReason;
     }
 
-    protected function onAttributeChange($name, $value = null)
+    protected function onAttributeChange(string $name, $value = null) : void
     {
         throw new HTML_QuickForm2_InvalidArgumentException(
             'Attribute \'' . $name . '\' is read-only'

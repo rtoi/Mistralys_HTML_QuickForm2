@@ -26,7 +26,10 @@ class HTML_QuickForm2_Element_DualSelect extends HTML_QuickForm2_Element_Select
 {
     protected $attributes = array('multiple' => 'multiple');
 
-    protected $watchedAttributes = array('id', 'name', 'multiple');
+    /**
+     * @var string[]
+     */
+    protected array $watchedAttributes = array('id', 'name', 'multiple');
 
     protected function onAttributeChange($name, $value = null)
     {

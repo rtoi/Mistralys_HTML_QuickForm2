@@ -75,6 +75,21 @@ class SelectOption implements ArrayAccess, Stringable
         return $this;
     }
 
+    /**
+     * @param string $name
+     * @return string|null The attribute value, or NULL if it does not exist.
+     */
+    public function getAttribute(string $name) : ?string
+    {
+        return $this->data['attr'][$name] ?? null;
+    }
+
+    /**
+     * Renders the option's <code>&lt;option&gt;</code> tag.
+     *
+     * @param bool $selected Whether to add the `selected` property.
+     * @return string
+     */
     public function render(bool $selected=false) : string
     {
         $attr = $this->getAttributes();

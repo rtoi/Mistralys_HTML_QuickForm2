@@ -1,5 +1,8 @@
 # Changes in HTML_QuickForm2
 
+## v2.1.7
+- Select Element: Added `getAttribute()` to options.
+
 ## v2.1.6
 - Select Element: Added `getSelectedOption()`.
 - Select Element: Added `getOptionByValue()`.

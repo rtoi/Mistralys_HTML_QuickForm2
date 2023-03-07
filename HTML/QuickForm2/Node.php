@@ -213,7 +213,7 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
         }
         // if the ID uses hyphens like the auto-generated IDs,
         // we need to make sure we don't generate the same.
-        else if(stristr($id, '-')) 
+        else if(strpos($id, '-') !== false)
         {
             self::parseID($id);
         }

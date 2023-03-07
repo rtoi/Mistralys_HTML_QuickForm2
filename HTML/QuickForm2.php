@@ -34,46 +34,57 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
 {
    /**
     * Data sources providing values for form elements
-    * @var array
+    * @var HTML_QuickForm2_DataSource[]
     */
-    protected $datasources = array();
+    protected array $datasources = array();
 
    /**
     * We do not allow setting "method" and "id" other than through constructor
     * @var string[]
     */
     protected array $watchedAttributes = array('id', 'method');
-    
-   /**
-    * The event handler instance for the form
-    * @var HTML_QuickForm2_EventHandler
-    */
-    protected $eventHandler;
-    
-    protected $dataReason;
-    
+
+    /**
+     * @var array{trackVarFound:bool,getNotEmpty:bool,postNotEmpty:bool}
+     */
+    protected array $dataReason;
+
+    /**
+     * The event handler instance for the form
+     * @var HTML_QuickForm2_EventHandler
+     */
+    protected HTML_QuickForm2_EventHandler $eventHandler;
+
    /**
     * Class constructor, form's "id" and "method" attributes can only be set here
     *
-    * @param string       $id          "id" attribute of <form> tag
-    * @param string       $method      HTTP method used to submit the form
-    * @param string|array $attributes  Additional HTML attributes
+    * @param string|NULL $id "id" attribute of <form> tag
+    * @param string $method HTTP method used to submit the form
+    * @param string|array<int|string,string|int|float|Stringable|NULL>|NULL $attributes  Additional HTML attributes
     *                                  (either a string or an array)
     * @param bool         $trackSubmit Whether to track if the form was submitted
     *                                  by adding a special hidden field
     */
     public function __construct(
-        $id, $method = 'post', $attributes = null, $trackSubmit = true
+        ?string $id,
+        string $method = 'post',
+        $attributes = null,
+        bool $trackSubmit = true
     ) {
+
+        // NOTE: We are not calling the parent constructor
+        // to be able to initialize the attributes and ID
+        // the way we want.
+
         $this->eventHandler = new HTML_QuickForm2_EventHandler($this);
-        $method      = ('GET' == strtoupper($method))? 'get': 'post';
+        $method      = ('GET' === strtoupper($method))? 'get': 'post';
         $trackSubmit = empty($id) ? false : $trackSubmit;
-        
+
         $this->attributes = array_merge(
             self::prepareAttributes($attributes),
             array('method' => $method)
         );
-        
+
         parent::setId(empty($id) ? null : $id);
         
         if(!isset($this->attributes['action'])) {
@@ -81,12 +92,12 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
         }
 
         $trackVarFound = isset($_REQUEST['_qf__' . $id]);
-        $getNotEmpty = 'get' == $method && !empty($_GET);
-        $postNotEmpty = 'post' == $method && (!empty($_POST) || !empty($_FILES));
+        $getNotEmpty = 'get' === $method && !empty($_GET);
+        $postNotEmpty = 'post' === $method && (!empty($_POST) || !empty($_FILES));
         
         // automatically add the superglobals datasource to access
         // submitted form values, if data is present.
-        if($trackSubmit && $trackVarFound || !$trackSubmit && ($getNotEmpty || $postNotEmpty))
+        if(($trackSubmit && $trackVarFound) || (!$trackSubmit && ($getNotEmpty || $postNotEmpty)))
         {
             $this->addDataSource(new HTML_QuickForm2_DataSource_SuperGlobal($method));
         }
@@ -105,8 +116,11 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
         
         $this->addFilter(array($this, 'skipInternalFields'));
     }
-    
-    public function getDataReason()
+
+    /**
+     * @return array{trackVarFound:bool,getNotEmpty:bool,postNotEmpty:bool}
+     */
+    public function getDataReason() : array
     {
         return $this->dataReason;
     }

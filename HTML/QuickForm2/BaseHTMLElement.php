@@ -257,7 +257,7 @@ abstract class BaseHTMLElement implements ArrayAccess
     /**
      * Creates a valid attribute array from either a string or an array
      *
-     * @param string|array<string,string|int|float|Stringable|NULL>|NULL $attributes Array of attributes or HTML attribute string
+     * @param string|array<int|string,string|int|float|Stringable|NULL>|NULL $attributes Array of attributes or HTML attribute string
      *
      * @return array<string,string> An associative array of attributes
      */
@@ -362,12 +362,12 @@ abstract class BaseHTMLElement implements ArrayAccess
     /**
      * Sets the attributes
      *
-     * @param string|array|null $attributes Array of 'name' => 'value' pairs
+     * @param string|array<string|int,string|int|float|Stringable|NULL>|NULL $attributes Array of 'name' => 'value' pairs
      *                                      or HTML attribute string
      *
      * @return $this
      */
-    public function setAttributes($attributes)
+    public function setAttributes($attributes) : self
     {
         $attributes = self::prepareAttributes($attributes);
         $watched    = [];
@@ -579,7 +579,7 @@ abstract class BaseHTMLElement implements ArrayAccess
     /**
      * Removes the given CSS class(es) from the element
      *
-     * @param string|array $class Class name, multiple class names separated by
+     * @param string|string[] $class Class name, multiple class names separated by
      *                            whitespace, array of class names
      *
      * @return $this
@@ -627,7 +627,7 @@ abstract class BaseHTMLElement implements ArrayAccess
      * @return boolean Returns true on success or false on failure.
      * @link   http://php.net/manual/en/arrayaccess.offsetexists.php
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset) : bool
     {
         return isset($this->attributes[strtolower($offset)]);
     }
@@ -642,7 +642,7 @@ abstract class BaseHTMLElement implements ArrayAccess
      * @link   http://php.net/manual/en/arrayaccess.offsetget.php
      * @see    getAttribute()
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset) : ?string
     {
         return $this->getAttribute($offset);
     }
@@ -658,7 +658,7 @@ abstract class BaseHTMLElement implements ArrayAccess
      * @link   http://php.net/manual/en/arrayaccess.offsetset.php
      * @see    setAttribute()
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value) : void
     {
         if (null !== $offset) {
             $this->setAttribute($offset, $value);
@@ -678,7 +678,7 @@ abstract class BaseHTMLElement implements ArrayAccess
      * @link   http://php.net/manual/en/arrayaccess.offsetunset.php
      * @see    removeAttribute()
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset) : void
     {
         $this->removeAttribute($offset);
     }

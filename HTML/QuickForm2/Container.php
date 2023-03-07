@@ -63,9 +63,9 @@
 abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
     implements IteratorAggregate, Countable
 {
-    const ERROR_CANNOT_FIND_CHILD_ELEMENT_INDEX = 38501;
-    const ERROR_REMOVE_CHILD_HAS_OTHER_CONTAINER = 38502;
-    const ERROR_UNDEFINED_CLASS_METHOD = 38503;
+    public const ERROR_CANNOT_FIND_CHILD_ELEMENT_INDEX = 38501;
+    public const ERROR_REMOVE_CHILD_HAS_OTHER_CONTAINER = 38502;
+    public const ERROR_UNDEFINED_CLASS_METHOD = 38503;
     
    /**
     * Array of elements contained in this container
@@ -73,12 +73,6 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
     */
     protected array $elements = array();
 
-    /**
-     * The event handler instance for the form
-     * @var HTML_QuickForm2_EventHandler
-     */
-    protected $eventHandler;
-    
     public function setName($name)
     {
         $this->attributes['name'] = (string)$name;

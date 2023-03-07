@@ -37,7 +37,7 @@
  */
 class HTML_QuickForm2_Element_InputReset extends HTML_QuickForm2_Element_Input
 {
-    protected $attributes = array('type' => 'reset');
+    protected array $attributes = array('type' => 'reset');
 
     public function isFreezable(): bool
     {
@@ -68,4 +68,3 @@ class HTML_QuickForm2_Element_InputReset extends HTML_QuickForm2_Element_Input
         return null;
     }
 }
-?>

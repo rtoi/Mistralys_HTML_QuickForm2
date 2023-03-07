@@ -24,7 +24,7 @@
  */
 class HTML_QuickForm2_Element_DualSelect extends HTML_QuickForm2_Element_Select
 {
-    protected $attributes = array('multiple' => 'multiple');
+    protected array $attributes = array('multiple' => 'multiple');
 
     /**
      * @var string[]

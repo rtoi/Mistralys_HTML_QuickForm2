@@ -37,7 +37,7 @@
  */
 class HTML_QuickForm2_Element_InputSubmit extends HTML_QuickForm2_Element_Input
 {
-    protected $attributes = array('type' => 'submit');
+    protected array $attributes = array('type' => 'submit');
 
    /**
     * Element's submit value

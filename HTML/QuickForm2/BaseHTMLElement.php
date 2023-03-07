@@ -61,39 +61,39 @@ abstract class BaseHTMLElement implements ArrayAccess
     /**
      * Constant for predefined 'charset' option
      */
-    const OPTION_CHARSET   = 'charset';
+    public const OPTION_CHARSET   = 'charset';
 
     /**
      * Constant for predefined 'indent' option
      */
-    const OPTION_INDENT    = 'indent';
+    public const OPTION_INDENT    = 'indent';
 
     /**
      * Constant for predefined 'linebreak' option
      */
-    const OPTION_LINEBREAK = 'linebreak';
+    public const OPTION_LINEBREAK = 'linebreak';
 
     /**
      * Line break for Windows platform
      */
-    const LINEBREAK_WIN  = "\15\12";
+    public const LINEBREAK_WIN  = "\15\12";
 
     /**
      * Line break for Unix platform
      */
-    const LINEBREAK_UNIX = "\12";
+    public const LINEBREAK_UNIX = "\12";
 
     /**
      * Line break for Mac platform
      */
-    const LINEBREAK_MAC  = "\15";
+    public const LINEBREAK_MAC  = "\15";
 
     /**
      * Indentation level of the element
      *
      * @var int
      */
-    private $_indentLevel = 0;
+    private int $_indentLevel = 0;
 
     /**
      * Comment associated with the element
@@ -111,9 +111,9 @@ abstract class BaseHTMLElement implements ArrayAccess
      * - 'indent': string used to indent HTML elements, defaults to "\11"
      * - 'linebreak': string used to indicate linebreak, defaults to "\12"
      *
-     * @var array
+     * @var array<string,mixed>
      */
-    private static $_options = [
+    private static array $_options = [
         self::OPTION_CHARSET   => 'ISO-8859-1',
         self::OPTION_INDENT    => "\11",
         self::OPTION_LINEBREAK => self::LINEBREAK_UNIX
@@ -122,9 +122,9 @@ abstract class BaseHTMLElement implements ArrayAccess
     /**
      * Mapping "platform name" => "linebreak symbol(s)"
      *
-     * @var array
+     * @var array<string,string>
      */
-    private static $_linebreaks = [
+    private static array $_linebreaks = [
         'win'  => self::LINEBREAK_WIN,
         'unix' => self::LINEBREAK_UNIX,
         'mac'  => self::LINEBREAK_MAC
@@ -133,7 +133,7 @@ abstract class BaseHTMLElement implements ArrayAccess
     /**
      * Class constructor, sets default attributes
      *
-     * @param array|string $attributes Array of attribute 'name' => 'value' pairs
+     * @param array<string,string|int|float|Stringable|NULL>|string|NULL $attributes Array of attribute 'name' => 'value' pairs
      *                                 or HTML attribute string
      */
     public function __construct($attributes = null)
@@ -144,14 +144,14 @@ abstract class BaseHTMLElement implements ArrayAccess
     /**
      * Sets global option(s)
      *
-     * @param string|array $nameOrOptions Option name or array
+     * @param string|array<string,mixed> $nameOrOptions Option name or array
      *                                    ('option name' => 'option value')
      * @param mixed        $value         Option value,
      *                                    if first argument is not an array
      *
      * @return void
      */
-    public static function setOption($nameOrOptions, $value = null)
+    public static function setOption($nameOrOptions, $value = null) : void
     {
         if (is_array($nameOrOptions)) {
             foreach ($nameOrOptions as $k => $v) {
@@ -170,18 +170,18 @@ abstract class BaseHTMLElement implements ArrayAccess
     /**
      * Returns global option(s)
      *
-     * @param string $name Option name
+     * @param string|NULL $name Option name, or NULL to return all options.
      *
-     * @return mixed Option value, null if option does not exist,
+     * @return mixed|array<string,mixed>|NULL Option value, null if option does not exist,
      *               array of all options if $name is not given
      */
-    public static function getOption($name = null)
+    public static function getOption(?string $name = null)
     {
         if (null === $name) {
             return self::$_options;
-        } else {
-            return isset(self::$_options[$name])? self::$_options[$name]: null;
         }
+
+        return self::$_options[$name] ?? null;
     }
 
     // region: Attribute handling
@@ -191,7 +191,7 @@ abstract class BaseHTMLElement implements ArrayAccess
      *
      * @var array<string,string>
      */
-    protected $attributes = [];
+    protected array $attributes = [];
 
     /**
      * Changes to attributes in this list will be announced via onAttributeChange()
@@ -226,9 +226,9 @@ abstract class BaseHTMLElement implements ArrayAccess
      *
      * @param string $attrString HTML attribute string
      *
-     * @return array An associative array of attributes
+     * @return array<string,string> An associative array of attributes
      */
-    protected static function parseAttributes($attrString)
+    protected static function parseAttributes(string $attrString) : array
     {
         $attributes = [];
         $matchCount = preg_match_all(
@@ -257,38 +257,42 @@ abstract class BaseHTMLElement implements ArrayAccess
     /**
      * Creates a valid attribute array from either a string or an array
      *
-     * @param string|array $attributes Array of attributes or HTML attribute string
+     * @param string|array<string,string|int|float|Stringable|NULL>|NULL $attributes Array of attributes or HTML attribute string
      *
-     * @return array An associative array of attributes
+     * @return array<string,string> An associative array of attributes
      */
-    protected static function prepareAttributes($attributes)
+    protected static function prepareAttributes($attributes) : array
     {
-        $prepared = [];
+        if($attributes === null) {
+            return array();
+        }
+
         if (is_string($attributes)) {
             return self::parseAttributes($attributes);
+        }
 
-        } elseif (is_array($attributes)) {
-            foreach ($attributes as $key => $value) {
-                if (is_int($key)) {
-                    $key = strtolower($value);
-                    $prepared[$key] = $key;
-                } else {
-                    $prepared[strtolower($key)] = (string)$value;
-                }
+        $prepared = [];
+
+        foreach ($attributes as $key => $value) {
+            if (is_int($key)) {
+                $key = strtolower($value);
+                $prepared[$key] = $key;
+            } else {
+                $prepared[strtolower($key)] = (string)$value;
             }
         }
+
         return $prepared;
     }
 
     /**
      * Removes an attribute from an attribute array
      *
-     * @param array  $attributes Attribute array
-     * @param string $name       Name of attribute to remove
-     *
+     * @param array<string,string> $attributes Attribute array
+     * @param string $name Name of attribute to remove
      * @return void
      */
-    protected static function removeAttributeArray(array &$attributes, $name)
+    protected static function removeAttributeArray(array &$attributes, string $name) : void
     {
         unset($attributes[strtolower($name)]);
     }
@@ -296,18 +300,23 @@ abstract class BaseHTMLElement implements ArrayAccess
     /**
      * Creates HTML attribute string from array
      *
-     * @param array $attributes Attribute array
-     *
+     * @param array<string,string> $attributes Attribute array
      * @return string Attribute string
      */
     public static function getAttributesString(array $attributes) : string
     {
-        $str     = '';
+        $str = '';
         $charset = self::getOption(self::OPTION_CHARSET);
+
         foreach ($attributes as $key => $value) {
-            $str .= ' ' . $key . '="'
-                    . htmlspecialchars($value, ENT_QUOTES, $charset) . '"';
+            $str .=
+                ' ' .
+                $key .
+                '="' .
+                htmlspecialchars($value, ENT_QUOTES, $charset) .
+                '"';
         }
+
         return $str;
     }
 
@@ -328,7 +337,7 @@ abstract class BaseHTMLElement implements ArrayAccess
 
         $value = (string)$value;
 
-        if (in_array($name, $this->watchedAttributes)) {
+        if (in_array($name, $this->watchedAttributes, true)) {
             $this->onAttributeChange($name, $value);
         } else {
             $this->attributes[$name] = $value;
@@ -397,12 +406,12 @@ abstract class BaseHTMLElement implements ArrayAccess
     /**
      * Merges the existing attributes with the new ones
      *
-     * @param array|string|null $attributes Array of 'name' => 'value' pairs
+     * @param array<string,string|int|float|Stringable|NULL>|string|null $attributes Array of 'name' => 'value' pairs
      *                                      or HTML attribute string
      *
      * @return $this
      */
-    public function mergeAttributes($attributes)
+    public function mergeAttributes($attributes) : self
     {
         $attributes = self::prepareAttributes($attributes);
         foreach ($this->watchedAttributes as $watchedKey) {

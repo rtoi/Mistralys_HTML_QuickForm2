@@ -31,7 +31,7 @@ use QuickFormTests\CustomClasses\TestSelectWithCustomGroups;
  */
 abstract class HTML_QuickForm2_Element_SelectTest_AttributeParser extends BaseHTMLElement
 {
-    public static function parseAttributes($attrString)
+    public static function parseAttributes($attrString) : array
     {
         return parent::parseAttributes($attrString);
     }

@@ -49,7 +49,7 @@ class HTML_QuickForm2_Element_InputFile extends HTML_QuickForm2_Element_Input
     */
     protected ?array $value = null;
 
-    protected $attributes = array('type' => 'file');
+    protected array $attributes = array('type' => 'file');
 
    /**
     * Message provider for upload error messages

@@ -39,7 +39,7 @@ class HTML_QuickForm2_Element_InputText extends HTML_QuickForm2_Element_Input
 {
     protected $persistent = true;
 
-    protected $attributes = array('type' => 'text');
+    protected array $attributes = array('type' => 'text');
     
    /**
     * Adds a filter for the "trim" function.

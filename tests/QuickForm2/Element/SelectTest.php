@@ -21,28 +21,23 @@
 
 declare(strict_types=1);
 
+namespace QuickForm2Tests\Element;
+
 use HTML\QuickForm2\Element\Select\SelectOption;
+use HTML_QuickForm2;
+use HTML_QuickForm2_DataSource_Array;
+use HTML_QuickForm2_Element_Select;
 use PHPUnit\Framework\TestCase;
+use QuickFormTests\CustomClasses\TestSelectAttributeParser;
 use QuickFormTests\CustomClasses\TestCustomOptGroup;
 use QuickFormTests\CustomClasses\TestSelectWithCustomGroups;
 
 /**
- * Let's just make parseAttributes() public rather than copy and paste regex
- */
-abstract class HTML_QuickForm2_Element_SelectTest_AttributeParser extends BaseHTMLElement
-{
-    public static function parseAttributes($attrString) : array
-    {
-        return parent::parseAttributes($attrString);
-    }
-}
-
-/**
  * Unit test for HTML_QuickForm2_Element_Select class
  */
-class HTML_QuickForm2_Element_SelectTest extends TestCase
+class SelectTest extends TestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $_POST = array(
             'single1' => '1'
@@ -140,7 +135,7 @@ class HTML_QuickForm2_Element_SelectTest extends TestCase
         );
     }
 
-    public function testPrependOption() : void
+    public function testPrependOption(): void
     {
         $sel = new HTML_QuickForm2_Element_Select();
         $sel->addOption('Text', 'Value');
@@ -153,7 +148,7 @@ class HTML_QuickForm2_Element_SelectTest extends TestCase
         $this->assertSame('First', $list[0]['text']);
     }
 
-    public function testEmptyValue() : void
+    public function testEmptyValue(): void
     {
         $sel = new HTML_QuickForm2_Element_Select();
         $sel->addOption('Text', '');
@@ -161,7 +156,7 @@ class HTML_QuickForm2_Element_SelectTest extends TestCase
         $this->assertStringContainsString('value=""', (string)$sel);
     }
 
-    public function testNULLValue() : void
+    public function testNULLValue(): void
     {
         $sel = new HTML_QuickForm2_Element_Select();
         $sel->addOption('Text', null);
@@ -169,7 +164,7 @@ class HTML_QuickForm2_Element_SelectTest extends TestCase
         $this->assertStringContainsString('value=""', (string)$sel);
     }
 
-    public function testCountOptions() : void
+    public function testCountOptions(): void
     {
         $sel = new HTML_QuickForm2_Element_Select();
         $sel->addOption('Text 1', 'text1');
@@ -179,7 +174,7 @@ class HTML_QuickForm2_Element_SelectTest extends TestCase
         $this->assertSame(3, $sel->countOptions());
     }
 
-    public function testCountOptionsRecursive() : void
+    public function testCountOptionsRecursive(): void
     {
         $sel = new HTML_QuickForm2_Element_Select();
 
@@ -286,7 +281,7 @@ class HTML_QuickForm2_Element_SelectTest extends TestCase
         preg_match('!<input([^>]+)/>!', $sel->__toString(), $matches);
         $this->assertEquals(
             array('id' => $sel->getId(), 'name' => 'foo', 'value' => 'Value', 'type' => 'hidden'),
-            HTML_QuickForm2_Element_SelectTest_AttributeParser::parseAttributes($matches[1])
+            TestSelectAttributeParser::parseAttributes($matches[1])
         );
 
         $sel->setValue('Nonexistent');
@@ -308,11 +303,11 @@ class HTML_QuickForm2_Element_SelectTest extends TestCase
         preg_match_all('!<input([^>]+)/>!', $sel->__toString(), $matches, PREG_SET_ORDER);
         $this->assertEquals(
             array('name' => 'foo[]', 'value' => 'FirstValue', 'type' => 'hidden'),
-            HTML_QuickForm2_Element_SelectTest_AttributeParser::parseAttributes($matches[0][1])
+            TestSelectAttributeParser::parseAttributes($matches[0][1])
         );
         $this->assertEquals(
             array('name' => 'foo[]', 'value' => 'SecondValue', 'type' => 'hidden'),
-            HTML_QuickForm2_Element_SelectTest_AttributeParser::parseAttributes($matches[1][1])
+            TestSelectAttributeParser::parseAttributes($matches[1][1])
         );
     }
 
@@ -321,8 +316,8 @@ class HTML_QuickForm2_Element_SelectTest extends TestCase
         $options = array('1' => 'Option 1', '2' => 'Option 2');
 
         $formPost = new HTML_QuickForm2('multiple', 'post', null, false);
-        $single1  = $formPost->appendChild(new HTML_QuickForm2_Element_Select('single1', null, array('options' => $options)));
-        $single2  = $formPost->appendChild(new HTML_QuickForm2_Element_Select('single2', null, array('options' => $options)));
+        $single1 = $formPost->appendChild(new HTML_QuickForm2_Element_Select('single1', null, array('options' => $options)));
+        $single2 = $formPost->appendChild(new HTML_QuickForm2_Element_Select('single2', null, array('options' => $options)));
         $multiple = $formPost->appendChild(new HTML_QuickForm2_Element_Select('mult', array('multiple'), array('options' => $options)));
         $this->assertEquals('1', $single1->getValue());
         $this->assertNull($single2->getValue());
@@ -337,7 +332,7 @@ class HTML_QuickForm2_Element_SelectTest extends TestCase
         $this->assertEquals('2', $single2->getValue());
         $this->assertNull($multiple->getValue());
 
-        $formGet   = new HTML_QuickForm2('multiple2', 'get', null, false);
+        $formGet = new HTML_QuickForm2('multiple2', 'get', null, false);
         $multiple2 = $formGet->appendChild(new HTML_QuickForm2_Element_Select('mult2', array('multiple'), array('options' => $options)));
         $this->assertNull($multiple2->getValue());
 
@@ -371,15 +366,15 @@ class HTML_QuickForm2_Element_SelectTest extends TestCase
         $this->assertStringNotContainsString('value="2"', $selFrozen);
     }
 
-   /**
-    * Disable possibleValues checks in getValue()
-    *
-    * For lazy people who add options to selects on client side and do not
-    * want to add the same stuff server-side
-    *
-    * @link http://pear.php.net/bugs/bug.php?id=13088
-    * @link http://pear.php.net/bugs/bug.php?id=16974
-    */
+    /**
+     * Disable possibleValues checks in getValue()
+     *
+     * For lazy people who add options to selects on client side and do not
+     * want to add the same stuff server-side
+     *
+     * @link http://pear.php.net/bugs/bug.php?id=13088
+     * @link http://pear.php.net/bugs/bug.php?id=16974
+     */
     public function testDisableIntrinsicValidation()
     {
         $selectSingle = new HTML_QuickForm2_Element_Select(
@@ -407,9 +402,9 @@ class HTML_QuickForm2_Element_SelectTest extends TestCase
     public function testBug20295()
     {
         $form = new HTML_QuickForm2('bug20295');
-        $ms   = $form->addSelect('multiselect', array('multiple'))
-                    ->loadOptions(array('one' => 'First option', 'two' => 'Second option'))
-                    ->setValue(array('two'));
+        $ms = $form->addSelect('multiselect', array('multiple'))
+            ->loadOptions(array('one' => 'First option', 'two' => 'Second option'))
+            ->setValue(array('two'));
 
         // data source searching should stop on finding this null
         $form->addDataSource(new HTML_QuickForm2_DataSource_Array(array(
@@ -425,7 +420,7 @@ class HTML_QuickForm2_Element_SelectTest extends TestCase
     /**
      * Test select elements with custom option group classes.
      */
-    public function testCustomOptGroupClass() : void
+    public function testCustomOptGroupClass(): void
     {
         $select = new TestSelectWithCustomGroups('foo');
 
@@ -435,7 +430,7 @@ class HTML_QuickForm2_Element_SelectTest extends TestCase
         );
     }
 
-    public function testGetOptionByValue() : void
+    public function testGetOptionByValue(): void
     {
         $select = new HTML_QuickForm2_Element_Select('foo');
         $select->addOption('Label', 'value');
@@ -446,7 +441,7 @@ class HTML_QuickForm2_Element_SelectTest extends TestCase
         $this->assertSame('value', $option['attr']['value']);
     }
 
-    public function testGetSelectedOption() : void
+    public function testGetSelectedOption(): void
     {
         $select = new HTML_QuickForm2_Element_Select('foo');
         $select->addOption('Label', 'value');
@@ -458,7 +453,7 @@ class HTML_QuickForm2_Element_SelectTest extends TestCase
         $this->assertNotNull($select->getSelectedOption());
     }
 
-    public function testGetSelectedOptionWithEmptyValue() : void
+    public function testGetSelectedOptionWithEmptyValue(): void
     {
         $select = new HTML_QuickForm2_Element_Select('foo');
         $select->addOption('Please select...', '');
@@ -469,11 +464,36 @@ class HTML_QuickForm2_Element_SelectTest extends TestCase
         $this->assertNotNull($select->getSelectedOption());
     }
 
-    public function testMakeMultiple() : void
+    public function testMakeMultiple(): void
     {
         $select = new HTML_QuickForm2_Element_Select('foo');
+
+        $this->assertFalse($select->isMultiple());
+
         $select->makeMultiple();
 
         $this->assertSame('multiple', $select->getAttribute('multiple'));
+        $this->assertTrue($select->isMultiple());
+    }
+
+    public function testSetSize(): void
+    {
+        $select = new HTML_QuickForm2_Element_Select('foo');
+
+        $this->assertNull($select->getSize());
+
+        $select->setSize(5);
+        $this->assertSame(5, $select->getSize());
+
+        $select->setSize(null);
+        $this->assertNull($select->getSize());
+    }
+
+    public function testSizeAttributeHTML(): void
+    {
+        $el = new HTML_QuickForm2_Element_Select('foo');
+        $el->setSize(33);
+
+        $this->assertStringContainsString('size="33"', (string)$el);
     }
 }

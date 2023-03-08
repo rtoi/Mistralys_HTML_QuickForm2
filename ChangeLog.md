@@ -1,5 +1,9 @@
 # Changes in HTML_QuickForm2
 
+## v2.1.8
+- Select Element: Added `isMultiple()`.
+- Select Element: Added `setSize()` and `getSize()`.
+
 ## v2.1.7
 - Select Element: Added `getAttribute()` to options.
 

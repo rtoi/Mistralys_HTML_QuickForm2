@@ -403,4 +403,29 @@ class HTML_QuickForm2_Element_Select extends HTML_QuickForm2_Element
     {
         return $this->setAttribute('multiple');
     }
+
+    public function isMultiple() : bool
+    {
+        return $this->getAttribute('multiple') === 'multiple';
+    }
+
+    public function setSize(?int $size) : self
+    {
+        if($size === null) {
+            return $this->removeAttribute('size');
+        }
+
+        return $this->setAttribute('size', $size);
+    }
+
+    public function getSize() : ?int
+    {
+        $size = $this->getAttribute('size');
+
+        if($size !== null) {
+            return (int)$size;
+        }
+
+        return null;
+    }
 }

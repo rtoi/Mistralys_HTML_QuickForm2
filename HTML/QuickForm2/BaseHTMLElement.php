@@ -431,13 +431,14 @@ abstract class BaseHTMLElement implements ArrayAccess
      *
      * @return $this
      */
-    public function removeAttribute($attribute)
+    public function removeAttribute(string $attribute) : self
     {
-        if (in_array(strtolower($attribute), $this->watchedAttributes)) {
+        if (in_array(strtolower($attribute), $this->watchedAttributes, true)) {
             $this->onAttributeChange(strtolower($attribute), null);
         } else {
             self::removeAttributeArray($this->attributes, $attribute);
         }
+
         return $this;
     }
 

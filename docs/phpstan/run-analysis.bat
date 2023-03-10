@@ -1,6 +1,6 @@
 @echo off
 
-set AnalysisLevel=5
+set AnalysisLevel=6
 set OutputFile=.\result.txt
 set ConfigFile=.\config.neon
 set BinFolder=\..\..\vendor\bin

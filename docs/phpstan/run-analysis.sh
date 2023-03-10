@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 MemoryLimit=900M
-AnalysisLevel=5
+AnalysisLevel=6
 OutputFile=./result.txt
 ConfigFile=./config.neon
 BinFolder=../../vendor/bin

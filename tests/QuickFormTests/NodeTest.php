@@ -27,6 +27,36 @@ use QuickFormTests\CustomClasses\TestNodeImpl;
  */
 class HTML_QuickForm2_NodeTest extends TestCase
 {
+    public function testGetElementById() : void
+    {
+        $obj = new TestNodeImpl();
+        $obj->setId('my-node');
+
+        $form = new HTML_QuickForm2('my-form');
+        $form->addElement($obj);
+
+        $this->assertNotNull($form->getElementById('my-node'));
+    }
+
+    public function testRequireElementById() : void
+    {
+        $obj = new TestNodeImpl();
+        $obj->setId('my-node');
+
+        $form = new HTML_QuickForm2('my-form');
+        $form->addElement($obj);
+
+        $this->assertNotNull($form->requireElementById('my-node'));
+    }
+    public function testRequireElementByIdNotExists() : void
+    {
+        $form = new HTML_QuickForm2('my-form');
+
+        $this->expectExceptionCode(HTML_QuickForm2_Container::ERROR_ELEMENT_NOT_FOUND_BY_ID);
+
+        $form->requireElementById('unknown-node');
+    }
+
     public function testCanSetLabel()
     {
         $obj = new TestNodeImpl();

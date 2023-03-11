@@ -10,10 +10,10 @@
  * with this package in the file LICENSE and available at the URL
  * https://raw.githubusercontent.com/pear/HTML_QuickForm2/trunk/docs/LICENSE
  *
- * @category  HTML
  * @package   HTML_QuickForm2
  * @author    Alexey Borzov <avb@php.net>
  * @author    Bertrand Mansion <golgote@mamasam.com>
+ * @category  HTML
  * @copyright 2006-2020 Alexey Borzov <avb@php.net>, Bertrand Mansion <golgote@mamasam.com>
  * @license   https://opensource.org/licenses/BSD-3-Clause BSD 3-Clause License
  * @link      https://pear.php.net/package/HTML_QuickForm2
@@ -21,6 +21,12 @@
 
 declare(strict_types=1);
 
+namespace QuickFormTests\Form;
+
+use HTML_QuickForm2;
+use HTML_QuickForm2_Container;
+use HTML_QuickForm2_Element_InputText;
+use HTML_QuickForm2_InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use QuickFormTests\CustomClasses\TestNodeImpl;
 
@@ -50,6 +56,7 @@ class NodeTests extends TestCase
 
         $this->assertNotNull($form->requireElementById('my-node'));
     }
+
     public function testRequireElementByIdNotExists() : void
     {
         $form = new HTML_QuickForm2('my-form');
@@ -114,7 +121,7 @@ class NodeTests extends TestCase
             ->setConstructorArgs(array($valid, 'A message'))
             ->getMock();
         $ruleTrue->expects($this->once())->method('validateOwner')
-                 ->will($this->returnValue(true));
+            ->will($this->returnValue(true));
         $valid->addRule($ruleTrue);
         $this->assertTrue($valid->validate());
         $this->assertEquals('', $valid->getError());
@@ -125,7 +132,7 @@ class NodeTests extends TestCase
             ->setConstructorArgs(array($invalid, 'An error message'))
             ->getMock();
         $ruleFalse->expects($this->once())->method('validateOwner')
-                  ->will($this->returnValue(false));
+            ->will($this->returnValue(false));
         $invalid->addRule($ruleFalse);
         $this->assertFalse($invalid->validate());
         $this->assertEquals('An error message', $invalid->getError());
@@ -149,19 +156,19 @@ class NodeTests extends TestCase
             ->setConstructorArgs(array($manyRules, 'irrelevant message'))
             ->getMock();
         $ruleTrue->expects($this->once())->method('validateOwner')
-                 ->will($this->returnValue(true));
+            ->will($this->returnValue(true));
         $ruleFalseNoMessage = $this->getMockBuilder('HTML_QuickForm2_Rule')
             ->setMethods(array('validateOwner'))
             ->setConstructorArgs(array($manyRules, ''))
             ->getMock();
         $ruleFalseNoMessage->expects($this->once())->method('validateOwner')
-                           ->will($this->returnValue(false));
+            ->will($this->returnValue(false));
         $ruleFalseWithMessage = $this->getMockBuilder('HTML_QuickForm2_Rule')
             ->setMethods(array('validateOwner'))
             ->setConstructorArgs(array($manyRules, 'some error'))
             ->getMock();
         $ruleFalseWithMessage->expects($this->once())->method('validateOwner')
-                           ->will($this->returnValue(false));
+            ->will($this->returnValue(false));
         $ruleStillIrrelevant = $this->getMockBuilder('HTML_QuickForm2_Rule')
             ->setMethods(array('validateOwner'))
             ->setConstructorArgs(array($manyRules, '...'))
@@ -177,7 +184,7 @@ class NodeTests extends TestCase
 
     public function testRemoveRule()
     {
-        $node    = new TestNodeImpl();
+        $node = new TestNodeImpl();
         $removed = $node->addRule(
             $this->getMockBuilder('HTML_QuickForm2_Rule')
                 ->setMethods(array('validateOwner'))
@@ -199,7 +206,7 @@ class NodeTests extends TestCase
                 ->getMock()
         );
         $mock->expects($this->once())->method('validateOwner')
-             ->will($this->returnValue(false));
+            ->will($this->returnValue(false));
 
         $node->addRule($mock);
         $this->assertFalse($node->validate());
@@ -207,8 +214,8 @@ class NodeTests extends TestCase
 
     public function testRemoveRuleOnChangingOwner()
     {
-        $nodeOne  = new TestNodeImpl();
-        $nodeTwo  = new TestNodeImpl();
+        $nodeOne = new TestNodeImpl();
+        $nodeTwo = new TestNodeImpl();
         $mockRule = $nodeOne->addRule(
             $this->getMockBuilder('HTML_QuickForm2_Rule')
                 ->setMethods(array('validateOwner'))
@@ -216,7 +223,7 @@ class NodeTests extends TestCase
                 ->getMock()
         );
         $mockRule->expects($this->once())->method('validateOwner')
-                 ->will($this->returnValue(false));
+            ->will($this->returnValue(false));
 
         $nodeTwo->addRule($mockRule);
         $this->assertTrue($nodeOne->validate());
@@ -229,16 +236,16 @@ class NodeTests extends TestCase
         $this->assertFalse($node->isRequired());
     }
 
-   /**
-    * Disallow spaces in values of 'id' attributes
-    *
-    * @dataProvider invalidIdProvider
-    * @link http://pear.php.net/bugs/17576
-    */
+    /**
+     * Disallow spaces in values of 'id' attributes
+     *
+     * @dataProvider invalidIdProvider
+     * @link http://pear.php.net/bugs/17576
+     */
     public function testRequest18683($id)
     {
         $this->expectException(HTML_QuickForm2_InvalidArgumentException::class);
-        
+
         $node = new TestNodeImpl();
         $node->setId($id);
     }

@@ -20,6 +20,7 @@
  */
 
 use PHPUnit\Framework\TestCase;
+use QuickFormTests\CustomClasses\TestElementImpl;
 
 /**
  * Unit test for HTML_QuickForm2_Element class,
@@ -45,10 +46,10 @@ class HTML_QuickForm2_ElementTest extends TestCase
 
     public function testCanSetName()
     {
-        $obj = new HTML_QuickForm2_ElementImpl();
+        $obj = new TestElementImpl();
         $this->assertNotNull($obj->getName(), 'Elements should always have \'name\' attribute');
 
-        $obj = new HTML_QuickForm2_ElementImpl('foo');
+        $obj = new TestElementImpl('foo');
         $this->assertEquals('foo', $obj->getName());
 
         $this->assertSame($obj, $obj->setName('bar'));
@@ -61,7 +62,7 @@ class HTML_QuickForm2_ElementTest extends TestCase
 
     public function testCanSetId()
     {
-        $obj = new HTML_QuickForm2_ElementImpl(null, array('id' => 'manual'));
+        $obj = new TestElementImpl(null, array('id' => 'manual'));
         $this->assertEquals('manual', $obj->getId());
 
         $this->assertSame($obj, $obj->setId('another'));
@@ -74,7 +75,7 @@ class HTML_QuickForm2_ElementTest extends TestCase
 
     public function testCanNotRemoveNameOrId()
     {
-        $obj = new HTML_QuickForm2_ElementImpl('somename', array(), array('id' => 'someid'));
+        $obj = new TestElementImpl('somename', array(), array('id' => 'someid'));
         try {
             $obj->removeAttribute('name');
         } catch (HTML_QuickForm2_InvalidArgumentException $e) {
@@ -101,13 +102,13 @@ class HTML_QuickForm2_ElementTest extends TestCase
         
         foreach($names as $name) 
         {
-            $el = new HTML_QuickForm2_ElementImpl($name);
+            $el = new TestElementImpl($name);
             $this->assertNotEquals('', $el->getId(), 'Should have an auto-generated \'id\' attribute');
             $usedIds[] = $el->getId();
             $this->assertContains($el->getId(), $usedIds);
             
             // Duplicate name...
-            $el2 = new HTML_QuickForm2_ElementImpl($name);
+            $el2 = new TestElementImpl($name);
             $this->assertNotContains($el2->getId(), $usedIds);
             $usedIds[] = $el2->getId();
         }
@@ -127,14 +128,14 @@ class HTML_QuickForm2_ElementTest extends TestCase
             $elName, $elName.'[bar]', $elName.'[baz][]'
         );
         foreach ($usedIds as $id) {
-            $elManual = new HTML_QuickForm2_ElementImpl($elName, array('id' => $id));
+            $elManual = new TestElementImpl($elName, array('id' => $id));
         }
         foreach ($names as $name) {
-            $el = new HTML_QuickForm2_ElementImpl($name);
+            $el = new TestElementImpl($name);
             $this->assertNotContains($el->getId(), $usedIds);
             $usedIds[] = $el->getId();
             // Duplicate name...
-            $el2 = new HTML_QuickForm2_ElementImpl($name);
+            $el2 = new TestElementImpl($name);
             $this->assertNotContains($el2->getId(), $usedIds);
             $usedIds[] = $el2->getId();
         }
@@ -143,8 +144,8 @@ class HTML_QuickForm2_ElementTest extends TestCase
     public function testSetValueFromSubmitDatasource()
     {
         $form = new HTML_QuickForm2('form1');
-        $elFoo = $form->appendChild(new HTML_QuickForm2_ElementImpl('foo'));
-        $elBar = $form->appendChild(new HTML_QuickForm2_ElementImpl('bar'));
+        $elFoo = $form->appendChild(new TestElementImpl('foo'));
+        $elBar = $form->appendChild(new TestElementImpl('bar'));
 
         $this->assertEquals('a value', $elFoo->getValue());
         $this->assertNull($elBar->getValue());
@@ -157,8 +158,8 @@ class HTML_QuickForm2_ElementTest extends TestCase
             'foo' => 'new value',
             'bar' => 'default value'
         )));
-        $elFoo = $form->appendChild(new HTML_QuickForm2_ElementImpl('foo'));
-        $elBar = $form->appendChild(new HTML_QuickForm2_ElementImpl('bar'));
+        $elFoo = $form->appendChild(new TestElementImpl('foo'));
+        $elBar = $form->appendChild(new TestElementImpl('bar'));
 
         $this->assertEquals('a value', $elFoo->getValue());
         $this->assertEquals('default value', $elBar->getValue());
@@ -167,7 +168,7 @@ class HTML_QuickForm2_ElementTest extends TestCase
     public function testUpdateValueFromNewDataSource()
     {
         $form = new HTML_QuickForm2('form2');
-        $el = $form->appendChild(new HTML_QuickForm2_ElementImpl('foo'));
+        $el = $form->appendChild(new TestElementImpl('foo'));
         $this->assertNull($el->getValue());
 
         $form->addDataSource(new HTML_QuickForm2_DataSource_Array(array(
@@ -179,7 +180,7 @@ class HTML_QuickForm2_ElementTest extends TestCase
     public function testUpdateValueOnNameChange()
     {
         $form = new HTML_QuickForm2('form1');
-        $elFoo = $form->appendChild(new HTML_QuickForm2_ElementImpl('foo'));
+        $elFoo = $form->appendChild(new TestElementImpl('foo'));
         $elFoo->setName('fooReborn');
         $this->assertEquals('another value', $elFoo->getValue());
     }
@@ -189,10 +190,10 @@ class HTML_QuickForm2_ElementTest extends TestCase
         BaseHTMLElement::setOption('id_force_append_index', false);
 
         $name = 'finno_' . mt_rand(0, 1000);
-        $el = new HTML_QuickForm2_ElementImpl($name);
+        $el = new TestElementImpl($name);
         $this->assertEquals($name, $el->getId());
 
-        $el2 = new HTML_QuickForm2_ElementImpl($name . '[bar]');
+        $el2 = new TestElementImpl($name . '[bar]');
         $this->assertEquals($name . '-bar', $el2->getId());
     }
 
@@ -209,7 +210,7 @@ class HTML_QuickForm2_ElementTest extends TestCase
      */
     public function testGeneratedIdsShouldNotStartWithNumbers()
     {
-        $el = new HTML_QuickForm2_ElementImpl('0');
+        $el = new TestElementImpl('0');
         $this->assertDoesNotMatchRegularExpression('/^\d/', $el->getId());
     }
 
@@ -220,7 +221,7 @@ class HTML_QuickForm2_ElementTest extends TestCase
     public function testBug20295()
     {
         $form = new HTML_QuickForm2('bug20295');
-        $el = $form->appendChild(new HTML_QuickForm2_ElementImpl('foo'));
+        $el = $form->appendChild(new TestElementImpl('foo'));
         $el->setValue('not empty');
 
         $form->addDataSource(new HTML_QuickForm2_DataSource_Array(array(

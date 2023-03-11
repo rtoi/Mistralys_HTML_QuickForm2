@@ -10,48 +10,44 @@
  * with this package in the file LICENSE and available at the URL
  * https://raw.githubusercontent.com/pear/HTML_QuickForm2/trunk/docs/LICENSE
  *
- * @category  HTML
  * @package   HTML_QuickForm2
  * @author    Alexey Borzov <avb@php.net>
  * @author    Bertrand Mansion <golgote@mamasam.com>
+ * @category  HTML
  * @copyright 2006-2020 Alexey Borzov <avb@php.net>, Bertrand Mansion <golgote@mamasam.com>
  * @license   https://opensource.org/licenses/BSD-3-Clause BSD 3-Clause License
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+namespace QuickFormTests\Element;
+
+use HTML_QuickForm2_InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-
-/** Sets up includes */
-require_once dirname(dirname(__DIR__)) . '/TestHelper.php';
+use QuickFormTests\CustomClasses\TestInputImplElement;
 
 /**
- * We need to set the element's type
+ * Unit test for {@see \HTML_QuickForm2_Element_Input} class
+ *
+ * @see TestInputImplElement
  */
-class HTML_QuickForm2_Element_InputImpl extends HTML_QuickForm2_Element_Input
+class InputTest extends TestCase
 {
-    public function __construct($name = null, $attributes = null, array $data = array())
+    public function testTypeAttributeIsReadonly() : void
     {
-        parent::__construct($name, $attributes, $data);
-        $this->attributes['type'] = 'concrete';
-    }
-}
-
-
-/**
- * Unit test for HTML_QuickForm2_Element_Input class
- */
-class HTML_QuickForm2_Element_InputTest extends TestCase
-{
-    public function testTypeAttributeIsReadonly()
-    {
-        $obj = new HTML_QuickForm2_Element_InputImpl();
-        try {
+        $obj = new TestInputImplElement();
+        try
+        {
             $obj->removeAttribute('type');
-        } catch (HTML_QuickForm2_InvalidArgumentException $e) {
+        }
+        catch (HTML_QuickForm2_InvalidArgumentException $e)
+        {
             $this->assertEquals("Attribute 'type' is read-only", $e->getMessage());
-            try {
+            try
+            {
                 $obj->setAttribute('type', 'bogus');
-            } catch (HTML_QuickForm2_InvalidArgumentException $e) {
+            }
+            catch (HTML_QuickForm2_InvalidArgumentException $e)
+            {
                 $this->assertEquals("Attribute 'type' is read-only", $e->getMessage());
                 return;
             }
@@ -59,37 +55,37 @@ class HTML_QuickForm2_Element_InputTest extends TestCase
         $this->fail('Expected HTML_QuickForm2_InvalidArgumentException was not thrown');
     }
 
-    public function testCanSetAndGetValue()
+    public function testCanSetAndGetValue() : void
     {
-        $obj = new HTML_QuickForm2_Element_InputImpl();
+        $obj = new TestInputImplElement();
 
         $this->assertSame($obj, $obj->setValue('foo'));
-        $this->assertEquals($obj->getValue(), 'foo');
+        $this->assertEquals('foo', $obj->getValue());
 
         $obj->setAttribute('value', 'bar');
-        $this->assertEquals($obj->getValue(), 'bar');
+        $this->assertEquals('bar', $obj->getValue());
 
         $obj->setAttribute('disabled');
         $this->assertNull($obj->getValue());
     }
 
-    public function testSetNullValue()
+    public function testSetNullValue() : void
     {
-        $obj = new HTML_QuickForm2_Element_InputImpl();
+        $obj = new TestInputImplElement();
         $obj->setValue(null);
 
         $this->assertEquals('', $obj->getValue());
     }
 
-    public function testHtmlGeneration()
+    public function testHtmlGeneration() : void
     {
-        $obj = new HTML_QuickForm2_Element_InputImpl();
+        $obj = new TestInputImplElement();
         $this->assertMatchesRegularExpression('!<input[^>]*type="concrete"[^>]*/>!', $obj->__toString());
     }
 
-    public function testFrozenHtmlGeneration()
+    public function testFrozenHtmlGeneration() : void
     {
-        $obj = new HTML_QuickForm2_Element_InputImpl('test');
+        $obj = new TestInputImplElement('test');
         $obj->setValue('bar');
         $obj->toggleFrozen(true);
 
@@ -105,4 +101,3 @@ class HTML_QuickForm2_Element_InputTest extends TestCase
         $this->assertDoesNotMatchRegularExpression('!<input[^>]*type="hidden"[^>]*/>!', $obj->__toString());
     }
 }
-?>

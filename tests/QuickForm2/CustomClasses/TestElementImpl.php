@@ -1,5 +1,9 @@
 <?php
 
+namespace QuickFormTests\CustomClasses;
+
+use HTML_QuickForm2_Element;
+
 /**
  * A non-abstract subclass of Element
  *
@@ -7,12 +11,19 @@
  * Note the default implementation of setValue() / getValue(), needed to test
  * setting the value from Data Source
  */
-class HTML_QuickForm2_ElementImpl extends HTML_QuickForm2_Element
+class TestElementImpl extends HTML_QuickForm2_Element
 {
     protected $value;
 
-    public function getType() { return 'concrete'; }
-    public function __toString() { return ''; }
+    public function getType()
+    {
+        return 'concrete';
+    }
+
+    public function __toString()
+    {
+        return '';
+    }
 
     public function getRawValue()
     {

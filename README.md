@@ -1,6 +1,4 @@
-[![Build Status](https://travis-ci.com/Mistralys/HTML_QuickForm2.svg?branch=trunk)](https://travis-ci.com/Mistralys/HTML_QuickForm2)
-
-# HTML_QuickForm2 - Mistralys fork
+# HTML QuickForm 2 - Mistralys fork
 
 This fork focuses on quality of life improvements, as well as performance enhancements when working 
 with large forms, or many parallel forms. 

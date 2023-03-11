@@ -10,11 +10,6 @@
  * client-side validation with custom element.
  */
 
-// pear-package-only require_once 'HTML/QuickForm2.php';
-// pear-package-only require_once 'HTML/QuickForm2/Element/Select.php';
-// pear-package-only require_once 'HTML/QuickForm2/Renderer.php';
-// pear-package-only require_once 'HTML/QuickForm2/Renderer/Plugin.php';
-
 /**
  * "Dualselect" element
  *

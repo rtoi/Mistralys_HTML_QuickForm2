@@ -5,8 +5,6 @@
  * NB: This usage example requires HTML_AJAX package to work.
  */
 
-// pear-package-only require_once 'HTML/QuickForm2.php';
-// pear-package-only require_once 'HTML/QuickForm2/Renderer.php';
 if (!class_exists('HTML_AJAX_Helper', true)) {
     require_once 'HTML/AJAX/Helper.php';
 }

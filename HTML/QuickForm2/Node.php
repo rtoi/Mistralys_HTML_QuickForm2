@@ -19,11 +19,6 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
-// pear-package-only /**
-// pear-package-only  * HTML_Common2 - base class for HTML elements
-// pear-package-only  */
-// pear-package-only require_once 'HTML/Common2.php';
-
 // By default, we generate element IDs with numeric indexes appended even for
 // elements with unique names. If you want IDs to be equal to the element
 // names by default, set this configuration option to false.
@@ -38,22 +33,6 @@ if (null === BaseHTMLElement::getOption('id_force_append_index')) {
 if (null === BaseHTMLElement::getOption('language')) {
     BaseHTMLElement::setOption('language', 'en');
 }
-
-// pear-package-only /**
-// pear-package-only  * Exception classes for HTML_QuickForm2
-// pear-package-only  */
-// pear-package-only require_once 'HTML/QuickForm2/Exception.php';
-
-// pear-package-only /**
-// pear-package-only  * Static factory class for QuickForm2 elements
-// pear-package-only  */
-// pear-package-only require_once 'HTML/QuickForm2/Factory.php';
-
-// pear-package-only /**
-// pear-package-only  * Base class for HTML_QuickForm2 rules
-// pear-package-only  */
-// pear-package-only require_once 'HTML/QuickForm2/Rule.php';
-
 
 /**
  * Abstract base class for all QuickForm2 Elements and Containers

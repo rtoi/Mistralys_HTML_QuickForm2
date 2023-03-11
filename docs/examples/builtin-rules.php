@@ -76,9 +76,6 @@ function check_password($password)
 // Form setup
 //
 
-// pear-package-only require_once 'HTML/QuickForm2.php';
-// pear-package-only require_once 'HTML/QuickForm2/Renderer.php';
-
 $form = new HTML_QuickForm2('basicRules');
 // for file upload to work
 $form->setAttribute('enctype', 'multipart/form-data');

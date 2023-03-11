@@ -19,11 +19,6 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
-// pear-package-only /**
-// pear-package-only  * Abstract base class for QuickForm2 renderers
-// pear-package-only  */
-// pear-package-only require_once 'HTML/QuickForm2/Renderer.php';
-
 /**
  * A stub renderer to use with HTML_QuickForm2 when actual form output is done manually
  *

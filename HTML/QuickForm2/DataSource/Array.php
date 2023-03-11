@@ -19,11 +19,6 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
-// pear-package-only /**
-// pear-package-only  * Interface for data sources used by HTML_QuickForm2 objects
-// pear-package-only  */
-// pear-package-only require_once 'HTML/QuickForm2/DataSource/NullAware.php';
-
 /**
  * Array-based data source for HTML_QuickForm2 objects
  *

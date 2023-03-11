@@ -19,15 +19,6 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
-// pear-package-only /** The class representing a page of a multipage form */
-// pear-package-only require_once 'HTML/QuickForm2/Controller/Page.php';
-
-// pear-package-only /** Object wrapping around session variable used to store controller data */
-// pear-package-only require_once 'HTML/QuickForm2/Controller/SessionContainer.php';
-
-// pear-package-only /** Class presenting the values stored in session by Controller as submitted ones */
-// pear-package-only require_once 'HTML/QuickForm2/DataSource/Session.php';
-
 /**
  * Class implementing the Page Controller pattern for multipage forms
  *
@@ -280,7 +271,6 @@ class HTML_QuickForm2_Controller implements IteratorAggregate
             && in_array($actionName, array('next', 'back', 'submit', 'display', 'jump'))
         ) {
             $className = 'HTML_QuickForm2_Controller_Action_' . ucfirst($actionName);
-            // pear-package-only HTML_QuickForm2_Loader::loadClass($className);
             $this->addHandler($actionName, new $className());
         }
         if (isset($this->handlers[$actionName])) {

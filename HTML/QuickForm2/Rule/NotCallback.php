@@ -19,11 +19,6 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
-// pear-package-only /**
-// pear-package-only  * Rule checking the value via a callback function (method)
-// pear-package-only  */
-// pear-package-only require_once 'HTML/QuickForm2/Rule/Callback.php';
-
 /**
  * Rule checking the value via a callback function (method) with logical negation
  *
@@ -57,8 +52,6 @@ class HTML_QuickForm2_Rule_NotCallback extends HTML_QuickForm2_Rule_Callback
 
     protected function getJavascriptCallback()
     {
-        // pear-package-only HTML_QuickForm2_Loader::loadClass('HTML_QuickForm2_JavascriptBuilder');
-
         $config    = $this->getConfig();
         $arguments = array($this->owner->getJavascriptValue());
         foreach ($config['arguments'] as $arg) {
@@ -68,4 +61,3 @@ class HTML_QuickForm2_Rule_NotCallback extends HTML_QuickForm2_Rule_Callback
                "(" . implode(', ', $arguments) . "); }";
     }
 }
-?>

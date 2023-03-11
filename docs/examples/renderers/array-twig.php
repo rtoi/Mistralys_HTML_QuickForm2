@@ -10,9 +10,6 @@
  * </code>
  */
 
-// pear-package-only require_once 'HTML/QuickForm2.php';
-// pear-package-only require_once 'HTML/QuickForm2/Renderer.php';
-
 if (!class_exists('Twig_Environment', true)) {
     require_once 'Twig/Autoloader.php';
     Twig_Autoloader::register();

@@ -8,8 +8,6 @@ js/build.properties
 js/build/
 js/docs/
 
-# used when generating PEAR package
-.pear-package/
 .phpunit.result.cache
 
 # PHPStorm project files

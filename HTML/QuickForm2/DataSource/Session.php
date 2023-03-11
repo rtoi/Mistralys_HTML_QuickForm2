@@ -19,12 +19,6 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
-// pear-package-only /** Interface for data sources containing submitted values */
-// pear-package-only require_once 'HTML/QuickForm2/DataSource/Submit.php';
-
-// pear-package-only /** Array-based data source for HTML_QuickForm2 objects */
-// pear-package-only require_once 'HTML/QuickForm2/DataSource/Array.php';
-
 /**
  * Class presenting the values stored in session by Controller as submitted ones
  *

@@ -19,12 +19,6 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
-// pear-package-only /** Base class for all HTML_QuickForm2 containers */
-// pear-package-only require_once 'HTML/QuickForm2/Container.php';
-// pear-package-only /** Javascript builder used when rendering a repeat prototype */
-// pear-package-only require_once 'HTML/QuickForm2/Container/Repeat/JavascriptBuilder.php';
-
-
 /**
  * Handles a Container that can be repeated multiple times in the form
  *

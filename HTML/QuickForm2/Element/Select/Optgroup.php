@@ -19,11 +19,6 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
-// pear-package-only /**
-// pear-package-only  * Collection of <option>s and <optgroup>s
-// pear-package-only  */
-// pear-package-only require_once 'HTML/QuickForm2/Element/Select/OptionContainer.php';
-
 use HTML\QuickForm2\Traits\RuntimePropertiesInterface;
 use HTML\QuickForm2\Traits\RuntimePropertiesTrait;
 

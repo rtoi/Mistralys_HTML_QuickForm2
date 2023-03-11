@@ -19,11 +19,6 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
-// pear-package-only /**
-// pear-package-only  * Base class for HTML_QuickForm2 rules
-// pear-package-only  */
-// pear-package-only require_once 'HTML/QuickForm2/Rule.php';
-
 /**
  * Validates all elements in a Container using a template Rule
  *

@@ -38,9 +38,6 @@
   <body>
 <?php
 
-// pear-package-only require_once 'HTML/QuickForm2.php';
-// pear-package-only require_once 'HTML/QuickForm2/Renderer.php';
-
 $form = new HTML_QuickForm2('example');
 $fs = $form->addFieldset()->setLabel('Your information');
 

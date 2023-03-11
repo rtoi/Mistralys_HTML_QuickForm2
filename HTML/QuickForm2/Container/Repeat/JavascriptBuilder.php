@@ -19,9 +19,6 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
-// pear-package-only /** Javascript aggregator and builder class */
-// pear-package-only require_once 'HTML/QuickForm2/JavascriptBuilder.php';
-
 /**
  * Javascript builder used when rendering a repeat prototype
  *

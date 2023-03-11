@@ -19,11 +19,6 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
-// pear-package-only /**
-// pear-package-only  * Rule checking that the form field is not empty
-// pear-package-only  */
-// pear-package-only require_once 'HTML/QuickForm2/Rule/Nonempty.php';
-
 /**
  * Rule for required elements
  *

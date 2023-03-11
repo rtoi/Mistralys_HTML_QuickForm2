@@ -19,15 +19,6 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
-// pear-package-only /**
-// pear-package-only  * Base class for all HTML_QuickForm2 elements
-// pear-package-only  */
-// pear-package-only require_once 'HTML/QuickForm2/Node.php';
-// pear-package-only /**
-// pear-package-only  * Implements a recursive iterator for the container elements
-// pear-package-only  */
-// pear-package-only require_once 'HTML/QuickForm2/ContainerIterator.php';
-
 /**
  * Abstract base class for simple QuickForm2 containers
  *

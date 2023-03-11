@@ -19,11 +19,6 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
-// pear-package-only /**
-// pear-package-only  * Base class for exceptions in PEAR
-// pear-package-only  */
-// pear-package-only require_once 'PEAR/Exception.php';
-
 /**
  * Base class for exceptions in HTML_QuickForm2 package
  *
@@ -43,8 +38,3 @@
 class HTML_QuickForm2_Exception extends PEAR_Exception
 {
 }
-
-// backwards compatibility, include the child exceptions if installed with PEAR installer
-// pear-package-only require_once 'HTML/QuickForm2/InvalidArgumentException.php';
-// pear-package-only require_once 'HTML/QuickForm2/NotFoundException.php';
-?>

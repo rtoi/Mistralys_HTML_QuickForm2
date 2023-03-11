@@ -19,11 +19,6 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
-// pear-package-only /**
-// pear-package-only  * Base class for all HTML_QuickForm2 containers
-// pear-package-only  */
-// pear-package-only require_once 'HTML/QuickForm2/Container.php';
-
 /**
  * Base class for QuickForm2 groups of elements
  *

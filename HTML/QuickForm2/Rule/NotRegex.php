@@ -19,11 +19,6 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
-// pear-package-only /**
-// pear-package-only  * Validates values using regular expressions
-// pear-package-only  */
-// pear-package-only require_once 'HTML/QuickForm2/Rule/Regex.php';
-
 /**
  * Checks that the element's value does not match a regular expression
  *

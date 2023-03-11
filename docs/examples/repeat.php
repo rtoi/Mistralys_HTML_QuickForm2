@@ -3,9 +3,6 @@
  * Usage example for HTML_QuickForm2 package: repeat element
  */
 
-// pear-package-only require_once 'HTML/QuickForm2.php';
-// pear-package-only require_once 'HTML/QuickForm2/Renderer.php';
-
 $form = new HTML_QuickForm2('testRepeat');
 
 $form->addDataSource(new HTML_QuickForm2_DataSource_Array(array(

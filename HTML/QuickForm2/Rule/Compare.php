@@ -19,11 +19,6 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
-// pear-package-only /**
-// pear-package-only  * Base class for HTML_QuickForm2 rules
-// pear-package-only  */
-// pear-package-only require_once 'HTML/QuickForm2/Rule.php';
-
 /**
  * Rule comparing the value of the field with some other value
  *
@@ -88,8 +83,6 @@ class HTML_QuickForm2_Rule_Compare extends HTML_QuickForm2_Rule
 
     protected function getJavascriptCallback()
     {
-        // pear-package-only HTML_QuickForm2_Loader::loadClass('HTML_QuickForm2_JavascriptBuilder');
-
         $config   = $this->getConfig();
         $operand1 = $this->owner->getJavascriptValue();
         $operand2 = $config['operand'] instanceof HTML_QuickForm2_Node

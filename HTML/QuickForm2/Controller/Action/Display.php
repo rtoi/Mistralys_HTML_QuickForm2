@@ -19,12 +19,6 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
-// pear-package-only /** Interface for Controller action handlers */
-// pear-package-only require_once 'HTML/QuickForm2/Controller/Action.php';
-
-// pear-package-only /** Class presenting the values stored in session by Controller as submitted ones */
-// pear-package-only require_once 'HTML/QuickForm2/DataSource/Session.php';
-
 /**
  * Action handler for outputting the form
  *

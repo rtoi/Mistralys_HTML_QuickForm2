@@ -1,5 +1,17 @@
 # Changes in HTML_QuickForm2
 
+## v2.2.0 (Breaking)
+- Containers: Added `requireElementById()` for a guaranteed return type.
+- Unit Tests: Ongoing modernisation.
+- Exceptions: Removed PEAR_Exception dependency.
+
+### Breaking changes:
+
+The `HTML_QuickForm2_Exception` no longer extends `PEAR_Exception`, but
+simply the vanilla `Exception` class with a slightly more lenient 
+constructor. Please check if you use `PEAR_Exception` instead of the 
+QuickForm exception.
+
 ## v2.1.8
 - Select Element: Added `isMultiple()`.
 - Select Element: Added `setSize()` and `getSize()`.

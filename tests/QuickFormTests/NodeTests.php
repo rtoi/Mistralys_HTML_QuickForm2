@@ -19,13 +19,15 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+declare(strict_types=1);
+
 use PHPUnit\Framework\TestCase;
 use QuickFormTests\CustomClasses\TestNodeImpl;
 
 /**
  * Unit test for HTML_QuickForm2_Node class,
  */
-class HTML_QuickForm2_NodeTest extends TestCase
+class NodeTests extends TestCase
 {
     public function testGetElementById() : void
     {

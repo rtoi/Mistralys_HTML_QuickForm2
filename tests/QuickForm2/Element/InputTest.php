@@ -35,6 +35,7 @@ class InputTest extends TestCase
     public function testTypeAttributeIsReadonly() : void
     {
         $obj = new TestInputImplElement();
+
         try
         {
             $obj->removeAttribute('type');

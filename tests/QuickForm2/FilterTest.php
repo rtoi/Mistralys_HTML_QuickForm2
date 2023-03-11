@@ -21,9 +21,6 @@
 
 use PHPUnit\Framework\TestCase;
 
-/** Sets up includes */
-require_once dirname(__DIR__) . '/TestHelper.php';
-
 class HTML_QuickForm2_ContainerFilterImpl extends HTML_QuickForm2_Container
 {
     public function getType() { return 'concrete'; }

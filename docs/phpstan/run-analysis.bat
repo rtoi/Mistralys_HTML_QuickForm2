@@ -3,7 +3,7 @@
 set AnalysisLevel=6
 set OutputFile=.\result.txt
 set ConfigFile=.\config.neon
-set BinFolder=\..\..\vendor\bin
+set BinFolder=..\..\vendor\bin
 
 cls
 

@@ -57,8 +57,9 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
     public const ERROR_CANNOT_FIND_CHILD_ELEMENT_INDEX = 38501;
     public const ERROR_REMOVE_CHILD_HAS_OTHER_CONTAINER = 38502;
     public const ERROR_UNDEFINED_CLASS_METHOD = 38503;
-    
-   /**
+    public const ERROR_ELEMENT_NOT_FOUND_BY_ID = 38504;
+
+    /**
     * Array of elements contained in this container
     * @var HTML_QuickForm2_Node[]
     */
@@ -428,13 +429,13 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
 
 
    /**
-    * Returns an element if its id is found
+    * Returns an element if its ID is found.
     *
     * @param string $id Element id to search for
-    *
-    * @return   HTML_QuickForm2_Node|null
+    * @return HTML_QuickForm2_Node|null
+    * @see self::requireElementById()
     */
-    public function getElementById($id)
+    public function getElementById(string $id) : ?HTML_QuickForm2_Node
     {
         // Replaced the recursive iterator implementation
         // with a lookup table that indexes the container's
@@ -445,12 +446,30 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
         if(!isset($this->lookup)) {
             $this->getLookup();
         }
-        
-        if(isset($this->lookup[$id])) {
-            return $this->lookup[$id];
+
+        return $this->lookup[$id] ?? null;
+    }
+
+    /**
+     * Like {@see self::getElementById()}, but does not return null.
+     * Throws an exception instead if the element ID does not exist.
+     *
+     * @param string $id
+     * @return HTML_QuickForm2_Node
+     * @throws HTML_QuickForm2_NotFoundException {@see self::ERROR_ELEMENT_NOT_FOUND_BY_ID}
+     */
+    public function requireElementById(string $id) : HTML_QuickForm2_Node
+    {
+        $el = $this->getElementById($id);
+
+        if($el !== null) {
+            return $el;
         }
-        
-        return null;
+
+        throw new HTML_QuickForm2_NotFoundException(
+            sprintf('Element not found by ID [%s].', $id),
+            self::ERROR_ELEMENT_NOT_FOUND_BY_ID
+        );
     }
     
    /**

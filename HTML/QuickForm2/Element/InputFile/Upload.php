@@ -56,7 +56,6 @@ class HTML_QuickForm2_Element_InputFile_Upload
         
         throw new HTML_QuickForm2_Exception(
             'Cannot retrieve data of an invalid upload.',
-            null,
             self::ERROR_CANNOT_RETRIEVE_INVALID_UPLOAD_DATA
         );
     }

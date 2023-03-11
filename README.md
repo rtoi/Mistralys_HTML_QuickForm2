@@ -1,13 +1,23 @@
 # HTML QuickForm 2 - Mistralys fork
 
-This fork focuses on quality of life improvements, as well as performance enhancements when working 
-with large forms, or many parallel forms. 
+This fork focuses on quality of life improvements, as well as 
+performance enhancements when working with large forms, or many 
+parallel forms. 
 
-## Composer compatible
+## Requirements
 
-Install via package name `mistralys/html_quickform2`.
+- PHP 7.4+
+- [Composer](https://getcomposer.org)
 
-See https://packagist.org/packages/mistralys/html_quickform2
+## Installation
+
+Add as dependency to your `composer.json` file with:
+
+```
+composer require mistralys/html_quickform2
+```
+
+Also see the [Packagist page](https://packagist.org/packages/mistralys/html_quickform2).
 
 ## Additions
 
@@ -19,6 +29,7 @@ See https://packagist.org/packages/mistralys/html_quickform2
   * Elements: `getRules()` method to retrieve all rules added to the element
   * Elements: `hasRules()` method to check if an element has any rules 
   * Elements: `appendComment()` method to append text to an existing comment.
+  * Containers: `requireElementById()` with non-null return value.
   * Rules: The callback rule now has a method `getCallback()` to retrieve the configured callback.
   * Text-based elements: `addFilterTrim()` method. 
   * Select element: `prependOption()` method to insert an element at the top.

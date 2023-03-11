@@ -43,7 +43,7 @@
     },
     "autoload-dev": {
         "classmap": [
-            "tests/QuickForm2/CustomClasses"
+            "tests/QuickFormTests/CustomClasses"
         ]
     }
 }

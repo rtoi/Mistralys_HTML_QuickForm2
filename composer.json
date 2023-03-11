@@ -2,10 +2,9 @@
     "name":        "mistralys/html_quickform2",
     "description": "Provides methods to create, validate and render HTML forms in PHP.",
     "type":        "library",
-    "keywords":    ["forms", "validation", "javascript", "wizard", "pear", "quickform"],
-    "homepage":    "https://pear.php.net/package/HTML_QuickForm2/",
+    "keywords":    ["forms", "validation", "javascript", "wizard", "quickform"],
+    "homepage":    "https://github.com/Mistralys/HTML_QuickForm2",
     "license":     "BSD-3-Clause",
-
     "authors": [
         {
             "email": "avb@php.net",
@@ -20,16 +19,15 @@
         {
             "email": "s.mordziol@mistralys.eu",
             "name": "Sebastian Mordziol",
-            "role": "Contributor"
+            "role": "Lead"
         }
     ],
     "support": {
-        "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=HTML_QuickForm2",
-        "source": "https://github.com/pear/HTML_QuickForm2",
+        "issues": "https://github.com/Mistralys/HTML_QuickForm2/issues",
+        "source": "https://github.com/Mistralys/HTML_QuickForm2",
         "docs":   "https://pear.php.net/manual/en/package.html.html-quickform2.php"
     },
     "require": {
-        "pear/pear_exception": "^1.0",
         "symfony/polyfill-php80": ">=v1.27.0"
     },
     "require-dev": {

@@ -2,8 +2,6 @@
 /**
  * Exception classes for HTML_QuickForm2
  *
- * PHP version 5
- *
  * LICENSE
  *
  * This source file is subject to BSD 3-Clause License that is bundled
@@ -20,21 +18,19 @@
  */
 
 /**
- * Base class for exceptions in HTML_QuickForm2 package
+ * Base exception class for all QuickForm exceptions.
  *
- * Such a base class is required by the Exception RFC:
- * http://pear.php.net/pepr/pepr-proposal-show.php?id=132
- * It will rarely be thrown directly, its specialized subclasses will be
- * thrown most of the time.
- *
- * @category HTML
- * @package  HTML_QuickForm2
- * @author   Alexey Borzov <avb@php.net>
- * @author   Bertrand Mansion <golgote@mamasam.com>
- * @license  https://opensource.org/licenses/BSD-3-Clause BSD 3-Clause License
- * @version  Release: @package_version@
- * @link     https://pear.php.net/package/HTML_QuickForm2
+ * @package HTML_QuickForm2
  */
-class HTML_QuickForm2_Exception extends PEAR_Exception
+class HTML_QuickForm2_Exception extends Exception
 {
+    /**
+     * @param string|Stringable|NULL $message
+     * @param int|null $code
+     * @param Throwable|null $previous
+     */
+    public function __construct($message, ?int $code=null, ?Throwable $previous=null)
+    {
+        parent::__construct((string)$message, (int)$code, $previous);
+    }
 }

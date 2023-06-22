@@ -49,9 +49,11 @@ class HTML_QuickForm2_Rule_Nonempty extends HTML_QuickForm2_Rule
 {
     protected function validateOwner()
     {
-        if ($this->owner instanceof HTML_QuickForm2_Container) {
+        $owner = $this->getOwner();
+
+        if ($owner instanceof HTML_QuickForm2_Container) {
             $nonempty = 0;
-            foreach ($this->owner->getRecursiveIterator(RecursiveIteratorIterator::LEAVES_ONLY) as $child) {
+            foreach ($owner->getRecursiveIterator(RecursiveIteratorIterator::LEAVES_ONLY) as $child) {
                 $rule = new self($child);
                 if ($rule->validateOwner()) {
                     $nonempty++;
@@ -60,14 +62,16 @@ class HTML_QuickForm2_Rule_Nonempty extends HTML_QuickForm2_Rule
             return $nonempty >= $this->getConfig();
         }
 
-        $value = $this->owner->getValue();
-        if ($this->owner instanceof HTML_QuickForm2_Element_InputFile) {
-            return isset($value['error']) && (UPLOAD_ERR_OK == $value['error']);
-        } elseif (is_array($value)) {
-            return count(array_filter($value, 'strlen')) >= $this->getConfig();
-        } else {
-            return (bool)strlen($value);
+        $value = $owner->getValue();
+        if ($owner instanceof HTML_QuickForm2_Element_InputFile) {
+            return isset($value['error']) && (UPLOAD_ERR_OK === (int)$value['error']);
         }
+
+        if (is_array($value)) {
+            return count(array_filter($value, 'strlen')) >= $this->getConfig();
+        }
+
+        return (bool)strlen($value);
     }
 
    /**
@@ -102,8 +106,7 @@ class HTML_QuickForm2_Rule_Nonempty extends HTML_QuickForm2_Rule
 
     protected function getJavascriptCallback()
     {
-        return "function() { return qf.rules.nonempty(" . $this->owner->getJavascriptValue()
+        return "function() { return qf.rules.nonempty(" . $this->getOwner()->getJavascriptValue()
                . ", " . $this->getConfig() . "); }";
     }
 }
-?>

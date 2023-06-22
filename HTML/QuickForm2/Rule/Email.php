@@ -62,7 +62,7 @@ class HTML_QuickForm2_Rule_Email extends HTML_QuickForm2_Rule
     */
     protected function validateOwner()
     {
-        $value = $this->owner->getValue();
+        $value = $this->getOwner()->getValue();
         $len = strlen($value);
         if (empty($len)) {
             return true;
@@ -97,7 +97,6 @@ class HTML_QuickForm2_Rule_Email extends HTML_QuickForm2_Rule
     */
     protected function getJavascriptCallback()
     {
-        return "function() { return qf.rules.email(" . $this->owner->getJavascriptValue() . "); }";
+        return "function() { return qf.rules.email(" . $this->getOwner()->getJavascriptValue() . "); }";
     }
 }
-?>

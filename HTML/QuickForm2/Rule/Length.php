@@ -57,7 +57,7 @@ class HTML_QuickForm2_Rule_Length extends HTML_QuickForm2_Rule
     */
     protected function validateOwner()
     {
-        if (0 == ($valueLength = strlen($this->owner->getValue()))) {
+        if (0 == ($valueLength = strlen($this->getOwner()->getValue()))) {
             return true;
         }
 
@@ -85,7 +85,7 @@ class HTML_QuickForm2_Rule_Length extends HTML_QuickForm2_Rule
             }
             $check = implode(' && ', $checks);
         }
-        return "function() { var length = " . $this->owner->getJavascriptValue() .
+        return "function() { var length = " . $this->getOwner()->getJavascriptValue() .
                ".length; return qf.rules.empty(length) || ({$check}); }";
     }
 

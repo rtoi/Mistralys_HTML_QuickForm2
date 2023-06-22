@@ -51,15 +51,18 @@ class HTML_QuickForm2_Rule_Regex extends HTML_QuickForm2_Rule
     */
     protected function validateOwner()
     {
-        $value = $this->owner->getValue();
-        if ($this->owner instanceof HTML_QuickForm2_Element_InputFile) {
-            if (!isset($value['error']) || UPLOAD_ERR_NO_FILE == $value['error']) {
+        $owner = $this->getOwner();
+        $value = $owner->getValue();
+
+        if ($owner instanceof HTML_QuickForm2_Element_InputFile) {
+            if (!isset($value['error']) || UPLOAD_ERR_NO_FILE === (int)$value['error']) {
                 return true;
             }
             $value = $value['name'];
         } elseif (!strlen($value)) {
             return true;
         }
+
         return preg_match($this->getConfig() . 'D', $value);
     }
 
@@ -100,8 +103,7 @@ class HTML_QuickForm2_Rule_Regex extends HTML_QuickForm2_Rule
             $regex = preg_replace('/(?<!\\\\)(?>\\\\\\\\)*\\\\x{([a-fA-F0-9]+)}/', '\\u$1', $regex);
         }
 
-        return "function() { var value = " . $this->owner->getJavascriptValue() .
+        return "function() { var value = " . $this->getOwner()->getJavascriptValue() .
                "; return qf.rules.empty(value) || {$regex}.test(value); }";
     }
 }
-?>

@@ -67,7 +67,7 @@ class HTML_QuickForm2_Rule_Callback extends HTML_QuickForm2_Rule
     */
     protected function validateOwner()
     {
-        $value  = $this->owner->getValue();
+        $value  = $this->getOwner()->getValue();
         $config = $this->getConfig();
        
         if(!is_array($config['arguments'])) {
@@ -88,7 +88,7 @@ class HTML_QuickForm2_Rule_Callback extends HTML_QuickForm2_Rule
     protected function getJavascriptCallback()
     {
         $config    = $this->getConfig();
-        $arguments = array($this->owner->getJavascriptValue());
+        $arguments = array($this->getOwner()->getJavascriptValue());
         foreach ($config['arguments'] as $arg) {
             $arguments[] = HTML_QuickForm2_JavascriptBuilder::encode($arg);
         }

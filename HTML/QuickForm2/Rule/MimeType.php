@@ -47,7 +47,7 @@ class HTML_QuickForm2_Rule_MimeType extends HTML_QuickForm2_Rule
     */
     protected function validateOwner()
     {
-        $value = $this->owner->getValue();
+        $value = $this->getOwner()->getValue();
         if (!isset($value['error']) || UPLOAD_ERR_NO_FILE == $value['error']) {
             return true;
         }
@@ -83,7 +83,7 @@ class HTML_QuickForm2_Rule_MimeType extends HTML_QuickForm2_Rule
     * @throws   HTML_QuickForm2_InvalidArgumentException    if trying to use
     *           this Rule on something that isn't a file upload field
     */
-    public function setOwner(HTML_QuickForm2_Node $owner)
+    public function setOwner(HTML_QuickForm2_Node $owner) : void
     {
         if (!$owner instanceof HTML_QuickForm2_Element_InputFile) {
             throw new HTML_QuickForm2_InvalidArgumentException(
@@ -94,4 +94,3 @@ class HTML_QuickForm2_Rule_MimeType extends HTML_QuickForm2_Rule
         parent::setOwner($owner);
     }
 }
-?>

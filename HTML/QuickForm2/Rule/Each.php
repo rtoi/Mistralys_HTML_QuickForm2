@@ -124,7 +124,7 @@ class HTML_QuickForm2_Rule_Each extends HTML_QuickForm2_Rule
     * @throws   HTML_QuickForm2_InvalidArgumentException    if trying to use
     *           this Rule on something that isn't a Container
     */
-    public function setOwner(HTML_QuickForm2_Node $owner)
+    public function setOwner(HTML_QuickForm2_Node $owner) : void
     {
         if (!$owner instanceof HTML_QuickForm2_Container) {
             throw new HTML_QuickForm2_InvalidArgumentException(
@@ -137,8 +137,10 @@ class HTML_QuickForm2_Rule_Each extends HTML_QuickForm2_Rule
 
     public function getContainer() : HTML_QuickForm2_Container
     {
-        if($this->owner instanceof HTML_QuickForm2_Container) {
-            return $this->owner;
+        $owner = $this->getOwner();
+
+        if($owner instanceof HTML_QuickForm2_Container) {
+            return $owner;
         }
 
         throw new HTML_QuickForm2_InvalidArgumentException(

@@ -65,7 +65,7 @@ class HTML_QuickForm2_Rule_Compare extends HTML_QuickForm2_Rule
     */
     protected function validateOwner()
     {
-        $value   = $this->owner->getValue();
+        $value   = $this->getOwner()->getValue();
         $config  = $this->getConfig();
         $operand = $config['operand'] instanceof HTML_QuickForm2_Node
                    ? $config['operand']->getValue(): $config['operand'];
@@ -84,7 +84,7 @@ class HTML_QuickForm2_Rule_Compare extends HTML_QuickForm2_Rule
     protected function getJavascriptCallback()
     {
         $config   = $this->getConfig();
-        $operand1 = $this->owner->getJavascriptValue();
+        $operand1 = $this->getOwner()->getJavascriptValue();
         $operand2 = $config['operand'] instanceof HTML_QuickForm2_Node
                     ? $config['operand']->getJavascriptValue()
                     : HTML_QuickForm2_JavascriptBuilder::encode($config['operand']);
@@ -98,9 +98,9 @@ class HTML_QuickForm2_Rule_Compare extends HTML_QuickForm2_Rule
         return "function () { return {$check}; }";
     }
 
-    protected function getOwnJavascriptTriggers()
+    protected function getOwnJavascriptTriggers() : array
     {
-        $triggers = $this->owner->getJavascriptTriggers();
+        $triggers = $this->getOwner()->getJavascriptTriggers();
         $config   = $this->getConfig();
         if ($config['operand'] instanceof HTML_QuickForm2_Node) {
             $triggers = array_merge($triggers, $config['operand']->getJavascriptTriggers());

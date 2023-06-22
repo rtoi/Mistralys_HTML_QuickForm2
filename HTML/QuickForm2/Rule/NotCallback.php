@@ -43,7 +43,7 @@ class HTML_QuickForm2_Rule_NotCallback extends HTML_QuickForm2_Rule_Callback
     */
     protected function validateOwner()
     {
-        $value  = $this->owner->getValue();
+        $value  = $this->getOwner()->getValue();
         $config = $this->getConfig();
         return !call_user_func_array(
             $config['callback'], array_merge(array($value), $config['arguments'])
@@ -53,7 +53,7 @@ class HTML_QuickForm2_Rule_NotCallback extends HTML_QuickForm2_Rule_Callback
     protected function getJavascriptCallback()
     {
         $config    = $this->getConfig();
-        $arguments = array($this->owner->getJavascriptValue());
+        $arguments = array($this->getOwner()->getJavascriptValue());
         foreach ($config['arguments'] as $arg) {
             $arguments[] = HTML_QuickForm2_JavascriptBuilder::encode($arg);
         }

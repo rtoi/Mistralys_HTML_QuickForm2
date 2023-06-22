@@ -230,19 +230,19 @@ class HTML_QuickForm2_RuleTest extends TestCase
         ->getMock();
     }
     
-    public function testCannotSetErrorsOnHiddenElements2()
+    public function testCannotSetErrorsOnHiddenElements2() : void
     {
         $hidden = new HTML_QuickForm2_Element_InputHidden('noError');
         $text   = new HTML_QuickForm2_Element_InputText('canHaveError');
         
         $this->expectException(HTML_QuickForm2_InvalidArgumentException::class);
         
-        $rule = $this->getMockBuilder('HTML_QuickForm2_Rule')
-        ->setMethods(array('validateOwner'))
-        ->setConstructorArgs(array($text, 'an error message'))
-        ->getMock();
+        $rule = $this->getMockBuilder(HTML_QuickForm2_Rule::class)
+            ->onlyMethods(array('validateOwner'))
+            ->setConstructorArgs(array($text, 'an error message'))
+            ->getMock();
         
         $rule->setOwner($hidden);
     }
 }
-?>
+

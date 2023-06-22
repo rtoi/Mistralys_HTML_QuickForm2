@@ -12,6 +12,8 @@
         <testsuite name="HTML QuickForm2">
             <directory suffix=".php">./tests/</directory>
             <exclude>./tests/QuickFormTests/_files</exclude>
+            <exclude>./tests/QuickFormTests/CustomClasses</exclude>
+            <exclude>./tests/QuickFormTests/CaseClasses</exclude>
         </testsuite>
     </testsuites>
 </phpunit>

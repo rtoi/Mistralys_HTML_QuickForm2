@@ -39,6 +39,11 @@
  */
 class HTML_QuickForm2_Rule_Required extends HTML_QuickForm2_Rule_Nonempty
 {
+    public const ERROR_EMPTY_ERROR_MESSAGE = 139101;
+    public const ERROR_CANNOT_ADD_RULE_TO_REQUIRED = 139102;
+
+    private static string $defaultMessage = '';
+
    /**
     * Disallows adding a rule to the chain with an "or" operator
     *
@@ -55,7 +60,8 @@ class HTML_QuickForm2_Rule_Required extends HTML_QuickForm2_Rule_Nonempty
     public function or_(HTML_QuickForm2_Rule $next)
     {
         throw new HTML_QuickForm2_Exception(
-            'or_(): Cannot add a rule to "required" rule'
+            'or_(): Cannot add a rule to "required" rule',
+            self::ERROR_CANNOT_ADD_RULE_TO_REQUIRED
         );
     }
 
@@ -66,19 +72,44 @@ class HTML_QuickForm2_Rule_Required extends HTML_QuickForm2_Rule_Nonempty
     * validation to succeed even if the element is empty, and that will make
     * visual difference ("* denotes required field") bogus.
     *
-    * @param string $message Error message to display if validation fails
+    * @param string|number|Stringable|NULL $message Error message to display if validation fails
     *
-    * @return   HTML_QuickForm2_Rule
+    * @return   $this
     * @throws   HTML_QuickForm2_InvalidArgumentException
     */
-    public function setMessage($message)
+    public function setMessage($message) : self
     {
-        if (!strlen($message)) {
+        $message = (string)$message;
+
+        if ($message === '' && self::$defaultMessage === '') {
             throw new HTML_QuickForm2_InvalidArgumentException(
-                '"required" rule cannot have an empty error message'
+                'The required rule cannot have an empty error message (the default message is also empty).',
+                self::ERROR_EMPTY_ERROR_MESSAGE
             );
         }
+
         return parent::setMessage($message);
     }
+
+    public function getMessage() : string
+    {
+        $message = parent::getMessage();
+
+        if(!empty($message)) {
+            return $message;
+        }
+
+        return self::$defaultMessage;
+    }
+
+    public static function setDefaultMessage(string $message) : void
+    {
+        self::$defaultMessage = $message;
+    }
+
+    public static function getDefaultMessage() : string
+    {
+        return self::$defaultMessage;
+    }
 }
-?>
+

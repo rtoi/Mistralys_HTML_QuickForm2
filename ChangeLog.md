@@ -1,9 +1,16 @@
 # Changes in HTML_QuickForm2
 
 ## v2.2.0 (Breaking)
+- Core: Dropped the `PEAR_Exception` package.
 - Containers: Added `requireElementById()` for a guaranteed return type.
-- Unit Tests: Ongoing modernisation.
 - Exceptions: Removed PEAR_Exception dependency.
+- Elements: Added `addRuleRequired()` helper method.
+- Rules: Added static `setDefaultMessage()` to the required rule.
+- Rules: `setMessage()` now accepts more message variable types.
+- Error Handling: Added some error codes with constants.
+- Unit Tests: Ongoing modernisation.
+- Unit Tests: Added the base test case class `QuickFormCase`.
+- Unit Tests: Moved mock classes to individual files.
 
 ### Breaking changes:
 

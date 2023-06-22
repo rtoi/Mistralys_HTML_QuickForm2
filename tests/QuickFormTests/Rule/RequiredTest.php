@@ -10,94 +10,135 @@
  * with this package in the file LICENSE and available at the URL
  * https://raw.githubusercontent.com/pear/HTML_QuickForm2/trunk/docs/LICENSE
  *
- * @category  HTML
  * @package   HTML_QuickForm2
  * @author    Alexey Borzov <avb@php.net>
  * @author    Bertrand Mansion <golgote@mamasam.com>
+ * @category  HTML
  * @copyright 2006-2020 Alexey Borzov <avb@php.net>, Bertrand Mansion <golgote@mamasam.com>
  * @license   https://opensource.org/licenses/BSD-3-Clause BSD 3-Clause License
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
-use PHPUnit\Framework\TestCase;
+namespace QuickFormTests\Rule;
+
+use HTML_QuickForm2_InvalidArgumentException;
+use HTML_QuickForm2_Node;
+use HTML_QuickForm2_Rule;
+use HTML_QuickForm2_Rule_Required;
+use QuickFormTests\CaseClasses\QuickFormCase;
 
 /**
  * Unit test for HTML_QuickForm2_Rule_Required class
  */
-class HTML_QuickForm2_Rule_RequiredTest extends TestCase
+class RequiredTest extends QuickFormCase
 {
-    protected $nodeAbstractMethods = array(
-        'updateValue', 'getId', 'getName', 'getType', 'getRawValue', 'setId',
-        'setName', 'setValue', '__toString', 'getJavascriptValue',
-        'getJavascriptTriggers', 'render'
-    );
+    // region: _Tests
 
-    public function testMakesElementRequired()
+    public function testMakesElementRequired() : void
     {
         $mockNode = $this->getMockBuilder('HTML_QuickForm2_Node')
-            ->setMethods($this->nodeAbstractMethods)
+            ->onlyMethods($this->nodeAbstractMethods)
             ->getMock();
+
         $mockNode->addRule(new HTML_QuickForm2_Rule_Required($mockNode, 'element is required'));
         $this->assertTrue($mockNode->isRequired());
     }
 
-    public function testMustBeFirstInChain()
+    public function testMustBeFirstInChain() : void
     {
         $mockNode = $this->getMockBuilder('HTML_QuickForm2_Node')
-            ->setMethods($this->nodeAbstractMethods)
+            ->onlyMethods($this->nodeAbstractMethods)
             ->getMock();
+
         $rule = $mockNode->addRule(
             $this->getMockBuilder('HTML_QuickForm2_Rule')
-                ->setMethods(array('validateOwner'))
+                ->onlyMethods(array('validateOwner'))
                 ->setConstructorArgs(array($mockNode, 'some message'))
                 ->getMock()
         );
-        try {
-            $rule->and_(new HTML_QuickForm2_Rule_Required($mockNode, 'element is required'));
-        } catch (HTML_QuickForm2_InvalidArgumentException $e) {
-            $this->assertMatchesRegularExpression('/Cannot add a "required" rule/', $e->getMessage());
-            try {
-                $rule->or_(new HTML_QuickForm2_Rule_Required($mockNode, 'element is required'));
-            } catch (HTML_QuickForm2_InvalidArgumentException $e) {
-                $this->assertMatchesRegularExpression('/Cannot add a "required" rule/', $e->getMessage());
-                return;
-            }
-        }
-        $this->fail('Expected HTML_QuickForm2_InvalidArgumentException was not thrown');
+
+        $this->expectExceptionCode(HTML_QuickForm2_Rule::ERROR_CANNOT_ADD_REQUIRED_RULE);
+        $rule->and_(new HTML_QuickForm2_Rule_Required($mockNode, 'element is required'));
+
+        $this->expectExceptionCode(HTML_QuickForm2_Rule_Required::ERROR_CANNOT_ADD_RULE_TO_REQUIRED);
+        $rule->or_(new HTML_QuickForm2_Rule_Required($mockNode, 'element is required'));
     }
 
-    public function testCannotAppendWithOr_()
+    public function testCannotAppendWithOr_() : void
     {
-        $mockNode = $this->getMockBuilder('HTML_QuickForm2_Node')
-            ->setMethods($this->nodeAbstractMethods)
+        $mockNode = $this->getMockBuilder(HTML_QuickForm2_Node::class)
+            ->onlyMethods($this->nodeAbstractMethods)
             ->getMock();
+
         $required = new HTML_QuickForm2_Rule_Required($mockNode, 'element is required');
-        try {
-            $required->or_(
-                $this->getMockBuilder('HTML_QuickForm2_Rule')
-                    ->setMethods(array('validateOwner'))
-                    ->setConstructorArgs(array($mockNode, 'some message'))
-                    ->getMock()
-            );
-        } catch (HTML_QuickForm2_Exception $e) {
-            $this->assertMatchesRegularExpression('/Cannot add a rule to "required" rule/', $e->getMessage());
-            return;
-        }
-        $this->fail('Expected HTML_QuickForm2_Exception was not thrown');
+
+        $this->expectExceptionCode(HTML_QuickForm2_Rule_Required::ERROR_CANNOT_ADD_RULE_TO_REQUIRED);
+
+        $required->or_(
+            $this->getMockBuilder(HTML_QuickForm2_Rule::class)
+                ->onlyMethods(array('validateOwner'))
+                ->setConstructorArgs(array($mockNode, 'some message'))
+                ->getMock()
+        );
     }
 
-   /**
-    * @link http://pear.php.net/bugs/18133
-    */
-    public function testCannotHaveEmptyMessage()
+    /**
+     * @link http://pear.php.net/bugs/18133
+     */
+    public function testCannotHaveEmptyMessage() : void
     {
         $this->expectException(HTML_QuickForm2_InvalidArgumentException::class);
-        
-        $mockNode = $this->getMockBuilder('HTML_QuickForm2_Node')
-            ->setMethods($this->nodeAbstractMethods)
+
+        $mockNode = $this->getMockBuilder(HTML_QuickForm2_Node::class)
+            ->onlyMethods($this->nodeAbstractMethods)
             ->getMock();
 
         new HTML_QuickForm2_Rule_Required($mockNode);
     }
+
+    public function testWillUseDefaultMessage() : void
+    {
+        $mockNode = $this->getMockBuilder(HTML_QuickForm2_Node::class)
+            ->onlyMethods($this->nodeAbstractMethods)
+            ->getMock();
+
+        HTML_QuickForm2_Rule_Required::setDefaultMessage('Default message');
+
+        $rule = new HTML_QuickForm2_Rule_Required($mockNode);
+
+        $this->assertSame('Default message', $rule->getMessage());
+
+        $rule->setMessage('Overridden default');
+
+        $this->assertSame('Overridden default', $rule->getMessage());
+    }
+
+    // endregion
+
+    // region: Support methods
+
+    protected array $nodeAbstractMethods = array(
+        array(HTML_QuickForm2_Node::class, 'updateValue')[1],
+        array(HTML_QuickForm2_Node::class, 'getId')[1],
+        array(HTML_QuickForm2_Node::class, 'getName')[1],
+        array(HTML_QuickForm2_Node::class, 'getType')[1],
+        array(HTML_QuickForm2_Node::class, 'getRawValue')[1],
+        array(HTML_QuickForm2_Node::class, 'setId')[1],
+        array(HTML_QuickForm2_Node::class, 'setName')[1],
+        array(HTML_QuickForm2_Node::class, 'setValue')[1],
+        array(HTML_QuickForm2_Node::class, '__toString')[1],
+        array(HTML_QuickForm2_Node::class, 'getJavascriptValue')[1],
+        array(HTML_QuickForm2_Node::class, 'getJavascriptTriggers')[1],
+        array(HTML_QuickForm2_Node::class, 'render')[1]
+    );
+
+    protected function setUp() : void
+    {
+        parent::setUp();
+
+        // Ensure the default message is empty
+        HTML_QuickForm2_Rule_Required::setDefaultMessage('');
+    }
+
+    // endregion
 }
-?>

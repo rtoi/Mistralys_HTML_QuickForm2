@@ -10,85 +10,38 @@
  * with this package in the file LICENSE and available at the URL
  * https://raw.githubusercontent.com/pear/HTML_QuickForm2/trunk/docs/LICENSE
  *
- * @category  HTML
  * @package   HTML_QuickForm2
  * @author    Alexey Borzov <avb@php.net>
  * @author    Bertrand Mansion <golgote@mamasam.com>
+ * @category  HTML
  * @copyright 2006-2020 Alexey Borzov <avb@php.net>, Bertrand Mansion <golgote@mamasam.com>
  * @license   https://opensource.org/licenses/BSD-3-Clause BSD 3-Clause License
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+namespace QuickFormTests;
+
+use HTML_QuickForm2_Container;
+use HTML_QuickForm2_InvalidArgumentException;
+use HTML_QuickForm2_NotFoundException;
+use HTML_QuickForm2_Renderer;
+use HTML_QuickForm2_Rule;
 use PHPUnit\Framework\TestCase;
-
-/**
- * A non-abstract subclass of Element
- *
- * Element class is still abstract, we should "implement" the remaining methods.
- * We need working setValue() / getValue() to test getValue() of Container
- */
-class HTML_QuickForm2_ElementImpl2 extends HTML_QuickForm2_Element
-{
-    protected $value;
-
-    public function getType() { return 'concrete'; }
-    public function __toString() { return ''; }
-
-    public function getRawValue()
-    {
-        return $this->value;
-    }
-
-    public function setValue($value)
-    {
-        $this->value = $value;
-    }
-}
-
-/**
- * A non-abstract subclass of Container
- *
- * Container class is still abstract, we should "implement" the remaining methods
- * and also make validate() public to be able to test it.
- */
-class HTML_QuickForm2_ContainerImpl extends HTML_QuickForm2_Container
-{
-    public function getType() { return 'concrete'; }
-    public function setValue($value) { return ''; }
-    public function __toString() { return ''; }
-
-    public function validate() { return parent::validate(); }
-}
-
-/**
- * A Rule to check that Container Rules are called after those of contained elements
- *
- * @see https://pear.php.net/bugs/17576
- */
-class RuleRequest17576 extends HTML_QuickForm2_Rule
-{
-    protected function validateOwner()
-    {
-        foreach ($this->owner as $child) {
-            if ($child->getError()) {
-                return false;
-            }
-        }
-        return true;
-    }
-}
+use QuickFormTests\CustomClasses\TestElementImpl2;
+use QuickFormTests\CustomClasses\RuleRequest17576;
+use QuickFormTests\CustomClasses\TestContainerImpl;
 
 /**
  * Unit test for HTML_QuickForm2_Container class
  */
-class HTML_QuickForm2_ContainerTest extends TestCase
+class ContainerTest extends TestCase
 {
     public function testCanSetName()
     {
-        $obj = new HTML_QuickForm2_ContainerImpl();
+        $obj = new TestContainerImpl();
         $this->assertNotNull($obj->getName(), 'Containers should always have \'name\' attribute');
 
-        $obj = new HTML_QuickForm2_ContainerImpl('foo');
+        $obj = new TestContainerImpl('foo');
         $this->assertEquals('foo', $obj->getName());
 
         $this->assertSame($obj, $obj->setName('bar'));
@@ -102,7 +55,7 @@ class HTML_QuickForm2_ContainerTest extends TestCase
 
     public function testCanSetId()
     {
-        $obj = new HTML_QuickForm2_ContainerImpl(null, array('id' => 'manual'));
+        $obj = new TestContainerImpl(null, array('id' => 'manual'));
         $this->assertEquals('manual', $obj->getId());
 
         $this->assertSame($obj, $obj->setId('another'));
@@ -115,24 +68,30 @@ class HTML_QuickForm2_ContainerTest extends TestCase
 
     public function testAutogenerateId()
     {
-        $obj = new HTML_QuickForm2_ContainerImpl('somename');
+        $obj = new TestContainerImpl('somename');
         $this->assertNotEquals('', $obj->getId(), 'Should have an auto-generated \'id\' attribute');
 
-        $obj2 = new HTML_QuickForm2_ContainerImpl('somename');
+        $obj2 = new TestContainerImpl('somename');
         $this->assertNotEquals($obj2->getId(), $obj->getId(), 'Auto-generated \'id\' attributes should be unique');
     }
 
 
     public function testCanNotRemoveNameOrId()
     {
-        $obj = new HTML_QuickForm2_ContainerImpl('somename', array(), array('id' => 'someid'));
-        try {
+        $obj = new TestContainerImpl('somename', array(), array('id' => 'someid'));
+        try
+        {
             $obj->removeAttribute('name');
-        } catch (HTML_QuickForm2_InvalidArgumentException $e) {
+        }
+        catch (HTML_QuickForm2_InvalidArgumentException $e)
+        {
             $this->assertMatchesRegularExpression('/Required attribute(.*)can not be removed/', $e->getMessage());
-            try {
+            try
+            {
                 $obj->removeAttribute('id');
-            } catch (HTML_QuickForm2_InvalidArgumentException $e) {
+            }
+            catch (HTML_QuickForm2_InvalidArgumentException $e)
+            {
                 $this->assertMatchesRegularExpression('/Required attribute(.*)can not be removed/', $e->getMessage());
                 return;
             }
@@ -143,9 +102,9 @@ class HTML_QuickForm2_ContainerTest extends TestCase
 
     public function testAddAndGetElements()
     {
-        $e1 = new HTML_QuickForm2_ElementImpl2('e1');
-        $e2 = new HTML_QuickForm2_ElementImpl2('e2');
-        $c1 = new HTML_QuickForm2_ContainerImpl('c1');
+        $e1 = new TestElementImpl2('e1');
+        $e2 = new TestElementImpl2('e2');
+        $c1 = new TestContainerImpl('c1');
         $c1->appendChild($e1);
         $c1->appendChild($e2);
         $this->assertEquals(2, count($c1), 'Element count is incorrect');
@@ -156,15 +115,15 @@ class HTML_QuickForm2_ContainerTest extends TestCase
 
     public function testNestedAddAndGetElements()
     {
-        $e1 = new HTML_QuickForm2_ElementImpl2('a1');
-        $e2 = new HTML_QuickForm2_ElementImpl2('a2');
-        $c1 = new HTML_QuickForm2_ContainerImpl('b1');
+        $e1 = new TestElementImpl2('a1');
+        $e2 = new TestElementImpl2('a2');
+        $c1 = new TestContainerImpl('b1');
         $c1->appendChild($e1);
         $c1->appendChild($e2);
 
-        $e3 = new HTML_QuickForm2_ElementImpl2('a3');
-        $e4 = new HTML_QuickForm2_ElementImpl2('a4');
-        $c2 = new HTML_QuickForm2_ContainerImpl('b2');
+        $e3 = new TestElementImpl2('a3');
+        $e4 = new TestElementImpl2('a4');
+        $c2 = new TestContainerImpl('b2');
         $c2->appendChild($e3);
         $c2->appendChild($e4);
         $c2->appendChild($c1);
@@ -177,20 +136,26 @@ class HTML_QuickForm2_ContainerTest extends TestCase
 
     public function testCannotSetContainerOnSelf()
     {
-        $e1 = new HTML_QuickForm2_ElementImpl2('d1');
-        $e2 = new HTML_QuickForm2_ElementImpl2('d2');
-        $c1 = new HTML_QuickForm2_ContainerImpl('f1');
+        $e1 = new TestElementImpl2('d1');
+        $e2 = new TestElementImpl2('d2');
+        $c1 = new TestContainerImpl('f1');
         $c1->appendChild($e1);
         $c1->appendChild($e2);
-        try {
+        try
+        {
             $c1->appendChild($c1);
-        } catch (HTML_QuickForm2_InvalidArgumentException $e) {
+        }
+        catch (HTML_QuickForm2_InvalidArgumentException $e)
+        {
             $this->assertEquals('Cannot set an element or its child as its own container', $e->getMessage());
-            $c2 = new HTML_QuickForm2_ContainerImpl('f2');
+            $c2 = new TestContainerImpl('f2');
             $c2->appendChild($c1);
-            try {
+            try
+            {
                 $c1->appendChild($c2);
-            } catch (HTML_QuickForm2_InvalidArgumentException $e) {
+            }
+            catch (HTML_QuickForm2_InvalidArgumentException $e)
+            {
                 $this->assertEquals('Cannot set an element or its child as its own container', $e->getMessage());
                 return;
             }
@@ -201,9 +166,9 @@ class HTML_QuickForm2_ContainerTest extends TestCase
 
     public function testAddSameElementMoreThanOnce()
     {
-        $e1 = new HTML_QuickForm2_ElementImpl2('g1');
-        $e2 = new HTML_QuickForm2_ElementImpl2('g2');
-        $c1 = new HTML_QuickForm2_ContainerImpl('h1');
+        $e1 = new TestElementImpl2('g1');
+        $e2 = new TestElementImpl2('g2');
+        $c1 = new TestContainerImpl('h1');
         $c1->appendChild($e1);
         $c1->appendChild($e2);
         $c1->appendChild($e1);
@@ -215,10 +180,10 @@ class HTML_QuickForm2_ContainerTest extends TestCase
 
     public function testMoveElement()
     {
-        $e1 = new HTML_QuickForm2_ElementImpl2('move1');
+        $e1 = new TestElementImpl2('move1');
 
-        $c1 = new HTML_QuickForm2_ContainerImpl('cmove1');
-        $c2 = new HTML_QuickForm2_ContainerImpl('cmove2');
+        $c1 = new TestContainerImpl('cmove1');
+        $c2 = new TestContainerImpl('cmove2');
 
         $c1->appendChild($e1);
         $this->assertSame($e1, $c1->getElementById($e1->getId()));
@@ -231,10 +196,10 @@ class HTML_QuickForm2_ContainerTest extends TestCase
 
     public function testRemoveElement()
     {
-        $e1 = new HTML_QuickForm2_ElementImpl2('i1');
-        $e2 = new HTML_QuickForm2_ElementImpl2('i2');
+        $e1 = new TestElementImpl2('i1');
+        $e2 = new TestElementImpl2('i2');
 
-        $c1 = new HTML_QuickForm2_ContainerImpl('j1');
+        $c1 = new TestContainerImpl('j1');
 
         $c1->appendChild($e1);
         $c1->appendChild($e2);
@@ -247,29 +212,31 @@ class HTML_QuickForm2_ContainerTest extends TestCase
 
     public function testCannotRemoveNonExisting()
     {
-        $e1 = new HTML_QuickForm2_ElementImpl2('remove1');
-        $e2 = new HTML_QuickForm2_ElementImpl2('remove2');
+        $e1 = new TestElementImpl2('remove1');
+        $e2 = new TestElementImpl2('remove2');
 
-        $c1 = new HTML_QuickForm2_ContainerImpl('cremove1');
-        $c2 = new HTML_QuickForm2_ContainerImpl('cremove2');
+        $c1 = new TestContainerImpl('cremove1');
+        $c2 = new TestContainerImpl('cremove2');
 
         $c1->appendChild($c2);
         $c2->appendChild($e1);
 
-        try {
+        try
+        {
             $c1->removeChild($e1);
-        } 
-        catch (HTML_QuickForm2_NotFoundException $e) 
+        }
+        catch (HTML_QuickForm2_NotFoundException $e)
         {
             $this->assertEquals(
-                HTML_QuickForm2_Container::ERROR_REMOVE_CHILD_HAS_OTHER_CONTAINER, 
+                HTML_QuickForm2_Container::ERROR_REMOVE_CHILD_HAS_OTHER_CONTAINER,
                 $e->getCode()
             );
-            
-            try {
+
+            try
+            {
                 $c1->removeChild($e2);
-            } 
-            catch (HTML_QuickForm2_NotFoundException $e) 
+            }
+            catch (HTML_QuickForm2_NotFoundException $e)
             {
                 $this->assertEquals(
                     HTML_QuickForm2_Container::ERROR_REMOVE_CHILD_HAS_OTHER_CONTAINER,
@@ -278,19 +245,19 @@ class HTML_QuickForm2_ContainerTest extends TestCase
                 return;
             }
         }
-        
+
         $this->fail('Expected HTML_QuickForm2_NotFoundException was not thrown');
     }
 
     public function testInsertBefore()
     {
-        $e1 = new HTML_QuickForm2_ElementImpl2('k1');
-        $e2 = new HTML_QuickForm2_ElementImpl2('k2');
-        $e3 = new HTML_QuickForm2_ElementImpl2('k3');
-        $e4 = new HTML_QuickForm2_ElementImpl2('k4');
+        $e1 = new TestElementImpl2('k1');
+        $e2 = new TestElementImpl2('k2');
+        $e3 = new TestElementImpl2('k3');
+        $e4 = new TestElementImpl2('k4');
 
-        $c1 = new HTML_QuickForm2_ContainerImpl('l1');
-        $c2 = new HTML_QuickForm2_ContainerImpl('l2');
+        $c1 = new TestContainerImpl('l1');
+        $c2 = new TestContainerImpl('l2');
 
         $c1->appendChild($e1);
         $c1->appendChild($e2);
@@ -305,35 +272,42 @@ class HTML_QuickForm2_ContainerTest extends TestCase
 
         $test = array($e2, $e3, $e4, $e1);
         $i = 0;
-        foreach ($c1 as $element) {
+        foreach ($c1 as $element)
+        {
             $this->assertSame($test[$i++], $element, 'Elements are in the wrong order');
         }
     }
 
     public function testInsertBeforeNonExistingElement()
     {
-        $e1 = new HTML_QuickForm2_ElementImpl2('m1');
-        $e2 = new HTML_QuickForm2_ElementImpl2('m2');
-        $e3 = new HTML_QuickForm2_ElementImpl2('m3');
+        $e1 = new TestElementImpl2('m1');
+        $e2 = new TestElementImpl2('m2');
+        $e3 = new TestElementImpl2('m3');
 
-        $c1 = new HTML_QuickForm2_ContainerImpl('n1');
+        $c1 = new TestContainerImpl('n1');
         $c1->appendChild($e1);
-        $c2 = new HTML_QuickForm2_ContainerImpl('n2');
+        $c2 = new TestContainerImpl('n2');
         $c2->appendChild($c1);
-        try {
+        try
+        {
             $c1->insertBefore($e2, $e3);
-        } catch (HTML_QuickForm2_NotFoundException $e) {
+        }
+        catch (HTML_QuickForm2_NotFoundException $e)
+        {
             $this->assertEquals(
-                $e->getCode(), 
+                $e->getCode(),
                 HTML_QuickForm2_Container::ERROR_CANNOT_FIND_CHILD_ELEMENT_INDEX,
                 'Not the expected error code'
             );
-            try {
+            try
+            {
                 $c2->insertBefore($e2, $e1);
-            } catch (HTML_QuickForm2_NotFoundException $e) {
+            }
+            catch (HTML_QuickForm2_NotFoundException $e)
+            {
                 $this->assertEquals(
                     $e->getCode(),
-                    HTML_QuickForm2_Container::ERROR_CANNOT_FIND_CHILD_ELEMENT_INDEX, 
+                    HTML_QuickForm2_Container::ERROR_CANNOT_FIND_CHILD_ELEMENT_INDEX,
                     'Not the expected error code'
                 );
                 return;
@@ -344,14 +318,14 @@ class HTML_QuickForm2_ContainerTest extends TestCase
 
     public function testGetElementsByName()
     {
-        $e1 = new HTML_QuickForm2_ElementImpl2('foo');
-        $e2 = new HTML_QuickForm2_ElementImpl2('bar');
-        $e3 = new HTML_QuickForm2_ElementImpl2('foo');
-        $e4 = new HTML_QuickForm2_ElementImpl2('baz');
-        $e5 = new HTML_QuickForm2_ElementImpl2('foo');
+        $e1 = new TestElementImpl2('foo');
+        $e2 = new TestElementImpl2('bar');
+        $e3 = new TestElementImpl2('foo');
+        $e4 = new TestElementImpl2('baz');
+        $e5 = new TestElementImpl2('foo');
 
-        $c1 = new HTML_QuickForm2_ContainerImpl('fooContainer1');
-        $c2 = new HTML_QuickForm2_ContainerImpl('fooContainer2');
+        $c1 = new TestContainerImpl('fooContainer1');
+        $c2 = new TestContainerImpl('fooContainer2');
 
         $c1->appendChild($e1);
         $c1->appendChild($e2);
@@ -367,11 +341,11 @@ class HTML_QuickForm2_ContainerTest extends TestCase
 
     public function testDuplicateIdHandling()
     {
-        $e1 = new HTML_QuickForm2_ElementImpl2('dup1', array('id' => 'dup'));
-        $e2 = new HTML_QuickForm2_ElementImpl2('dup2', array('id' => 'dup'));
+        $e1 = new TestElementImpl2('dup1', array('id' => 'dup'));
+        $e2 = new TestElementImpl2('dup2', array('id' => 'dup'));
 
-        $c1 = new HTML_QuickForm2_ContainerImpl('dupContainer1');
-        $c2 = new HTML_QuickForm2_ContainerImpl('dupContainer2');
+        $c1 = new TestContainerImpl('dupContainer1');
+        $c2 = new TestContainerImpl('dupContainer2');
 
         $c1->appendChild($e1);
         $c1->appendChild($e2);
@@ -389,8 +363,8 @@ class HTML_QuickForm2_ContainerTest extends TestCase
 
     public function testFrozenStatusPropagates()
     {
-        $cFreeze = new HTML_QuickForm2_ContainerImpl('cFreeze');
-        $elFreeze = $cFreeze->appendChild(new HTML_QuickForm2_ElementImpl2('elFreeze'));
+        $cFreeze = new TestContainerImpl('cFreeze');
+        $elFreeze = $cFreeze->appendChild(new TestElementImpl2('elFreeze'));
 
         $cFreeze->toggleFrozen(true);
         $this->assertTrue($cFreeze->toggleFrozen(), 'Container should be frozen');
@@ -403,8 +377,8 @@ class HTML_QuickForm2_ContainerTest extends TestCase
 
     public function testPersistentFreezePropagates()
     {
-        $cPers = new HTML_QuickForm2_ContainerImpl('cPersistent');
-        $elPers = $cPers->appendChild(new HTML_QuickForm2_ElementImpl2('elPersistent'));
+        $cPers = new TestContainerImpl('cPersistent');
+        $elPers = $cPers->appendChild(new TestElementImpl2('elPersistent'));
 
         $cPers->persistentFreeze(true);
         $this->assertTrue($cPers->persistentFreeze(), 'Container should have persistent freeze behaviour');
@@ -417,15 +391,15 @@ class HTML_QuickForm2_ContainerTest extends TestCase
 
     public function testGetValue()
     {
-        $c1 = new HTML_QuickForm2_ContainerImpl('hasValues');
+        $c1 = new TestContainerImpl('hasValues');
         $this->assertNull($c1->getValue());
 
-        $c2 = $c1->appendChild(new HTML_QuickForm2_ContainerImpl('sub'));
+        $c2 = $c1->appendChild(new TestContainerImpl('sub'));
         $this->assertNull($c1->getValue());
 
-        $el1 = $c1->appendChild(new HTML_QuickForm2_ElementImpl2('foo[idx]'));
-        $el2 = $c1->appendChild(new HTML_QuickForm2_ElementImpl2('bar'));
-        $el3 = $c2->appendChild(new HTML_QuickForm2_ElementImpl2('baz'));
+        $el1 = $c1->appendChild(new TestElementImpl2('foo[idx]'));
+        $el2 = $c1->appendChild(new TestElementImpl2('bar'));
+        $el3 = $c2->appendChild(new TestElementImpl2('baz'));
         $this->assertNull($c1->getValue());
 
         $el1->setValue('a value');
@@ -440,10 +414,10 @@ class HTML_QuickForm2_ContainerTest extends TestCase
 
     public function testGetRawValue()
     {
-        $c = new HTML_QuickForm2_ContainerImpl('filtered');
+        $c = new TestContainerImpl('filtered');
 
-        $foo = $c->appendChild(new HTML_QuickForm2_ElementImpl2('foo'));
-        $bar = $c->appendChild(new HTML_QuickForm2_ElementImpl2('bar'));
+        $foo = $c->appendChild(new TestElementImpl2('foo'));
+        $bar = $c->appendChild(new TestElementImpl2('bar'));
 
         $foo->setValue(' foo value ');
         $bar->setValue(' BAR VALUE ');
@@ -468,28 +442,28 @@ class HTML_QuickForm2_ContainerTest extends TestCase
 
     public function testValidate()
     {
-        $cValidate = new HTML_QuickForm2_ContainerImpl('validate');
-        $el1 = $cValidate->appendChild(new HTML_QuickForm2_ElementImpl2('foo'));
-        $el2 = $cValidate->appendChild(new HTML_QuickForm2_ElementImpl2('bar'));
+        $cValidate = new TestContainerImpl('validate');
+        $el1 = $cValidate->appendChild(new TestElementImpl2('foo'));
+        $el2 = $cValidate->appendChild(new TestElementImpl2('bar'));
 
         $ruleTrue1 = $this->getMockBuilder('HTML_QuickForm2_Rule')
             ->setMethods(array('validateOwner'))
             ->setConstructorArgs(array($cValidate, 'irrelevant message'))
             ->getMock();
         $ruleTrue1->expects($this->once())->method('validateOwner')
-                  ->will($this->returnValue(true));
+            ->will($this->returnValue(true));
         $ruleFalse = $this->getMockBuilder('HTML_QuickForm2_Rule')
             ->setMethods(array('validateOwner'))
             ->setConstructorArgs(array($el1, 'some error'))
             ->getMock();
         $ruleFalse->expects($this->once())->method('validateOwner')
-                  ->will($this->returnValue(false));
+            ->will($this->returnValue(false));
         $ruleTrue2 = $this->getMockBuilder('HTML_QuickForm2_Rule')
             ->setMethods(array('validateOwner'))
             ->setConstructorArgs(array($el2, 'irrelevant message'))
             ->getMock();
         $ruleTrue2->expects($this->once())->method('validateOwner')
-                  ->will($this->returnValue(true));
+            ->will($this->returnValue(true));
 
         $cValidate->addRule($ruleTrue1);
         $el1->addRule($ruleFalse);
@@ -498,22 +472,22 @@ class HTML_QuickForm2_ContainerTest extends TestCase
         $this->assertEquals('', $cValidate->getError());
     }
 
-   /**
-    * Container rules should be called after element rules
-    *
-    * @link http://pear.php.net/bugs/17576
-    */
+    /**
+     * Container rules should be called after element rules
+     *
+     * @link http://pear.php.net/bugs/17576
+     */
     public function testRequest17576()
     {
-        $container = new HTML_QuickForm2_ContainerImpl('last');
-        $element   = $container->appendChild(new HTML_QuickForm2_ElementImpl2('foo'));
+        $container = new TestContainerImpl('last');
+        $element = $container->appendChild(new TestElementImpl2('foo'));
 
         $ruleChange = $this->getMockBuilder('HTML_QuickForm2_Rule')
             ->setMethods(array('validateOwner'))
             ->setConstructorArgs(array($element, 'a message'))
             ->getMock();
         $ruleChange->expects($this->exactly(2))->method('validateOwner')
-                   ->will($this->onConsecutiveCalls(true, false));
+            ->will($this->onConsecutiveCalls(true, false));
         $element->addRule($ruleChange);
 
         $container->addRule(new RuleRequest17576(
@@ -527,39 +501,39 @@ class HTML_QuickForm2_ContainerTest extends TestCase
         $this->assertEquals('a contained element is invalid', $container->getError());
     }
 
-   /**
-    * Checks that JS for container rules comes after js for rules on contained elements
-    */
+    /**
+     * Checks that JS for container rules comes after js for rules on contained elements
+     */
     public function testRequest17576Client()
     {
-        $container = new HTML_QuickForm2_ContainerImpl('aContainer');
-        $element   = $container->appendChild(new HTML_QuickForm2_ElementImpl2('anElement'));
+        $container = new TestContainerImpl('aContainer');
+        $element = $container->appendChild(new TestElementImpl2('anElement'));
 
         $ruleContainer = $this->getMockBuilder('HTML_QuickForm2_Rule')
             ->setMethods(array('validateOwner', 'getJavascriptCallback'))
             ->setConstructorArgs(array($container))
             ->getMock();
         $ruleContainer->expects($this->once())->method('getJavascriptCallback')
-                      ->will($this->returnValue('containerCallback'));
+            ->will($this->returnValue('containerCallback'));
         $ruleElement = $this->getMockBuilder('HTML_QuickForm2_Rule')
             ->setMethods(array('validateOwner', 'getJavascriptCallback'))
             ->setConstructorArgs(array($element))
             ->getMock();
         $ruleElement->expects($this->once())->method('getJavascriptCallback')
-                    ->will($this->returnValue('elementCallback'));
+            ->will($this->returnValue('elementCallback'));
 
         $container->addRule($ruleContainer, HTML_QuickForm2_Rule::CLIENT);
         $element->addRule($ruleElement, HTML_QuickForm2_Rule::CLIENT);
         $this->assertMatchesRegularExpression(
             '/elementCallback.*containerCallback/s',
             $container->render(HTML_QuickForm2_Renderer::factory('default'))
-                      ->getJavascriptBuilder()->getFormJavascript()
+                ->getJavascriptBuilder()->getFormJavascript()
         );
     }
 
     public function testFrozenContainersHaveNoClientValidation()
     {
-        $container = new HTML_QuickForm2_ContainerImpl('aContainer');
+        $container = new TestContainerImpl('aContainer');
         $ruleContainer = $this->getMockBuilder('HTML_QuickForm2_Rule')
             ->setMethods(array('validateOwner', 'getJavascriptCallback'))
             ->setConstructorArgs(array($container))
@@ -571,19 +545,20 @@ class HTML_QuickForm2_ContainerTest extends TestCase
         $this->assertEquals(
             '',
             $container->render(HTML_QuickForm2_Renderer::factory('default'))
-                      ->getJavascriptBuilder()->getFormJavascript()
+                ->getJavascriptBuilder()->getFormJavascript()
         );
     }
 
     public function testGetValueBrackets()
     {
-        $c = new HTML_QuickForm2_ContainerImpl('withBrackets');
-        $el1 = $c->appendChild(new HTML_QuickForm2_ElementImpl2('foo[]'));
-        $el2 = $c->appendChild(new HTML_QuickForm2_ElementImpl2('foo[]'));
+        $c = new TestContainerImpl('withBrackets');
+        $el1 = $c->appendChild(new TestElementImpl2('foo[]'));
+        $el2 = $c->appendChild(new TestElementImpl2('foo[]'));
 
         $el1->setValue('first');
         $el2->setValue('second');
         $this->assertEquals(array('foo' => array('first', 'second')), $c->getValue());
     }
 }
+
 ?>

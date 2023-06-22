@@ -618,9 +618,9 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
     * @param HTML_QuickForm2_Rule|string $rule           Validation rule or rule type
     * @param string|int                  $messageOrRunAt If first parameter is rule type,
     *            then message to display if validation fails, otherwise constant showing
-    *            whether to perfom validation client-side and/or server-side
+    *            whether to perform validation client-side and/or server-side
     * @param mixed                       $options        Configuration data for the rule
-    * @param int                         $runAt          Whether to perfom validation
+    * @param int                         $runAt          Whether to perform validation
     *               server-side and/or client side. Combination of
     *               HTML_QuickForm2_Rule::SERVER and HTML_QuickForm2_Rule::CLIENT constants
     *
@@ -672,6 +672,27 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
             return $rule;
         }
         
+        throw new HTML_QuickForm2_InvalidArgumentException(
+            'Invalid rule created.',
+            self::ERROR_INVALID_CALLBACK_RULE_INSTANCE
+        );
+    }
+
+    /**
+     * @param string|int|float|Stringable|NULL $message
+     * @return HTML_QuickForm2_Rule_Required
+     * @throws HTML_QuickForm2_InvalidArgumentException
+     * @throws HTML_QuickForm2_NotFoundException
+     */
+    public function addRuleRequired($message=null) : HTML_QuickForm2_Rule_Required
+    {
+        $rule = $this->addRule('required', (string)$message);
+
+        if($rule instanceof HTML_QuickForm2_Rule_Required)
+        {
+            return $rule;
+        }
+
         throw new HTML_QuickForm2_InvalidArgumentException(
             'Invalid rule created.',
             self::ERROR_INVALID_CALLBACK_RULE_INSTANCE

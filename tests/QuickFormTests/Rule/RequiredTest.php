@@ -21,7 +21,6 @@
 
 namespace QuickFormTests\Rule;
 
-use HTML_QuickForm2_InvalidArgumentException;
 use HTML_QuickForm2_Node;
 use HTML_QuickForm2_Rule;
 use HTML_QuickForm2_Rule_Required;
@@ -32,8 +31,6 @@ use QuickFormTests\CaseClasses\QuickFormCase;
  */
 class RequiredTest extends QuickFormCase
 {
-    // region: _Tests
-
     public function testMakesElementRequired() : void
     {
         $mockNode = $this->getMockBuilder('HTML_QuickForm2_Node')
@@ -82,18 +79,64 @@ class RequiredTest extends QuickFormCase
         );
     }
 
+    public function testAddRequiredRule() : void
+    {
+        $mockNode = $this->getMockBuilder(HTML_QuickForm2_Node::class)
+            ->onlyMethods($this->nodeAbstractMethods)
+            ->getMock();
+
+        $this->assertFalse($mockNode->isRequired());
+
+        $mockNode->addRuleRequired('Message');
+
+        $this->assertTrue($mockNode->isRequired());
+    }
+
+    public function testAddRequiredRuleWithDefaultMessage() : void
+    {
+        $mockNode = $this->getMockBuilder(HTML_QuickForm2_Node::class)
+            ->onlyMethods($this->nodeAbstractMethods)
+            ->getMock();
+
+        HTML_QuickForm2_Rule_Required::setDefaultMessage('Default');
+
+        $mockNode->addRuleRequired();
+
+        $this->addToAssertionCount(1);
+    }
+
+    public function testAddRequiredRuleCannotHaveEmptyMessage() : void
+    {
+        $mockNode = $this->getMockBuilder(HTML_QuickForm2_Node::class)
+            ->onlyMethods($this->nodeAbstractMethods)
+            ->getMock();
+
+        $this->expectExceptionCode(HTML_QuickForm2_Rule_Required::ERROR_EMPTY_ERROR_MESSAGE);
+
+        $mockNode->addRuleRequired();
+    }
+
     /**
      * @link http://pear.php.net/bugs/18133
      */
     public function testCannotHaveEmptyMessage() : void
     {
-        $this->expectException(HTML_QuickForm2_InvalidArgumentException::class);
+        $this->expectExceptionCode(HTML_QuickForm2_Rule_Required::ERROR_EMPTY_ERROR_MESSAGE);
 
         $mockNode = $this->getMockBuilder(HTML_QuickForm2_Node::class)
             ->onlyMethods($this->nodeAbstractMethods)
             ->getMock();
 
         new HTML_QuickForm2_Rule_Required($mockNode);
+    }
+
+    public function testSetDefaultMessage() : void
+    {
+        $this->assertSame('', HTML_QuickForm2_Rule_Required::getDefaultMessage());
+
+        HTML_QuickForm2_Rule_Required::setDefaultMessage('Default message');
+
+        $this->assertSame('Default message', HTML_QuickForm2_Rule_Required::getDefaultMessage());
     }
 
     public function testWillUseDefaultMessage() : void
@@ -112,33 +155,4 @@ class RequiredTest extends QuickFormCase
 
         $this->assertSame('Overridden default', $rule->getMessage());
     }
-
-    // endregion
-
-    // region: Support methods
-
-    protected array $nodeAbstractMethods = array(
-        array(HTML_QuickForm2_Node::class, 'updateValue')[1],
-        array(HTML_QuickForm2_Node::class, 'getId')[1],
-        array(HTML_QuickForm2_Node::class, 'getName')[1],
-        array(HTML_QuickForm2_Node::class, 'getType')[1],
-        array(HTML_QuickForm2_Node::class, 'getRawValue')[1],
-        array(HTML_QuickForm2_Node::class, 'setId')[1],
-        array(HTML_QuickForm2_Node::class, 'setName')[1],
-        array(HTML_QuickForm2_Node::class, 'setValue')[1],
-        array(HTML_QuickForm2_Node::class, '__toString')[1],
-        array(HTML_QuickForm2_Node::class, 'getJavascriptValue')[1],
-        array(HTML_QuickForm2_Node::class, 'getJavascriptTriggers')[1],
-        array(HTML_QuickForm2_Node::class, 'render')[1]
-    );
-
-    protected function setUp() : void
-    {
-        parent::setUp();
-
-        // Ensure the default message is empty
-        HTML_QuickForm2_Rule_Required::setDefaultMessage('');
-    }
-
-    // endregion
 }

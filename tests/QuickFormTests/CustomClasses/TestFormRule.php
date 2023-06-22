@@ -15,6 +15,6 @@ class TestFormRule extends HTML_QuickForm2_Rule
 
     protected function setOwnerError() : void
     {
-        $this->owner->getElementById('foo')->setError('an error message');
+        $this->getOwner()->getElementById('foo')->setError('an error message');
     }
 }

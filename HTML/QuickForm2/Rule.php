@@ -35,47 +35,52 @@
  */
 abstract class HTML_QuickForm2_Rule
 {
+    public const ERROR_CANNOT_ADD_REQUIRED_RULE = 139201;
+    public const ERROR_HIDDENS_CANNOT_HAVE_VALIDATION = 139202;
+    public const ERROR_NO_OWNER_SET = 139203;
+    public const ERROR_STATICS_CANNOT_HAVE_VALIDATION = 139204;
+
    /**
     * Constant showing that validation should be run server-side
     * @see  HTML_QuickForm2_Node::addRule()
     */
-    const SERVER = 1;
+    public const SERVER = 1;
 
    /**
     * Constant showing that validation should be run client-side (on form submit)
     * @see  HTML_QuickForm2_Node::addRule()
     */
-    const CLIENT = 2;
+    public const CLIENT = 2;
 
    /**
     * Constant showing that validation should be run client-side (on form submit and on leaving the field)
     * @see  HTML_QuickForm2_Node::addRule()
     */
-    const ONBLUR_CLIENT = 6;
+    public const ONBLUR_CLIENT = 6;
 
    /**
     * A combination of SERVER and CLIENT constants
     * @see  HTML_QuickForm2_Node::addRule()
     */
-    const CLIENT_SERVER = 3;
+    public const CLIENT_SERVER = 3;
 
    /**
     * A combination of SERVER and ONBLUR_CLIENT constants
     * @see  HTML_QuickForm2_Node::addRule()
     */
-    const ONBLUR_CLIENT_SERVER = 7;
+    public const ONBLUR_CLIENT_SERVER = 7;
 
-   /**
+    /**
     * An element whose value will be validated by this rule
-    * @var  HTML_QuickForm2_Node
+    * @var  HTML_QuickForm2_Node|NULL
     */
-    protected $owner;
+    protected ?HTML_QuickForm2_Node $owner = null;
 
    /**
     * An error message to display if validation fails
     * @var  string
     */
-    protected $message;
+    protected string $message = '';
 
    /**
     * Configuration data for the rule
@@ -92,15 +97,15 @@ abstract class HTML_QuickForm2_Rule
     *
     * @var  array
     */
-    protected $chainedRules = array(array());
+    protected array $chainedRules = array(array());
 
 
    /**
     * Class constructor
     *
-    * @param HTML_QuickForm2_Node $owner   Element to validate
-    * @param string               $message Error message to display if validation fails
-    * @param mixed                $config  Configuration data for the rule
+    * @param HTML_QuickForm2_Node $owner Element to validate
+    * @param string|number|Stringable|NULL $message Error message to display if validation fails
+    * @param mixed $config  Configuration data for the rule
     */
     public function __construct(HTML_QuickForm2_Node $owner, $message = '', $config = null)
     {
@@ -153,23 +158,30 @@ abstract class HTML_QuickForm2_Rule
    /**
     * Sets the error message output by the rule
     *
-    * @param string $message Error message to display if validation fails
+    * @param string|number|Stringable|NULL $message Error message to display if validation fails
     *
     * @return $this
     * @throws HTML_QuickForm2_InvalidArgumentException if trying to validate
     *       HTML_QuickForm2_Element_InputHidden with a non-empty error message
-    *       (e.g. not in Rule chain)
+    *       (e.g. not in Rule chain) {@see self::ERROR_HIDDENS_CANNOT_HAVE_VALIDATION}
     */
-    public function setMessage($message)
+    public function setMessage($message) : self
     {
-        if ($this->owner instanceof HTML_QuickForm2_Element_InputHidden
-            && strlen($message)
+        $message = (string)$message;
+
+        if (
+            $message !== ''
+            &&
+            $this->getOwner() instanceof HTML_QuickForm2_Element_InputHidden
         ) {
             throw new HTML_QuickForm2_InvalidArgumentException(
-                "Hidden elements cannot have validation errors"
+                "Hidden elements cannot have validation errors",
+                self::ERROR_HIDDENS_CANNOT_HAVE_VALIDATION
             );
         }
-        $this->message = (string)$message;
+
+        $this->message = $message;
+
         return $this;
     }
 
@@ -178,7 +190,7 @@ abstract class HTML_QuickForm2_Rule
     *
     * @return   string  Error message
     */
-    public function getMessage()
+    public function getMessage() : string
     {
         return $this->message;
     }
@@ -193,26 +205,33 @@ abstract class HTML_QuickForm2_Rule
     *       trying to validate HTML_QuickForm2_Element_InputHidden with a
     *       non-empty error message (e.g. not in Rule chain)
     */
-    public function setOwner(HTML_QuickForm2_Node $owner)
+    public function setOwner(HTML_QuickForm2_Node $owner) : void
     {
         // Very little sense to validate static elements as they're, well, static.
         // If someone comes up with a validation rule for these, he can override
         // setOwner() there...
         if ($owner instanceof HTML_QuickForm2_Element_Static) {
             throw new HTML_QuickForm2_InvalidArgumentException(
-                get_class($this) . ' cannot validate Static elements'
+                get_class($this) . ' cannot validate Static elements',
+                self::ERROR_STATICS_CANNOT_HAVE_VALIDATION
             );
         }
-        if ($owner instanceof HTML_QuickForm2_Element_InputHidden
-            && strlen($this->getMessage())
+
+        if (
+            $owner instanceof HTML_QuickForm2_Element_InputHidden
+            &&
+            $this->getMessage() !== ''
         ) {
             throw new HTML_QuickForm2_InvalidArgumentException(
-                "Hidden elements cannot have validation errors"
+                "Hidden elements cannot have validation errors",
+                self::ERROR_HIDDENS_CANNOT_HAVE_VALIDATION
             );
         }
-        if (null !== $this->owner) {
+
+        if (isset($this->owner)) {
             $this->owner->removeRule($this);
         }
+
         $this->owner = $owner;
     }
 
@@ -233,7 +252,8 @@ abstract class HTML_QuickForm2_Rule
     {
         if ($next instanceof HTML_QuickForm2_Rule_Required) {
             throw new HTML_QuickForm2_InvalidArgumentException(
-                'and_(): Cannot add a "required" rule'
+                'and_(): Cannot add a "required" rule',
+                self::ERROR_CANNOT_ADD_REQUIRED_RULE
             );
         }
         $this->chainedRules[count($this->chainedRules) - 1][] = $next;
@@ -257,7 +277,8 @@ abstract class HTML_QuickForm2_Rule
     {
         if ($next instanceof HTML_QuickForm2_Rule_Required) {
             throw new HTML_QuickForm2_InvalidArgumentException(
-                'or_(): Cannot add a "required" rule'
+                'or_(): Cannot add a "required" rule',
+                self::ERROR_CANNOT_ADD_REQUIRED_RULE
             );
         }
         $this->chainedRules[] = array($next);
@@ -307,8 +328,10 @@ abstract class HTML_QuickForm2_Rule
     */
     protected function setOwnerError()
     {
-        if (strlen($this->getMessage()) && !$this->owner->getError()) {
-            $this->owner->setError($this->getMessage());
+        $owner = $this->getOwner();
+
+        if (strlen($this->getMessage()) && !$owner->getError()) {
+            $owner->setError($this->getMessage());
         }
     }
 
@@ -335,9 +358,9 @@ abstract class HTML_QuickForm2_Rule
     *
     * @return array
     */
-    protected function getOwnJavascriptTriggers()
+    protected function getOwnJavascriptTriggers() : array
     {
-        return $this->owner->getJavascriptTriggers();
+        return $this->getOwner()->getJavascriptTriggers();
     }
 
    /**
@@ -363,6 +386,19 @@ abstract class HTML_QuickForm2_Rule
         return array_keys($triggers);
     }
 
+    public function getOwner() : HTML_QuickForm2_Node
+    {
+        if(isset($this->owner))
+        {
+            return $this->owner;
+        }
+
+        throw new HTML_QuickForm2_Exception(
+            'No owner has been set for the rule.',
+            self::ERROR_NO_OWNER_SET
+        );
+    }
+
    /**
     * Returns the client-side representation of the Rule
     *
@@ -383,7 +419,9 @@ abstract class HTML_QuickForm2_Rule
     */
     public function getJavascript($outputTriggers = true)
     {
-        $js = $this->getJavascriptCallback() . ",\n\t'" . $this->owner->getId()
+        $owner = $this->getOwner();
+
+        $js = $this->getJavascriptCallback() . ",\n\t'" . $owner->getId()
               . "', " . HTML_QuickForm2_JavascriptBuilder::encode($this->getMessage());
 
         $js = $outputTriggers && count($triggers = $this->getJavascriptTriggers())
@@ -405,4 +443,3 @@ abstract class HTML_QuickForm2_Rule
         return $js . ')';
     }
 }
-?>

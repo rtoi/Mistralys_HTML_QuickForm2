@@ -521,17 +521,17 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
     }
 
 
-   /**
-    * Adds the link to the element containing current
-    *
-    * @param HTML_QuickForm2_Container $container Element containing
-    *                           the current one, null if the link should
-    *                           really be removed (if removing from container)
-    *
-    * @throws   HTML_QuickForm2_InvalidArgumentException   If trying to set a
-    *                               child of an element as its container
-    */
-    protected function setContainer(HTML_QuickForm2_Container $container = null)
+    /**
+     * Adds the link to the element containing current
+     *
+     * @param HTML_QuickForm2_Container|NULL $container Element containing
+     *                           the current one, null if the link should
+     *                           really be removed (if removing from container)
+     *
+     * @throws HTML_QuickForm2_InvalidArgumentException If trying to set a child of an element as its container {@see self::ERROR_CANNOT_SET_CHILD_AS_OWN_CONTAINER}.
+     * @throws HTML_QuickForm2_NotFoundException
+     */
+    protected function setContainer(?HTML_QuickForm2_Container $container = null) : void
     {
         if($this->hasContainerParent($container)) {
             throw new HTML_QuickForm2_InvalidArgumentException(
@@ -557,8 +557,6 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
         if( $container !== null) {
             $this->updateValue();
         }
-        
-        return;
     }
     
     public function hasContainerParent(HTML_QuickForm2_Container $container = null)

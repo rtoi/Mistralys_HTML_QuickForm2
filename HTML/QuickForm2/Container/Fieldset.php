@@ -38,7 +38,7 @@ class HTML_QuickForm2_Container_Fieldset extends HTML_QuickForm2_Container
     */
     protected array $watchedAttributes = array('id');
 
-    public function getType()
+    public function getType() : string
     {
         return 'fieldset';
     }

@@ -37,7 +37,7 @@ class PageFoo extends TabbedPage
     {
         $this->addTabs();
 
-        $fs = $this->form->addElement('fieldset')->setLabel('Foo page');
+        $fs = $this->form->addFieldset()->setLabel('Foo page');
 
         $radioGroup = $fs->addElement('group')->setLabel('Do you want this feature?')
                          ->setSeparator('<br />');
@@ -60,7 +60,7 @@ class PageBar extends TabbedPage
     {
         $this->addTabs();
 
-        $fs = $this->form->addElement('fieldset')->setLabel('Bar page');
+        $fs = $this->form->addFieldset()->setLabel('Bar page');
 
         // XXX: no date element yet
         $dateGroup = $fs->addElement('group', 'favDate')->setLabel('Favourite date:')
@@ -95,7 +95,7 @@ class PageBaz extends TabbedPage
     {
         $this->addTabs();
 
-        $fs = $this->form->addElement('fieldset')->setLabel('Baz page');
+        $fs = $this->form->addFieldset()->setLabel('Baz page');
 
         $poem = $fs->addElement('textarea', 'textPoetry', array('rows' => 5, 'cols' => 40))
                    ->setLabel('Recite a poem:');

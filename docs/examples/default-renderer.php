@@ -5,6 +5,9 @@
  * The example demonstrates how the default renderer can be used and abused.
  * It also provides a default stylesheet.
  */
+
+require_once __DIR__.'/_prepend.php';
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">

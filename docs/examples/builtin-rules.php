@@ -5,6 +5,9 @@
  * The example uses all Rule classes provided with HTML_QuickForm2 and also
  * showcases rule chaining.
  */
+
+require_once __DIR__.'/_prepend.php';
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -93,13 +96,13 @@ $form->addElement('hidden', 'MAX_FILE_SIZE')->setValue('102400');
 // Simple fields validation, rule chaining
 //
 
-$fsAuth = $form->addElement('fieldset')->setLabel('Auth credentials');
+$fsAuth = $form->addFieldset()->setLabel('Auth credentials');
 $username = $fsAuth->addElement('text', 'testUsername', array('style' => 'width: 200px;'))
                    ->setLabel('Username (letters only):');
 $email = $fsAuth->addElement('text', 'testEmail', array('style' => 'width: 200px'))
                 ->setLabel('Email:');
 
-$fsPasswords = $fsAuth->addElement('fieldset')
+$fsPasswords = $fsAuth->addFieldset()
                       ->setLabel('Supply password only if you want to change it');
 
 $oldPassword = $fsPasswords->addElement('password', 'oldPassword', array('style' => 'width: 200px;'))
@@ -140,7 +143,7 @@ $newPassword->addRule('nonempty', '', null, HTML_QuickForm2_Rule::ONBLUR_CLIENT_
 // Grouped elements validation
 //
 
-$fsGrouped = $form->addElement('fieldset')->setLabel('Validating grouped elements');
+$fsGrouped = $form->addFieldset()->setLabel('Validating grouped elements');
 $boxGroup = $fsGrouped->addElement('group', 'boxes')->setLabel('Check at least two:');
 $boxGroup->addElement('checkbox', null, array('value' => 'red'))->setContent('<span style="color: #f00;">Red</span>');
 $boxGroup->addElement('checkbox', null, array('value' => 'green'))->setContent('<span style="color: #0f0;">Green</span>');
@@ -163,7 +166,7 @@ $friends->addRule('each', 'Friends\' usernames should contain only letters',
 // File uploads validation
 //
 
-$fsUpload = $form->addElement('fieldset')->setLabel('Upload picture (try one &gt; 100 kB for fun)');
+$fsUpload = $form->addFieldset()->setLabel('Upload picture (try one &gt; 100 kB for fun)');
 $upload = $fsUpload->addElement('file', 'testUpload', array('style' => 'width: 200px'))
                    ->setLabel('Picture (gif, jpg, png, &lt;=20kB):');
 

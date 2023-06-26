@@ -44,7 +44,7 @@ $form->addDataSource(new HTML_QuickForm2_DataSource_Array(array(
 )));
 
 // text input elements
-$fsText = $form->addElement('fieldset')->setLabel('Text boxes');
+$fsText = $form->addFieldset()->setLabel('Text boxes');
 $fsText->addElement(
     'text', 'textTest', array('style' => 'width: 300px;'), array('label' => 'Test Text:')
 )->addRule('required', 'This field is required');
@@ -57,7 +57,7 @@ $area = $fsText->addElement(
 );
 $area->addRule('required', 'This field is required');
 
-$fsNested = $form->addElement('fieldset')->setLabel('Nested fieldset');
+$fsNested = $form->addFieldset()->setLabel('Nested fieldset');
 $fsNested->addElement(
     'text', 'userTest', array('style' => 'width: 200px'), array('label' => 'Username:')
 );
@@ -69,7 +69,7 @@ $fsText->insertBefore($fsNested, $area);
 
 
 // selects
-$fsSelect = $form->addElement('fieldset')->setLabel('Selects');
+$fsSelect = $form->addFieldset()->setLabel('Selects');
 $fsSelect->addElement(
     'select', 'selSingleTest', null, array('options' => $options, 'label' => 'Single select:')
 );
@@ -79,7 +79,7 @@ $fsSelect->addElement(
 );
 
 // checkboxes and radios
-$fsCheck = $form->addElement('fieldset')->setLabel('Checkboxes and radios');
+$fsCheck = $form->addFieldset()->setLabel('Checkboxes and radios');
 $fsCheck->addElement(
     'checkbox', 'boxTest', null, array('content' => 'check me', 'label' => 'Test Checkbox:')
 );
@@ -90,7 +90,7 @@ $fsCheck->addElement(
     'radio', 'radioTest', array('value' => 2), array('content' => 'select radio #2', 'label' => '(continued)')
 );
 
-$fsCustom = $form->addElement('fieldset')->setLabel('Custom elements');
+$fsCustom = $form->addFieldset()->setLabel('Custom elements');
 $fsCustom->addElement(
     'date', 'testDate', null,
     array('format' => 'd-F-Y', 'minYear' => date('Y'), 'maxYear' => 2001)
@@ -102,7 +102,7 @@ $fsCustom->addElement('hierselect', 'testHierselect', array('style' => 'width: 2
          ->setSeparator('<br />');
 
 // buttons
-$fsButton = $form->addElement('fieldset')->setLabel('Buttons');
+$fsButton = $form->addFieldset()->setLabel('Buttons');
 $testReset = $fsButton->addElement(
     'reset', 'testReset', array('value' => 'This is a reset button')
 );
@@ -116,7 +116,7 @@ $fsButton->addElement(
           'width="32" height="32" alt="pear" />This button does almost nothing')
 );
 // submit buttons in nested fieldset
-$fsSubmit = $fsButton->addElement('fieldset')->setLabel('These buttons can submit the form');
+$fsSubmit = $fsButton->addFieldset()->setLabel('These buttons can submit the form');
 $fsSubmit->addElement(
     'submit', 'testSubmit', array('value' => 'Test Submit')
 );

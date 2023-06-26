@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Usage example for HTML_QuickForm2 package: custom element and renderer plugin
  *
  * The example demonstrates a custom element with special rendering needs and
@@ -9,6 +9,8 @@
  * It also demonstrates how to plug in element's javascript and how to use
  * client-side validation with custom element.
  */
+
+require_once __DIR__.'/_prepend.php';
 
 /**
  * "Dualselect" element
@@ -209,8 +211,8 @@ TPL;
 }
 
 // Now we register both the element and the renderer plugin
-HTML_QuickForm2_Factory::registerElement('dualselect', 'HTML_QuickForm2_Element_DualSelect');
-HTML_QuickForm2_Renderer::registerPlugin('default', 'HTML_QuickForm2_Renderer_Default_DualSelectPlugin');
+HTML_QuickForm2_Factory::registerElement('dualselect', HTML_QuickForm2_Element_DualSelect::class);
+HTML_QuickForm2_Renderer::registerPlugin('default', HTML_QuickForm2_Renderer_Default_DualSelectPlugin::class);
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -274,7 +276,7 @@ $form->addDataSource(new HTML_QuickForm2_DataSource_Array(array(
     'destinations' => array(4, 148, 180, 368, 706, 736, 716)
 )));
 
-$fs = $form->addElement('fieldset')
+$fs = $form->addFieldset()
         ->setLabel('A custom "dualselect" element using a renderer plugin for output');
 
 $ds = $fs->addElement(

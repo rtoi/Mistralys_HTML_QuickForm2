@@ -185,4 +185,3 @@ class OptionLoader
                      'texts'  => array_values($options));
     }
 }
-?>

@@ -3,6 +3,8 @@
  * Usage example for HTML_QuickForm2 package: repeat element
  */
 
+require_once __DIR__.'/_prepend.php';
+
 $form = new HTML_QuickForm2('testRepeat');
 
 $form->addDataSource(new HTML_QuickForm2_DataSource_Array(array(

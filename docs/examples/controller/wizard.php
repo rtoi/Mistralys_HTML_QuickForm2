@@ -13,7 +13,7 @@ class PageFirst extends HTML_QuickForm2_Controller_Page
 {
     protected function populateForm()
     {
-        $fs = $this->form->addElement('fieldset')->setLabel('Wizard page 1 of 3');
+        $fs = $this->form->addFieldset()->setLabel('Wizard page 1 of 3');
 
         $radioGroup = $fs->addElement('group')->setLabel('Are you absolutely sure?');
         $radioGroup->addElement('radio', 'iradYesNo', array('value' => 'Y'), array('content' => 'Yes'));
@@ -31,7 +31,7 @@ class PageSecond extends HTML_QuickForm2_Controller_Page
 {
     protected function populateForm()
     {
-        $fs = $this->form->addElement('fieldset')->setLabel('Wizard page 2 of 3');
+        $fs = $this->form->addFieldset()->setLabel('Wizard page 2 of 3');
 
         $nameGroup = $fs->addElement('group', 'name', array('id' => 'nameGrp'))
                         ->setLabel('Name:')
@@ -54,7 +54,7 @@ class PageThird extends HTML_QuickForm2_Controller_Page
 {
     protected function populateForm()
     {
-        $fs = $this->form->addElement('fieldset')->setLabel('Wizard page 3 of 3');
+        $fs = $this->form->addFieldset()->setLabel('Wizard page 3 of 3');
 
         $fs->addElement('textarea', 'itxaTest', array('rows' => 5, 'cols' => 40))
            ->setLabel('Parting words:')

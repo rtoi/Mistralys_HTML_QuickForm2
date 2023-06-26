@@ -244,7 +244,7 @@ class HTML_QuickForm2_Element_InputFile extends HTML_QuickForm2_Element_Input
         return parent::validate();
     }
 
-    public function addFilter($callback, array $options = array()) : self
+    public function addFilter(callable $callback, array $options = array()) : self
     {
         throw new HTML_QuickForm2_Exception(
             'InputFile elements do not support filters'

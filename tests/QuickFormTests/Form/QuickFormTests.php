@@ -192,7 +192,7 @@ class QuickFormTests extends TestCase
         $form->setDataSources(array($ds1, $ds2));
         $this->assertEquals(2, count($form->getDataSources()));
 
-        $this->expectException(HTML_QuickForm2_InvalidArgumentException::class);
+        $this->expectExceptionCode(HTML_QuickForm2::ERROR_DATA_SOURCES_ARRAY_INVALID);
 
         $form->setDataSources(array($ds1, 'bogus', $ds2));
     }

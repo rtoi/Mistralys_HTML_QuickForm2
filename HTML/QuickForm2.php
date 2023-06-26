@@ -20,7 +20,7 @@
  */
 
 /**
- * Class representing a HTML form
+ * Class representing an HTML form
  *
  * @category HTML
  * @package  HTML_QuickForm2
@@ -32,7 +32,12 @@
  */
 class HTML_QuickForm2 extends HTML_QuickForm2_Container
 {
-   /**
+    public const ERROR_CANNOT_ADD_FORM_TO_CONTAINER = 139401;
+    public const ERROR_ATTRIBUTE_IS_READONLY = 139402;
+    public const ERROR_DATA_SOURCES_ARRAY_INVALID = 139403;
+    public const ERROR_NOT_IMPLEMENTED = 139404;
+
+    /**
     * Data sources providing values for form elements
     * @var HTML_QuickForm2_DataSource[]
     */
@@ -127,54 +132,80 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
 
     protected function onAttributeChange(string $name, $value = null) : void
     {
-        throw new HTML_QuickForm2_InvalidArgumentException(
-            'Attribute \'' . $name . '\' is read-only'
-        );
+        throw self::exceptionAttributeReadonly($name);
     }
 
-    protected function setContainer(HTML_QuickForm2_Container $container = null)
+    /**
+     * @param HTML_QuickForm2_Container|null $container
+     * @return void
+     * @throws HTML_QuickForm2_Exception {@see self::ERROR_CANNOT_ADD_FORM_TO_CONTAINER}
+     */
+    protected function setContainer(?HTML_QuickForm2_Container $container = null) : void
     {
-        throw new HTML_QuickForm2_Exception('Form cannot be added to container');
+        throw new HTML_QuickForm2_Exception(
+            'The main form object cannot be added to a container element.',
+            self::ERROR_CANNOT_ADD_FORM_TO_CONTAINER
+        );
     }
 
     public function setId($id = null)
     {
-        throw new HTML_QuickForm2_InvalidArgumentException(
-            "Attribute 'id' is read-only"
-        );
+        throw self::exceptionAttributeReadonly('id');
     }
 
+    /**
+     * @param string $name The name of the attribute.
+     * @param int|null $code Defaults to {@see self::ERROR_ATTRIBUTE_IS_READONLY}
+     * @return HTML_QuickForm2_InvalidArgumentException
+     */
+    public static function exceptionAttributeReadonly(string $name, ?int $code=null) : HTML_QuickForm2_InvalidArgumentException
+    {
+        if($code === null) {
+            $code = self::ERROR_ATTRIBUTE_IS_READONLY;
+        }
+
+        return new HTML_QuickForm2_InvalidArgumentException(
+            sprintf("Attribute '%s' is read-only", strtolower($name)),
+            $code
+        );
+    }
 
    /**
     * Adds a new data source to the form
     *
     * @param HTML_QuickForm2_DataSource $datasource Data source
     */
-    public function addDataSource(HTML_QuickForm2_DataSource $datasource)
+    public function addDataSource(HTML_QuickForm2_DataSource $datasource) : self
     {
         $this->datasources[] = $datasource;
         $this->updateValue();
+        return $this;
     }
 
    /**
     * Replaces the list of form's data sources with a completely new one
     *
-    * @param array $datasources A new data source list
+    * @param HTML_QuickForm2_DataSource[] $datasources A new data source list
+    * @return $this
     *
     * @throws   HTML_QuickForm2_InvalidArgumentException    if given array
     *               contains something that is not a valid data source
     */
-    public function setDataSources(array $datasources)
+    public function setDataSources(array $datasources) : self
     {
         foreach ($datasources as $ds) {
             if (!$ds instanceof HTML_QuickForm2_DataSource) {
                 throw new HTML_QuickForm2_InvalidArgumentException(
-                    'Array should contain only DataSource instances'
+                    'Array should contain only DataSource instances',
+                    self::ERROR_DATA_SOURCES_ARRAY_INVALID
                 );
             }
         }
+
         $this->datasources = $datasources;
         $this->updateValue();
+
+        return $this;
     }
 
    /**
@@ -192,9 +223,12 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
         return 'form';
     }
 
-    public function setValue($value)
+    public function setValue($value) : self
     {
-        throw new HTML_QuickForm2_Exception('Not implemented');
+        throw new HTML_QuickForm2_Exception(
+            'Not implemented',
+            self::ERROR_NOT_IMPLEMENTED
+        );
     }
 
    /**
@@ -205,7 +239,7 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
     *
     * @return bool
     */
-    public function isSubmitted()
+    public function isSubmitted() : bool
     {
         foreach ($this->datasources as $ds) {
             if ($ds instanceof HTML_QuickForm2_DataSource_Submit) {
@@ -220,7 +254,7 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
     *
     * @return   boolean Whether all form's elements are valid
     */
-    public function validate()
+    public function validate() : bool
     {
         return $this->isSubmitted() && parent::validate();
     }
@@ -229,10 +263,9 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
     * Renders the form using the given renderer
     *
     * @param HTML_QuickForm2_Renderer $renderer
-    *
-    * @return   HTML_QuickForm2_Renderer
+    * @return HTML_QuickForm2_Renderer
     */
-    public function render(HTML_QuickForm2_Renderer $renderer)
+    public function render(HTML_QuickForm2_Renderer $renderer) : HTML_QuickForm2_Renderer
     {
         $this->preRender();
         
@@ -241,8 +274,10 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
         foreach ($this as $element) {
             $element->render($renderer);
         }
+
         $this->renderClientRules($renderer->getJavascriptBuilder());
         $renderer->finishForm($this);
+
         return $renderer;
     }
     

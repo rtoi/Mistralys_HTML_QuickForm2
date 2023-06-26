@@ -6,7 +6,7 @@ parallel forms.
 
 ## Requirements
 
-- PHP 7.4+
+- PHP 7.4+ (PHP8 compatible)
 - [Composer](https://getcomposer.org)
 
 ## Installation
@@ -19,7 +19,7 @@ composer require mistralys/html_quickform2
 
 Also see the [Packagist page](https://packagist.org/packages/mistralys/html_quickform2).
 
-## Additions
+## Additions and improvements
 
   * Elements: set/getRuntimeProperty() method to store data at runtime
   * Default array datasource: `setValues()` method 
@@ -27,8 +27,10 @@ Also see the [Packagist page](https://packagist.org/packages/mistralys/html_quic
   * Elements: `makeOptional()` method to remove any required rules
   * Elements: `hasErrors()` method to check if an element has errors after validation
   * Elements: `getRules()` method to retrieve all rules added to the element
-  * Elements: `hasRules()` method to check if an element has any rules 
+  * Elements: `hasRules()` method to check if an element has any rules
+  * Elements: `addRuleXXX()` shorthand methods, including `addRuleRequired()`.
   * Elements: `appendComment()` method to append text to an existing comment.
+  * Elements: `setComment()` extended to allow `Stringable` values.
   * Containers: `requireElementById()` with non-null return value.
   * Rules: The callback rule now has a method `getCallback()` to retrieve the configured callback.
   * Text-based elements: `addFilterTrim()` method. 
@@ -36,11 +38,12 @@ Also see the [Packagist page](https://packagist.org/packages/mistralys/html_quic
   * Select element: Support for selects with a custom OptGroup class.
   * Select element: OptGroups `getLabel()` method.
   * Select element: `countOptions()` method with recursive capability.
+  * Ongoing overall code modernization with strict typing. 
 
 ## Performance tweaks
 
-  * Container `getElementById()` method 
-  * Auto-generated element IDs
+  * Container `getElementById()` method.
+  * Auto-generated element IDs.
 
 ## Element ID generation
 

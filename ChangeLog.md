@@ -2,22 +2,37 @@
 
 ## v2.2.0 (Breaking)
 - Core: Dropped the `PEAR_Exception` package.
+- Core: Now fully PHP8 compatible, without deprecated warnings.
 - Containers: Added `requireElementById()` for a guaranteed return type.
-- Exceptions: Removed PEAR_Exception dependency.
+- Exceptions: Removed the PEAR exception dependency.
 - Elements: Added `addRuleRequired()` helper method.
 - Rules: Added static `setDefaultMessage()` to the required rule.
 - Rules: `setMessage()` now accepts more message variable types.
-- Error Handling: Added some error codes with constants.
+- Exceptions: Added error codes to some exceptions.
 - Unit Tests: Ongoing modernisation.
 - Unit Tests: Added the base test case class `QuickFormCase`.
 - Unit Tests: Moved mock classes to individual files.
+- Factory: Deprecated the old class loading mechanisms.
+- Factory: Removed the file parameter from `registerElements()`.
+- Factory: Parameter `$includeFile` in `registerRule()` is deprecated.
+- Loader: Added `requireObjectInstanceOf()`.
+- Loader: Added `requireClassExists()`.
+- Examples: They can now be opened in the browser (via a webserver).
 
 ### Breaking changes:
 
-The `HTML_QuickForm2_Exception` no longer extends `PEAR_Exception`, but
-simply the vanilla `Exception` class with a slightly more lenient 
-constructor. Please check if you use `PEAR_Exception` instead of the 
-QuickForm exception.
+- The `HTML_QuickForm2_Exception` no longer extends `PEAR_Exception`, but
+  simply the vanilla `Exception` class with a slightly more lenient 
+  constructor. Please check if you use `PEAR_Exception` instead of the 
+  QuickForm exception.
+- Some error exception error messages have changed. If you relied on 
+  matching the text to detect the exact exception, please switch to 
+  the new exception codes.
+
+### Deprecated methods:
+
+- `HTML_QuickForm2_Loader::autoload()`.
+- `HTML_QuickForm2_Loader::loadClass()`.
 
 ## v2.1.8
 - Select Element: Added `isMultiple()`.

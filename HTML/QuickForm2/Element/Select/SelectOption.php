@@ -9,7 +9,7 @@ use BaseHTMLElement;
 use Stringable;
 
 /**
- * @implements ArrayAccess<string,mixed>
+ * @implements ArrayAccess<string,string|array<string,string>>
  */
 class SelectOption implements ArrayAccess, Stringable
 {
@@ -116,16 +116,30 @@ class SelectOption implements ArrayAccess, Stringable
         return isset($this->data[$offset]);
     }
 
+    /**
+     * @param string $offset
+     * @return string|array<string,string>
+     */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->data[$offset];
     }
 
+    /**
+     * @param string $offset
+     * @param string|array<string,string> $value
+     * @return void
+     */
     public function offsetSet($offset, $value) : void
     {
         $this->data[(string)$offset] = $value;
     }
 
+    /**
+     * @param string $offset
+     * @return void
+     */
     public function offsetUnset($offset) : void
     {
         unset($this->data[$offset]);

@@ -211,14 +211,14 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
    /**
     * Returns the list of data sources attached to the form
     *
-    * @return   array
+    * @return HTML_QuickForm2_DataSource[]
     */
-    public function getDataSources()
+    public function getDataSources() : array
     {
         return $this->datasources;
     }
 
-    public function getType()
+    public function getType() : string
     {
         return 'form';
     }
@@ -284,18 +284,19 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
     /**
      * Filter for form's getValue() removing internal fields' values from the array
      *
-     * @param array $value
+     * @param array<string,mixed> $value
+     * @return array<string,mixed>
      *
-     * @return array
      * @link http://pear.php.net/bugs/bug.php?id=19403
      */
-    protected function skipInternalFields($value)
+    protected function skipInternalFields(array $value) : array
     {
         foreach (array_keys($value) as $key) {
-            if ('_qf' === substr($key, 0, 3)) {
+            if (strpos($key, '_qf') === 0) {
                 unset($value[$key]);
             }
         }
+
         return $value;
     }
    
@@ -305,7 +306,7 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
     * 
     * @return HTML_QuickForm2_EventHandler
     */
-    public function getEventHandler()
+    public function getEventHandler() : HTML_QuickForm2_EventHandler
     {
         return $this->eventHandler;
     }

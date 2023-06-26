@@ -71,7 +71,7 @@ class HTML_QuickForm2_ContainerOverloadTest extends TestCase
 
     public function testAddElementWithUnderscoreInType()
     {
-        HTML_QuickForm2_Factory::registerElement('super_box', 'HTML_QuickForm2_Element_InputCheckbox');
+        HTML_QuickForm2_Factory::registerElement('super_box', HTML_QuickForm2_Element_InputCheckbox::class);
         $this->assertTrue(HTML_QuickForm2_Factory::isElementRegistered('super_box'));
 
         $c = new TestContainerImpl('cCOT3');

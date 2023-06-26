@@ -18,6 +18,9 @@ abstract class QuickFormCase extends TestCase
         HTML_QuickForm2_Rule_Required::setDefaultMessage('');
     }
 
+    /**
+     * @var string[]
+     */
     protected array $nodeAbstractMethods = array(
         array(HTML_QuickForm2_Node::class, 'updateValue')[1],
         array(HTML_QuickForm2_Node::class, 'getId')[1],

@@ -384,7 +384,7 @@ class HTML_QuickForm2_Container_Repeat extends HTML_QuickForm2_Container
             $name = $child->getName();
             // checkboxes and radios can have index inside "value" attribute instead,
             // group names should not be touched
-            if (strlen($name) && false === strpos($name, self::INDEX_KEY)
+            if (!empty($name) && false === strpos($name, self::INDEX_KEY)
                 && (!$child instanceof HTML_QuickForm2_Container || !$child->prependsName())
                 && (!$child instanceof HTML_QuickForm2_Element_InputCheckable
                     || false === strpos($child->getAttribute('value'), self::INDEX_KEY))
@@ -440,18 +440,27 @@ class HTML_QuickForm2_Container_Repeat extends HTML_QuickForm2_Container
     {
         $key = 0;
         /* @var HTML_QuickForm2_Node $child */
-        foreach ($this->getRecursiveIterator() as $child) {
+        foreach ($this->getRecursiveIterator() as $child)
+        {
             if (array_key_exists('value', $backup[$key])) {
                 $child->setValue($backup[$key]['value']);
             }
-            if (false !== strpos($backup[$key]['name'], self::INDEX_KEY)) {
-                $child->setName($backup[$key]['name']);
-            }
-            if ($child instanceof HTML_QuickForm2_Element_InputCheckable
-                && false !== strpos($backup[$key]['valueAttr'], self::INDEX_KEY)
+
+            if (
+                isset($backup[$key]['name'])
+                && strpos((string)$backup[$key]['name'], self::INDEX_KEY) !== false
             ) {
-                $child->setAttribute('value', $backup[$key]['valueAttr']);
+                $child->setName((string)$backup[$key]['name']);
             }
+
+            if (
+                $child instanceof HTML_QuickForm2_Element_InputCheckable
+                && isset($backup[$key]['valueAttr'])
+                && strpos((string)$backup[$key]['valueAttr'], self::INDEX_KEY) !== false
+            ) {
+                $child->setAttribute('value', (string)$backup[$key]['valueAttr']);
+            }
+
             if (array_key_exists('id', $backup[$key])) {
                 $child->setId($backup[$key]['id']);
             }
@@ -476,23 +485,32 @@ class HTML_QuickForm2_Container_Repeat extends HTML_QuickForm2_Container
         $this->passDataSources = true;
         $key = 0;
         /* @var HTML_QuickForm2_Node $child */
-        foreach ($this->getRecursiveIterator() as $child) {
-            if (false !== strpos($backup[$key]['name'], self::INDEX_KEY)) {
-                $child->setName(str_replace(self::INDEX_KEY, (string)$index, $backup[$key]['name']));
+        foreach ($this->getRecursiveIterator() as $child)
+        {
+            if (
+                isset($backup[$key]['name'])
+                && strpos((string)$backup[$key]['name'], self::INDEX_KEY) !== false
+            ) {
+                $child->setName(str_replace(self::INDEX_KEY, (string)$index, (string)$backup[$key]['name']));
             }
-            if ($child instanceof HTML_QuickForm2_Element_InputCheckable
-                && false !== strpos($backup[$key]['valueAttr'], self::INDEX_KEY)
+
+            if (
+                $child instanceof HTML_QuickForm2_Element_InputCheckable
+                && isset($backup[$key]['valueAttr'])
+                && strpos($backup[$key]['valueAttr'], self::INDEX_KEY) !== false
             ) {
                 $child->setAttribute(
                     'value', str_replace(self::INDEX_KEY, (string)$index, $backup[$key]['valueAttr'])
                 );
             }
+
             if (array_key_exists('id', $backup[$key])) {
-                $child->setId(str_replace(self::INDEX_KEY, (string)$index, $backup[$key]['id']));
+                $child->setId(str_replace(self::INDEX_KEY, (string)$index, (string)$backup[$key]['id']));
             }
             if (array_key_exists('error', $backup[$key])) {
                 $child->setError();
             }
+
             $key++;
         }
     }

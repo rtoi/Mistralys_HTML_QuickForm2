@@ -200,9 +200,9 @@ class HTML_QuickForm2_Container_Group extends HTML_QuickForm2_Container
             }
         }
 
-        if (strlen($this->name)) {
+        if (!empty($this->name)) {
             $element->setName($this->name . '[' . implode('][', $tokens) . ']');
-        } elseif (strlen($this->previousName)) {
+        } elseif (!empty($this->previousName)) {
             $elname = array_shift($tokens);
             foreach ($tokens as $token) {
                 $elname .= '[' . $token . ']';

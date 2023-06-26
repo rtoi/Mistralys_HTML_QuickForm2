@@ -569,9 +569,9 @@ class HTML_QuickForm2_Renderer_Default extends HTML_QuickForm2_Renderer
     *
     * @return   string  Template with label substitutions done
     */
-    public function outputLabel($elTpl, $label)
+    public function outputLabel($elTpl, $label) : string
     {
-        $mainLabel = is_array($label)? array_shift($label): $label;
+        $mainLabel = (string)(is_array($label)? array_shift($label): $label);
         $elTpl     = str_replace('{label}', $mainLabel, $elTpl);
         if (false !== strpos($elTpl, '<qf:label>')) {
             if ($mainLabel) {
@@ -595,4 +595,3 @@ class HTML_QuickForm2_Renderer_Default extends HTML_QuickForm2_Renderer
         return $elTpl;
     }
 }
-?>

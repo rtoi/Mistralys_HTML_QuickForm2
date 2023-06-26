@@ -32,7 +32,11 @@
  */
 class HTML_QuickForm2_Loader
 {
-   /**
+    public const ERROR_OBJECT_NOT_INSTANCE_OF = 139801;
+    public const ERROR_THROWABLE_GIVEN_AS_OBJECT = 13902;
+    public const ERROR_CLASS_DOES_NOT_EXIST = 13903;
+
+    /**
     * Tries to load a given class
     *
     * If no $includeFile was provided, $className will be used with underscores
@@ -41,34 +45,11 @@ class HTML_QuickForm2_Loader
     * @param string $className   Class name to load
     * @param string $includeFile Name of the file (supposedly) containing the given class
     * @param bool   $autoload    Whether we should try autoloading
-    *
-    * @throws   HTML_QuickForm2_NotFoundException   If the file either can't be
-    *               loaded or doesn't contain the given class
+    * @deprecated
     */
-    public static function loadClass($className, $includeFile = null, $autoload = false)
+    public static function loadClass($className, $includeFile = null, $autoload = false) : void
     {
-        if (class_exists($className, $autoload) || interface_exists($className, $autoload)) {
-            return;
-        }
-
-        if (empty($includeFile)) {
-            $includeFile = str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
-        }
-        // Do not silence the errors with @, parse errors will not be seen
-        include $includeFile;
-
-        // Still no class?
-        if (!class_exists($className, false) && !interface_exists($className, false)) {
-            if (!self::fileExists($includeFile)) {
-                throw new HTML_QuickForm2_NotFoundException(
-                    "File '$includeFile' was not found"
-                );
-            } else {
-                throw new HTML_QuickForm2_NotFoundException(
-                    "Class '$className' was not found within file '$includeFile'"
-                );
-            }
-        }
+        // Replaced by autoloading
     }
 
    /**
@@ -78,7 +59,7 @@ class HTML_QuickForm2_Loader
     *
     * @return   bool
     */
-    public static function fileExists($fileName)
+    public static function fileExists($fileName) : bool
     {
         $fp = @fopen($fileName, 'r', true);
         if (is_resource($fp)) {
@@ -100,18 +81,88 @@ class HTML_QuickForm2_Loader
     * @param string $class Class name
     *
     * @return   bool    Whether class loaded successfully
+    * @deprecated
     */
-    public static function autoload($class)
+    public static function autoload($class) : bool
     {
-        if (0 !== strpos($class, 'HTML_QuickForm2')) {
-            return false;
+        return true;
+    }
+
+    /**
+     * If the target object is not an instance of the target class
+     * or interface, throws an exception.
+     *
+     * NOTE: If an exception is passed as object, an exception is
+     * thrown with the error code {@see ClassHelper::ERROR_THROWABLE_GIVEN_AS_OBJECT},
+     * and the original exception as previous exception.
+     *
+     * @template ClassInstanceType
+     * @param class-string<ClassInstanceType> $class
+     * @param object $object
+     * @param int $errorCode Default is {@see self::ERROR_OBJECT_NOT_INSTANCE_OF}
+     * @return ClassInstanceType
+     *
+     * @throws HTML_QuickForm2_InvalidArgumentException {@see self::ERROR_THROWABLE_GIVEN_AS_OBJECT}
+     * @throws HTML_QuickForm2_NotFoundException {@see self::ERROR_OBJECT_NOT_INSTANCE_OF}
+     */
+    public static function requireObjectInstanceOf(string $class, object $object, int $errorCode=0)
+    {
+        if($errorCode === 0) {
+            $errorCode = self::ERROR_OBJECT_NOT_INSTANCE_OF;
         }
-        try {
-            @self::loadClass($class);
-            return true;
-        } catch (Exception $e) {
-            return false;
+
+        if($object instanceof Throwable)
+        {
+            throw new HTML_QuickForm2_InvalidArgumentException(
+                $class,
+                self::ERROR_THROWABLE_GIVEN_AS_OBJECT,
+                $object
+            );
         }
+
+        if(!class_exists($class) && !interface_exists($class) && !trait_exists($class))
+        {
+            throw new HTML_QuickForm2_NotFoundException(
+                sprintf(
+                    'Target class, trait or interface [%s] does not exist.',
+                    $class
+                ),
+                $errorCode
+            );
+        }
+
+        if(is_a($object, $class, true))
+        {
+            return $object;
+        }
+
+        throw new HTML_QuickForm2_InvalidArgumentException(
+            sprintf(
+                'The target object [%s] is not an instance of [%s].',
+                get_class($object),
+                $class
+            ),
+            $errorCode
+        );
+    }
+
+    /**
+     * Throws an exception if the target class can not be found.
+     *
+     * @param class-string $className
+     * @return class-string
+     * @throws HTML_QuickForm2_NotFoundException {@see self::ERROR_CLASS_DOES_NOT_EXIST}
+     */
+    public static function requireClassExists(string $className) : string
+    {
+        if(class_exists($className))
+        {
+            return $className;
+        }
+
+        throw new HTML_QuickForm2_NotFoundException(
+            sprintf('The class [%s] does not exist.', $className),
+            self::ERROR_CLASS_DOES_NOT_EXIST
+        );
     }
 }
-?>

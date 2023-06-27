@@ -104,16 +104,24 @@ class NodeTests extends TestCase
         $this->assertFalse($obj->persistentFreeze());
     }
 
-    public function testCanSetAndGetError()
+    public function testCanSetAndGetError() : void
     {
         $obj = new TestNodeImpl();
-        $this->assertEquals('', $obj->getError(), 'Elements shouldn\'t have a error message by default');
+        $this->assertNull($obj->getError(), 'Elements shouldn\'t have a error message by default');
 
         $this->assertSame($obj, $obj->setError('An error message'));
         $this->assertEquals('An error message', $obj->getError());
     }
 
-    public function testValidate()
+    public function testSetEmptyErrorMessage() : void
+    {
+        $obj = new TestNodeImpl();
+
+        $this->assertSame($obj, $obj->setError(''));
+        $this->assertNull($obj->getError());
+    }
+
+    public function testValidate() : void
     {
         $valid = new TestNodeImpl();
         $ruleTrue = $this->getMockBuilder('HTML_QuickForm2_Rule')
@@ -143,7 +151,7 @@ class NodeTests extends TestCase
         $preError = new TestNodeImpl();
         $preError->setError('some message');
         $ruleIrrelevant = $this->getMockBuilder('HTML_QuickForm2_Rule')
-            ->setMethods(array('validateOwner'))
+            ->onlyMethods(array('validateOwner'))
             ->setConstructorArgs(array($preError))
             ->getMock();
         $ruleIrrelevant->expects($this->never())->method('validateOwner');

@@ -202,19 +202,18 @@ class HTML_QuickForm2_Container_RepeatTest extends TestCase
         $this->assertStringNotContainsString('<script', $repeat->__toString());
     }
 
-    public function testServerSideValidationErrors()
+    public function testServerSideValidationErrors() : void
     {
-        $ds = new HTML_QuickForm2_DataSource_Session(array(
-            'foo' => array('', 'blah', '')
-        ));
         $form = new HTML_QuickForm2('repeatValidate');
-        $form->addDataSource($ds);
+
+        $form->addDataSource(new HTML_QuickForm2_DataSource_Session(array(
+            'foo' => array('', 'blah', '')
+        )));
 
         $fieldset = new HTML_QuickForm2_Container_Fieldset();
         $text     = new HTML_QuickForm2_Element_InputText('foo');
-        $repeat   = new HTML_QuickForm2_Container_Repeat(
-            null, null, array('prototype' => $fieldset)
-        );
+        $repeat   = new HTML_QuickForm2_Container_Repeat();
+        $repeat->setPrototype($fieldset);
         $fieldset->appendChild($text);
         $form->appendChild($repeat);
 
@@ -222,8 +221,13 @@ class HTML_QuickForm2_Container_RepeatTest extends TestCase
         $this->assertFalse($form->validate());
 
         $ary = $repeat->render(HTML_QuickForm2_Renderer::factory('array'))->toArray();
+
+        $this->assertSame('', $ary['elements'][1]['elements'][0]['value']);
+        $this->assertSame('blah', $ary['elements'][2]['elements'][0]['value']);
+        $this->assertSame('', $ary['elements'][3]['elements'][0]['value']);
+
         $this->assertEquals('a message', $ary['elements'][1]['elements'][0]['error']);
-        $this->assertArrayNotHasKey('error', $ary['elements'][2]['elements'][0]);
+        $this->assertArrayNotHasKey('error', $ary['elements'][2]['elements'][0], $ary['elements'][2]['elements'][0]['error'] ?? '');
         $this->assertEquals('a message', $ary['elements'][3]['elements'][0]['error']);
 
         $text->setId('blah-:idx:');

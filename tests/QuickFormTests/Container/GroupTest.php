@@ -440,5 +440,16 @@ class HTML_QuickForm2_Element_GroupTest extends TestCase
         $this->assertEquals('', $foo->getValue());
         $this->assertEquals('', $bar->getValue());
     }
+
+    public function testPrependElement() : void
+    {
+        $group = new HTML_QuickForm2_Container_Group();
+        $group->addText('foo');
+        $group->prependElement('text', 'bar');
+
+        $children = $group->getElements();
+
+        $this->assertCount(2, $children);
+        $this->assertSame('bar', $children[0]->getName());
+    }
 }
-?>

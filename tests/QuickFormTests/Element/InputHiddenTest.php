@@ -36,9 +36,10 @@ class HTML_QuickForm2_Element_InputHiddenTest extends TestCase
 
     public function testCannotSetError() : void
     {
-        $this->expectException(HTML_QuickForm2_InvalidArgumentException::class);
-        
         $hidden = new HTML_QuickForm2_Element_InputHidden('noError');
+
+        $this->expectExceptionCode(HTML_QuickForm2_Element_InputHidden::ERROR_HIDDEN_CANNOT_HAVE_VALIDATION);
+        
         $hidden->setError('a message');
     }
 }

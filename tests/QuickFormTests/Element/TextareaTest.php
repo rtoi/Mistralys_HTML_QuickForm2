@@ -55,7 +55,7 @@ class HTML_QuickForm2_Element_TextareaTest extends TestCase
         $this->assertDoesNotMatchRegularExpression('/<foo>/', $area->__toString());
     }
 
-    public function testFrozenHtmlGeneration()
+    public function testFrozenHtmlGeneration() : void
     {
         $area = new HTML_QuickForm2_Element_Textarea('freezeMe');
         $area->setValue('Some string');
@@ -73,5 +73,35 @@ class HTML_QuickForm2_Element_TextareaTest extends TestCase
         $this->assertMatchesRegularExpression('/Some string/', $area->__toString());
         $this->assertDoesNotMatchRegularExpression('!<input[^>]*type="hidden"[^>]*/>!', $area->__toString());
     }
+
+    public function testFilterTrim() : void
+    {
+        $form = $this->createPOSTForm(array(
+            'trimMe' => '   String with spaces      '
+        ));
+
+        $el = $form->addTextarea('trimMe');
+        $el->addFilterTrim();
+
+        $this->assertSame('String with spaces', $el->getValue());
+    }
+
+    public function testSetRowsAndColumns() : void
+    {
+        $el = new HTML_QuickForm2_Element_Textarea('rowsAndCols');
+        $el->setRows(13);
+        $el->setColumns(875);
+
+        $array = $el->render(HTML_QuickForm2_Renderer::factory('array'))->toArray();
+
+        $this->assertStringContainsString('rows="13"', $array['html']);
+        $this->assertStringContainsString('cols="875"', $array['html']);
+    }
+
+    private function createPOSTForm(array $variables=array()) : HTML_QuickForm2
+    {
+        $_POST = $variables;
+
+        return new HTML_QuickForm2(null, 'post', null, false);
+    }
 }
-?>

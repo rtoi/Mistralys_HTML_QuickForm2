@@ -23,10 +23,9 @@ use PHPUnit\Framework\TestCase;
 
 class HTML_QuickForm2_ContainerFilterImpl extends HTML_QuickForm2_Container
 {
-    public function getType() { return 'concrete'; }
-    public function setValue($value) { return ''; }
+    public function getType() : string { return 'concrete'; }
+    public function setValue($value) : self { return $this; }
     public function __toString() { return ''; }
-    public function validate() { return parent::validate(); }
 }
 
 /**
@@ -243,4 +242,4 @@ class HTML_QuickForm2_FilterTest extends TestCase
         $this->assertEquals('foo', $el1->getValue());
     }
 }
-?>
+

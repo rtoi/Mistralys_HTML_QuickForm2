@@ -440,36 +440,48 @@ class ContainerTest extends TestCase
         ), $c->getRawValue());
     }
 
-    public function testValidate()
+    public function testValidate() : void
     {
-        $cValidate = new TestContainerImpl('validate');
-        $el1 = $cValidate->appendChild(new TestElementImpl2('foo'));
-        $el2 = $cValidate->appendChild(new TestElementImpl2('bar'));
+        $container = new TestContainerImpl('container');
+        $el1 = $container->appendChild(new TestElementImpl2('foo'));
+        $el2 = $container->appendChild(new TestElementImpl2('bar'));
 
-        $ruleTrue1 = $this->getMockBuilder('HTML_QuickForm2_Rule')
-            ->setMethods(array('validateOwner'))
-            ->setConstructorArgs(array($cValidate, 'irrelevant message'))
+        $containerRule = $this->getMockBuilder(HTML_QuickForm2_Rule::class)
+            ->onlyMethods(array('validateOwner'))
+            ->setConstructorArgs(array($container, 'irrelevant message'))
             ->getMock();
-        $ruleTrue1->expects($this->once())->method('validateOwner')
+
+        $containerRule
+            ->expects($this->once())
+            ->method('validateOwner')
             ->will($this->returnValue(true));
-        $ruleFalse = $this->getMockBuilder('HTML_QuickForm2_Rule')
-            ->setMethods(array('validateOwner'))
+
+        $el1Rule = $this->getMockBuilder(HTML_QuickForm2_Rule::class)
+            ->onlyMethods(array('validateOwner'))
             ->setConstructorArgs(array($el1, 'some error'))
             ->getMock();
-        $ruleFalse->expects($this->once())->method('validateOwner')
+
+        $el1Rule
+            ->expects($this->once())
+            ->method('validateOwner')
             ->will($this->returnValue(false));
-        $ruleTrue2 = $this->getMockBuilder('HTML_QuickForm2_Rule')
-            ->setMethods(array('validateOwner'))
+
+        $el2Rule = $this->getMockBuilder(HTML_QuickForm2_Rule::class)
+            ->onlyMethods(array('validateOwner'))
             ->setConstructorArgs(array($el2, 'irrelevant message'))
             ->getMock();
-        $ruleTrue2->expects($this->once())->method('validateOwner')
+
+        $el2Rule
+            ->expects($this->once())
+            ->method('validateOwner')
             ->will($this->returnValue(true));
 
-        $cValidate->addRule($ruleTrue1);
-        $el1->addRule($ruleFalse);
-        $el2->addRule($ruleTrue2);
-        $this->assertFalse($cValidate->validate());
-        $this->assertEquals('', $cValidate->getError());
+        $container->addRule($containerRule);
+        $el1->addRule($el1Rule);
+        $el2->addRule($el2Rule);
+
+        $this->assertFalse($container->validate());
+        $this->assertNull($container->getError());
     }
 
     /**
@@ -477,26 +489,37 @@ class ContainerTest extends TestCase
      *
      * @link http://pear.php.net/bugs/17576
      */
-    public function testRequest17576()
+    public function testRequest17576() : void
     {
-        $container = new TestContainerImpl('last');
+        $container = new TestContainerImpl('container');
         $element = $container->appendChild(new TestElementImpl2('foo'));
 
-        $ruleChange = $this->getMockBuilder('HTML_QuickForm2_Rule')
-            ->setMethods(array('validateOwner'))
+        $ruleChange = $this->getMockBuilder(HTML_QuickForm2_Rule::class)
+            ->onlyMethods(array('validateOwner'))
             ->setConstructorArgs(array($element, 'a message'))
             ->getMock();
-        $ruleChange->expects($this->exactly(2))->method('validateOwner')
-            ->will($this->onConsecutiveCalls(true, false));
+
+        // Call the validation several times to trigger the
+        // specific case. Two calls is not enough, because of
+        // the second pass integrated in validate() when the
+        // container itself is valid.
+        $ruleChange->expects($this->exactly(3))->method('validateOwner')
+            ->will($this->onConsecutiveCalls(
+                true,
+                true,
+                false
+            ));
+
         $element->addRule($ruleChange);
 
         $container->addRule(new RuleRequest17576(
             $container, 'a contained element is invalid'
         ));
 
-        // first call
+        // first call (actually counts as 2)
         $this->assertTrue($container->validate());
-        // second call
+
+        // second call (= third children validation)
         $this->assertFalse($container->validate());
         $this->assertEquals('a contained element is invalid', $container->getError());
     }

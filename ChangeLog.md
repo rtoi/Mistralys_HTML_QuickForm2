@@ -29,6 +29,11 @@
   matching the text to detect the exact exception, please switch to 
   the new exception codes.
 
+#### Added node method return types
+
+If you have any custom elements, they will have to be adjusted because
+method return types and property types have been added.
+
 ### Deprecated methods:
 
 - `HTML_QuickForm2_Loader::autoload()`.

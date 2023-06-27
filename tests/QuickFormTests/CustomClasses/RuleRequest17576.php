@@ -13,17 +13,18 @@ use HTML_QuickForm2_Rule;
  */
 class RuleRequest17576 extends HTML_QuickForm2_Rule
 {
-    protected function validateOwner()
+    protected function validateOwner() : bool
     {
         $owner = $this->getOwner();
 
         foreach ($owner as $child)
         {
-            if ($child->getError())
+            if ($child->getError() !== null)
             {
                 return false;
             }
         }
+
         return true;
     }
 }

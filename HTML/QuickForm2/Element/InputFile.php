@@ -134,7 +134,7 @@ class HTML_QuickForm2_Element_InputFile extends HTML_QuickForm2_Element_Input
     *
     * @return $this
     */
-    public function setValue($value)
+    public function setValue($value) : self
     {
         return $this;
     }
@@ -181,7 +181,7 @@ class HTML_QuickForm2_Element_InputFile extends HTML_QuickForm2_Element_Input
         } 
     }
 
-    protected function updateValue()
+    protected function updateValue() : void
     {
         $sources = $this->getDataSources();
         
@@ -206,13 +206,13 @@ class HTML_QuickForm2_Element_InputFile extends HTML_QuickForm2_Element_Input
     * UPLOAD_ERR_OK or UPLOAD_ERR_NO_FILE then a built-in error message will be
     * displayed and no further validation will take place.
     *
-    * @return   boolean     Whether the element is valid
+    * @return boolean Whether the element is valid
     */
-    protected function validate()
+    protected function validate() : bool
     {
         $this->checkPrerequisites();
         
-        if (strlen($this->error)) {
+        if ($this->hasErrors()) {
             return false;
         }
         if (isset($this->value['error'])

@@ -34,8 +34,9 @@ class TestElementImpl2 extends HTML_QuickForm2_Element
         return $this->value;
     }
 
-    public function setValue($value)
+    public function setValue($value) : self
     {
         $this->value = $value;
+        return $this;
     }
 }

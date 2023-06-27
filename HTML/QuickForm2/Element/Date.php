@@ -32,7 +32,7 @@
  */
 class HTML_QuickForm2_Element_Date extends HTML_QuickForm2_Container_Group
 {
-    public function getType()
+    public function getType() : string
     {
         return 'date';
     }
@@ -331,9 +331,9 @@ class HTML_QuickForm2_Element_Date extends HTML_QuickForm2_Container_Group
     * @param int|string|array|DateTime $value A timestamp, a DateTime object,
     *   a string compatible with strtotime() or an array that fits the element names
     *
-    * @return HTML_QuickForm2_Element_Date
+    * @return $this
     */
-    public function setValue($value)
+    public function setValue($value) : self
     {
         if (empty($value)) {
             return parent::setValue(array());
@@ -392,7 +392,7 @@ class HTML_QuickForm2_Element_Date extends HTML_QuickForm2_Container_Group
     * Since the date element also accepts a timestamp as value, the default
     * group behavior is changed.
     */
-    protected function updateValue()
+    protected function updateValue() : void
     {
         $name = $this->getName();
         /* @var $ds HTML_QuickForm2_DataSource_NullAware */

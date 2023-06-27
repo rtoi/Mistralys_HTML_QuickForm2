@@ -15,7 +15,7 @@ class TestElementImpl extends HTML_QuickForm2_Element
 {
     protected $value;
 
-    public function getType()
+    public function getType() : string
     {
         return 'concrete';
     }
@@ -30,8 +30,9 @@ class TestElementImpl extends HTML_QuickForm2_Element
         return $this->value;
     }
 
-    public function setValue($value)
+    public function setValue($value) : self
     {
         $this->value = $value;
+        return $this;
     }
 }

@@ -14,14 +14,14 @@ use HTML_QuickForm2_Container;
  */
 class TestContainerImpl extends HTML_QuickForm2_Container
 {
-    public function getType()
+    public function getType() : string
     {
         return 'concrete';
     }
 
-    public function setValue($value)
+    public function setValue($value) : self
     {
-        return '';
+        return $this;
     }
 
     public function __toString()
@@ -29,7 +29,7 @@ class TestContainerImpl extends HTML_QuickForm2_Container
         return '';
     }
 
-    public function validate()
+    public function validate() : bool
     {
         return parent::validate();
     }

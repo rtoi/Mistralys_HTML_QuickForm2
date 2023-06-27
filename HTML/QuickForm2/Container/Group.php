@@ -35,7 +35,7 @@ class HTML_QuickForm2_Container_Group extends HTML_QuickForm2_Container
    /**
     * Group name
     * If set, group name will be used as prefix for contained
-    * element names, like groupname[elementname].
+    * element names, like <code>groupname[elementname]</code>.
     * @var string|NULL
     */
     protected ?string $name = null;
@@ -48,40 +48,45 @@ class HTML_QuickForm2_Container_Group extends HTML_QuickForm2_Container
     */
     protected $previousName;
 
-    public function getType()
+    public function getType() : string
     {
         return 'group';
     }
 
-    protected function prependsName()
+    protected function prependsName() : bool
     {
-        return strlen($this->name) > 0;
+        return !empty($this->name);
     }
 
-    protected function getChildValues($filtered = false)
+    protected function getChildValues(bool $filtered = false) : ?array
     {
         $value = parent::getChildValues($filtered);
-        if (!$this->prependsName()) {
+
+        if (!$this->prependsName())
+        {
             return $value;
-
-        } elseif (!strpos($this->getName(), '[')) {
-            return isset($value[$this->getName()])? $value[$this->getName()]: null;
-
-        } else {
-            $tokens   =  explode('[', str_replace(']', '', $this->getName()));
-            $valueAry =& $value;
-            do {
-                $token = array_shift($tokens);
-                if (!isset($valueAry[$token])) {
-                    return null;
-                }
-                $valueAry =& $valueAry[$token];
-            } while ($tokens);
-            return $valueAry;
         }
+
+        if (!strpos($this->getName(), '['))
+        {
+            return $value[$this->getName()] ?? null;
+        }
+
+        $tokens = explode('[', str_replace(']', '', $this->getName()));
+        $valueAry =& $value;
+
+        do {
+            $token = array_shift($tokens);
+            if (!isset($valueAry[$token])) {
+                return null;
+            }
+            $valueAry =& $valueAry[$token];
+        } while ($tokens);
+
+        return $valueAry;
     }
 
-    public function setValue($value)
+    public function setValue($value) : self
     {
         // Prepare a mapper for element names as array
         $prefixLength = $this->prependsName() ? substr_count($this->getName(), '[') + 1 : 0;
@@ -170,13 +175,15 @@ class HTML_QuickForm2_Container_Group extends HTML_QuickForm2_Container
         return $this->name;
     }
 
-    public function setName($name)
+    public function setName(?string $name) : self
     {
         $this->previousName = $this->name;
         $this->name = $name;
+
         foreach ($this as $child) {
             $this->renameChild($child);
         }
+
         return $this;
     }
 
@@ -224,7 +231,7 @@ class HTML_QuickForm2_Container_Group extends HTML_QuickForm2_Container
     * @return   HTML_QuickForm2_Node     Added element
     * @throws   HTML_QuickForm2_InvalidArgumentException
     */
-    public function appendChild(HTML_QuickForm2_Node $element)
+    public function appendChild(HTML_QuickForm2_Node $element) : HTML_QuickForm2_Node
     {
         if (null !== ($container = $element->getContainer())) {
             $container->removeChild($element);
@@ -246,7 +253,7 @@ class HTML_QuickForm2_Container_Group extends HTML_QuickForm2_Container
     *
     * @return   HTML_QuickForm2_Node     Removed object
     */
-    public function removeChild(HTML_QuickForm2_Node $element)
+    public function removeChild(HTML_QuickForm2_Node $element) : HTML_QuickForm2_Node
     {
         $element = parent::removeChild($element);
         if ($this->prependsName()) {
@@ -308,7 +315,7 @@ class HTML_QuickForm2_Container_Group extends HTML_QuickForm2_Container
     *
     * @return   HTML_QuickForm2_Renderer
     */
-    public function render(HTML_QuickForm2_Renderer $renderer)
+    public function render(HTML_QuickForm2_Renderer $renderer) : HTML_QuickForm2_Renderer
     {
         $renderer->startGroup($this);
         foreach ($this as $element) {

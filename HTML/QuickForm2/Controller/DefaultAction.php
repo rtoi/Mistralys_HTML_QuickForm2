@@ -73,10 +73,9 @@ class HTML_QuickForm2_Controller_DefaultAction
     *
     * @return   HTML_QuickForm2_Renderer
     */
-    public function render(HTML_QuickForm2_Renderer $renderer)
+    public function render(HTML_QuickForm2_Renderer $renderer) : HTML_QuickForm2_Renderer
     {
         $renderer->renderHidden($this);
         return $renderer;
     }
 }
-?>

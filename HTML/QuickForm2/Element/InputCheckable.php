@@ -32,7 +32,7 @@
  */
 class HTML_QuickForm2_Element_InputCheckable extends HTML_QuickForm2_Element_Input
 {
-    protected $persistent = true;
+    protected bool $persistent = true;
 
    /**
     * HTML to represent the element in "frozen" state
@@ -104,13 +104,13 @@ class HTML_QuickForm2_Element_InputCheckable extends HTML_QuickForm2_Element_Inp
     }
 
 
-    public function setValue($value)
+    public function setValue($value) : self
     {
-        if ((string)$value == $this->getAttribute('value')) {
+        if ((string)$value === $this->getAttribute('value')) {
             return $this->setAttribute('checked');
-        } else {
-            return $this->removeAttribute('checked');
         }
+
+        return $this->removeAttribute('checked');
     }
 
     public function getRawValue()
@@ -145,4 +145,3 @@ class HTML_QuickForm2_Element_InputCheckable extends HTML_QuickForm2_Element_Inp
         }
     }
 }
-?>

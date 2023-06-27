@@ -77,7 +77,7 @@ class HTML_QuickForm2_Element_Hierselect extends HTML_QuickForm2_Container_Group
     */
     private $_values = array();
 
-    public function getType()
+    public function getType() : string
     {
         return 'hierselect';
     }
@@ -232,7 +232,7 @@ class HTML_QuickForm2_Element_Hierselect extends HTML_QuickForm2_Container_Group
     *
     * @return $this
     */
-    public function setValue($value)
+    public function setValue($value) : self
     {
         if (is_array($value)) {
             $this->size = max($this->size, count($value));
@@ -249,11 +249,11 @@ class HTML_QuickForm2_Element_Hierselect extends HTML_QuickForm2_Container_Group
      *
      * Need to override group's implementation due to overridden updateValue()
      *
-     * @param string $name
+     * @param string|NULL $name
      *
      * @return $this
      */
-    public function setName($name)
+    public function setName(?string $name) : self
     {
         parent::setName($name);
         $this->updateValue();
@@ -267,7 +267,7 @@ class HTML_QuickForm2_Element_Hierselect extends HTML_QuickForm2_Container_Group
     * values need to be passed through setValue() to properly update options of
     * its child selects.
     */
-    protected function updateValue()
+    protected function updateValue() : void
     {
         $name = $this->getName();
         /* @var $ds HTML_QuickForm2_DataSource_NullAware */
@@ -360,7 +360,7 @@ class HTML_QuickForm2_Element_Hierselect extends HTML_QuickForm2_Container_Group
     * @throws   HTML_QuickForm2_Exception   if number of selects in hierselect cannot
     *                                       be determined
     */
-    public function render(HTML_QuickForm2_Renderer $renderer)
+    public function render(HTML_QuickForm2_Renderer $renderer) : HTML_QuickForm2_Renderer
     {
         if (0 == $this->size) {
             throw new HTML_QuickForm2_Exception(

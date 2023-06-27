@@ -71,7 +71,7 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
     *                                  by adding a special hidden field
     */
     public function __construct(
-        ?string $id,
+        ?string $id=null,
         string $method = 'post',
         $attributes = null,
         bool $trackSubmit = true
@@ -148,7 +148,7 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
         );
     }
 
-    public function setId($id = null)
+    public function setId(?string $id = null) : self
     {
         throw self::exceptionAttributeReadonly('id');
     }

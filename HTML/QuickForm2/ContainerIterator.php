@@ -29,6 +29,8 @@
  * @license  https://opensource.org/licenses/BSD-3-Clause BSD 3-Clause License
  * @version  Release: @package_version@
  * @link     https://pear.php.net/package/HTML_QuickForm2
+ *
+ * @implements RecursiveArrayIterator<int,HTML_QuickForm2_Node>
  */
 class HTML_QuickForm2_ContainerIterator extends RecursiveArrayIterator implements RecursiveIterator
 {

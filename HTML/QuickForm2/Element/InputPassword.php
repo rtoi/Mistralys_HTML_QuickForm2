@@ -32,7 +32,7 @@
  */
 class HTML_QuickForm2_Element_InputPassword extends HTML_QuickForm2_Element_Input
 {
-    protected $persistent = true;
+    protected bool $persistent = true;
 
     protected array $attributes = array('type' => 'password');
 

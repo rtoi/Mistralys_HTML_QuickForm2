@@ -53,7 +53,7 @@ class HTML_QuickForm2_Element_InputSubmit extends HTML_QuickForm2_Element_Input
     *
     * @return $this
     */
-    public function setValue($value)
+    public function setValue($value) : self
     {
         return $this;
     }

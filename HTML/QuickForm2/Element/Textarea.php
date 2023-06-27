@@ -32,7 +32,7 @@
  */
 class HTML_QuickForm2_Element_Textarea extends HTML_QuickForm2_Element
 {
-    protected $persistent = true;
+    protected bool $persistent = true;
 
    /**
     * Value for textarea field
@@ -40,12 +40,12 @@ class HTML_QuickForm2_Element_Textarea extends HTML_QuickForm2_Element
     */
     protected $value = null;
 
-    public function getType()
+    public function getType() : string
     {
         return 'textarea';
     }
 
-    public function setValue($value)
+    public function setValue($value) : self
     {
         $this->value = $value;
         return $this;
@@ -60,18 +60,18 @@ class HTML_QuickForm2_Element_Textarea extends HTML_QuickForm2_Element
     {
         if ($this->frozen) {
             return $this->getFrozenHtml();
-        } else {
-            return $this->getIndent() . '<textarea' . $this->getAttributes(true) .
-                   '>' . preg_replace("/(\r\n|\n|\r)/", '&#010;', htmlspecialchars(
-                        $this->value, ENT_QUOTES, self::getOption('charset')
-                   )) . '</textarea>';
         }
+
+        return $this->getIndent() . '<textarea' . $this->getAttributes(true) .
+               '>' . preg_replace("/(\r\n|\n|\r)/", '&#010;', htmlspecialchars(
+                    $this->value, ENT_QUOTES, self::getOption('charset')
+               )) . '</textarea>';
     }
 
     public function getFrozenHtml()
     {
         $value = htmlspecialchars($this->value, ENT_QUOTES, self::getOption('charset'));
-        if ('off' == $this->getAttribute('wrap')) {
+        if ('off' === $this->getAttribute('wrap')) {
             $html = $this->getIndent() . '<pre>' . $value .
                     '</pre>' . self::getOption('linebreak');
         } else {
@@ -83,32 +83,29 @@ class HTML_QuickForm2_Element_Textarea extends HTML_QuickForm2_Element
    /**
     * Sets the columns attribute of the textarea.
     * @param int $cols
-    * @return HTML_QuickForm2_Element_Textarea
+    * @return $this
     */
-    public function setColumns($cols)
+    public function setColumns(int $cols) : self
     {
-        $this->setAttribute('cols', $cols);
-        return $this;
+        return $this->setAttribute('cols', $cols);
     }
 
    /**
     * Sets the rows attribute of the textarea.
     * @param int $rows
-    * @return HTML_QuickForm2_Element_Textarea
+    * @return $this
     */
-    public function setRows($rows)
+    public function setRows(int $rows) : self
     {
-        $this->setAttribute('rows', $rows);
-        return $this;
+        return $this->setAttribute('rows', $rows);
     }
     
    /**
     * Adds a filter for the "trim" function.
-    * @return HTML_QuickForm2_Element_Textarea
+    * @return $this
     */
-    public function addFilterTrim()
+    public function addFilterTrim() : self
     {
         return $this->addFilter('trim');
     }
 }
-?>

@@ -77,9 +77,9 @@ class HTML_QuickForm2_Container_Repeat extends HTML_QuickForm2_Container
 
     /**
      * Errors for (repeated) child elements set during validate() call
-     * @var array
+     * @var array<string,array<int,string>>
      */
-    protected $childErrors = array();
+    protected array $childErrors = array();
 
     /**
      * Whether getDataSources() should return Container's data sources
@@ -89,14 +89,14 @@ class HTML_QuickForm2_Container_Repeat extends HTML_QuickForm2_Container
      *
      * @var bool
      */
-    protected $passDataSources = false;
+    protected bool $passDataSources = false;
 
     /**
      * Returns the element's type
      *
      * @return   string
      */
-    public function getType()
+    public function getType() : string
     {
         return 'repeat';
     }
@@ -108,7 +108,7 @@ class HTML_QuickForm2_Container_Repeat extends HTML_QuickForm2_Container
      *
      * @throws HTML_QuickForm2_Exception
      */
-    public function setValue($value)
+    public function setValue($value) : self
     {
         throw new HTML_QuickForm2_Exception('Not implemented');
     }
@@ -155,7 +155,7 @@ class HTML_QuickForm2_Container_Repeat extends HTML_QuickForm2_Container
      * @return HTML_QuickForm2_Container prototype
      * @throws HTML_QuickForm2_NotFoundException if prototype was not set
      */
-    protected function getPrototype() : HTML_QuickForm2_Container
+    public function getPrototype() : HTML_QuickForm2_Container
     {
         if (empty($this->elements[0])) {
             throw new HTML_QuickForm2_NotFoundException(
@@ -182,7 +182,7 @@ class HTML_QuickForm2_Container_Repeat extends HTML_QuickForm2_Container
      * @return   HTML_QuickForm2_Node     Added element
      * @throws   HTML_QuickForm2_InvalidArgumentException
      */
-    public function appendChild(HTML_QuickForm2_Node $element)
+    public function appendChild(HTML_QuickForm2_Node $element) : HTML_QuickForm2_Node
     {
         return $this->getPrototype()->appendChild($element);
     }
@@ -197,7 +197,7 @@ class HTML_QuickForm2_Container_Repeat extends HTML_QuickForm2_Container
      * @return   HTML_QuickForm2_Node     Removed object
      * @throws   HTML_QuickForm2_NotFoundException
      */
-    public function removeChild(HTML_QuickForm2_Node $element)
+    public function removeChild(HTML_QuickForm2_Node $element) : HTML_QuickForm2_Node
     {
         return $this->getPrototype()->removeChild($element);
     }
@@ -223,16 +223,16 @@ class HTML_QuickForm2_Container_Repeat extends HTML_QuickForm2_Container
     /**
      * Returns the data sources for this element
      *
-     * @return array
+     * @return HTML_QuickForm2_DataSource[]
      * @see $passDataSources
      */
-    protected function getDataSources()
+    protected function getDataSources() : array
     {
         if (!$this->passDataSources) {
             return array();
-        } else {
-            return parent::getDataSources();
         }
+
+        return parent::getDataSources();
     }
 
     /**
@@ -335,7 +335,7 @@ class HTML_QuickForm2_Container_Repeat extends HTML_QuickForm2_Container
      * @see setIndexField()
      * @throws HTML_QuickForm2_Exception
      */
-    protected function updateValue()
+    protected function updateValue() : void
     {
         // check that we are not added to another Repeat
         // done here instead of in setContainer() for reasons outlined in InputFile
@@ -508,7 +508,7 @@ class HTML_QuickForm2_Container_Repeat extends HTML_QuickForm2_Container
                 $child->setId(str_replace(self::INDEX_KEY, (string)$index, (string)$backup[$key]['id']));
             }
             if (array_key_exists('error', $backup[$key])) {
-                $child->setError();
+                $child->setError($backup[$key]['error']);
             }
 
             $key++;
@@ -521,10 +521,9 @@ class HTML_QuickForm2_Container_Repeat extends HTML_QuickForm2_Container
      * Iterates over all available repeat indexes to get values
      *
      * @param bool $filtered Whether child elements should apply filters on values
-     *
-     * @return   array|null
+     * @return array<string,mixed>|NULL
      */
-    protected function getChildValues($filtered = false)
+    protected function getChildValues(bool $filtered = false) : ?array
     {
         $backup = $this->backupChildAttributes();
         $values = array();
@@ -535,7 +534,12 @@ class HTML_QuickForm2_Container_Repeat extends HTML_QuickForm2_Container
             }
         }
         $this->restoreChildAttributes($backup);
-        return empty($values) ? null : $values;
+
+        if(!empty($values)) {
+            return $values;
+        }
+
+        return null;
     }
 
     /**
@@ -546,31 +550,39 @@ class HTML_QuickForm2_Container_Repeat extends HTML_QuickForm2_Container
      *
      * @return   boolean Whether the repeat and all repeated items are valid
      */
-    protected function validate()
+    protected function validate() : bool
     {
         $backup = $this->backupChildAttributes(false, true);
         $valid  = true;
         $this->childErrors = array();
-        foreach ($this->getIndexes() as $index) {
+
+        foreach ($this->getIndexes() as $index)
+        {
             $this->replaceIndexTemplates($index, $backup);
             $valid = $this->getPrototype()->validate() && $valid;
+
             /* @var HTML_QuickForm2_Node $child */
-            foreach ($this->getRecursiveIterator() as $child) {
-                if (strlen($error = $child->getError())) {
-                    $this->childErrors[spl_object_hash($child)][$index] = $error;
+            foreach ($this->getRecursiveIterator() as $child)
+            {
+                $childError = $child->getError();
+                if ($childError !== null) {
+                    $this->childErrors[spl_object_hash($child)][$index] = $childError;
                 }
             }
         }
+
         $this->restoreChildAttributes($backup);
+
         foreach ($this->rules as $rule) {
-            if (strlen($this->error)) {
+            if ($this->error !== null) {
                 break;
             }
             if ($rule[1] & HTML_QuickForm2_Rule::SERVER) {
                 $rule[0]->validate();
             }
         }
-        return !strlen($this->error) && $valid;
+
+        return $this->error === null && $valid;
     }
 
     /**
@@ -637,7 +649,7 @@ class HTML_QuickForm2_Container_Repeat extends HTML_QuickForm2_Container
      *
      * @return   HTML_QuickForm2_Renderer
      */
-    public function render(HTML_QuickForm2_Renderer $renderer)
+    public function render(HTML_QuickForm2_Renderer $renderer) : HTML_QuickForm2_Renderer
     {
         $backup      = $this->backupChildAttributes(true, true);
         $hiddens     = $renderer->getOption('group_hiddens');
@@ -658,18 +670,23 @@ class HTML_QuickForm2_Container_Repeat extends HTML_QuickForm2_Container
         $renderer->setJavascriptBuilder($jsBuilder);
 
         // next, render all available rows
-        foreach ($this->getIndexes() as $index) {
+        foreach ($this->getIndexes() as $index)
+        {
             $this->replaceIndexTemplates($index, $backup);
+
             /* @var HTML_QuickForm2_Node $child */
-            foreach ($this->getRecursiveIterator() as $child) {
-                if (isset($this->childErrors[$hash = spl_object_hash($child)])
-                    && isset($this->childErrors[$hash][$index])
-                ) {
+            foreach ($this->getRecursiveIterator() as $child)
+            {
+                $hash = spl_object_hash($child);
+
+                if (isset($this->childErrors[$hash][$index])) {
                     $child->setError($this->childErrors[$hash][$index]);
                 }
             }
+
             $this->getPrototype()->render($renderer);
         }
+
         $this->restoreChildAttributes($backup);
 
         // only add javascript if not frozen
@@ -684,4 +701,3 @@ class HTML_QuickForm2_Container_Repeat extends HTML_QuickForm2_Container
         return $renderer;
     }
 }
-?>

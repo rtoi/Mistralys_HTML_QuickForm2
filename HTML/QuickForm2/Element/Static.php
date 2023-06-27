@@ -107,16 +107,16 @@ class HTML_QuickForm2_Element_Static extends HTML_QuickForm2_Element
     *
     * @return   HTML_QuickForm2_Element_Static
     */
-    public function setName($name)
+    public function setName(?string $name) : self
     {
         if (null !== $name) {
             return parent::setName($name);
-        } else {
-            return $this->removeAttribute('name');
         }
+
+        return $this->removeAttribute('name');
     }
 
-    public function getType()
+    public function getType() : string
     {
         return 'static';
     }
@@ -156,7 +156,7 @@ class HTML_QuickForm2_Element_Static extends HTML_QuickForm2_Element
     *
     * @return $this
     */
-    public function setValue($value)
+    public function setValue($value) : self
     {
         $this->setContent($value);
         return $this;
@@ -206,7 +206,7 @@ class HTML_QuickForm2_Element_Static extends HTML_QuickForm2_Element
     *
     * Static elements content can be updated with default form values.
     */
-    protected function updateValue()
+    protected function updateValue() : void
     {
         $name = $this->getName();
         /* @var $ds HTML_QuickForm2_DataSource_NullAware */

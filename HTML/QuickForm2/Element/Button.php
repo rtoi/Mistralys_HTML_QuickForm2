@@ -48,7 +48,7 @@ class HTML_QuickForm2_Element_Button extends HTML_QuickForm2_Element
     */
     protected $submitValue = null;
 
-    public function getType()
+    public function getType() : string
     {
         return $this->getAttribute('type');
     }
@@ -99,7 +99,7 @@ class HTML_QuickForm2_Element_Button extends HTML_QuickForm2_Element
     *
     * @return $this
     */
-    public function setValue($value)
+    public function setValue($value) : self
     {
         return $this;
     }
@@ -133,7 +133,7 @@ class HTML_QuickForm2_Element_Button extends HTML_QuickForm2_Element
                '>' . $this->data['content'] . '</button>';
     }
 
-    protected function updateValue()
+    protected function updateValue() : void
     {
         foreach ($this->getDataSources() as $ds) {
             if ($ds instanceof HTML_QuickForm2_DataSource_Submit

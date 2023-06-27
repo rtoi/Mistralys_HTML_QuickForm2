@@ -32,6 +32,8 @@
  */
 class HTML_QuickForm2_Element_InputHidden extends HTML_QuickForm2_Element_Input
 {
+    public const ERROR_HIDDEN_CANNOT_HAVE_VALIDATION = 140001;
+
     protected array $attributes = array('type' => 'hidden');
 
     public function isFreezable(): bool
@@ -42,22 +44,24 @@ class HTML_QuickForm2_Element_InputHidden extends HTML_QuickForm2_Element_Input
     /**
      * Disallows setting an error message on hidden elements
      *
-     * @param string|null $error
+     * @param string|NULL $error
      *
      * @return HTML_QuickForm2_Element_InputHidden
      * @throws HTML_QuickForm2_InvalidArgumentException if $error is not empty
      */
-    public function setError($error = null)
+    public function setError(?string $error = null) : self
     {
-        if (strlen($error)) {
+        if (!empty($error)) {
             throw new HTML_QuickForm2_InvalidArgumentException(
-                "Hidden elements cannot have validation errors"
+                "Hidden elements cannot have validation errors",
+                self::ERROR_HIDDEN_CANNOT_HAVE_VALIDATION
             );
         }
+
         return parent::setError($error);
     }
 
-    public function render(HTML_QuickForm2_Renderer $renderer)
+    public function render(HTML_QuickForm2_Renderer $renderer) : HTML_QuickForm2_Renderer
     {
         $renderer->renderHidden($this);
         $this->renderClientRules($renderer->getJavascriptBuilder());

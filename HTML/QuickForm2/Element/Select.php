@@ -36,7 +36,7 @@ use HTML\QuickForm2\Element\Select\SelectOption;
  */
 class HTML_QuickForm2_Element_Select extends HTML_QuickForm2_Element
 {
-    protected $persistent = true;
+    protected bool $persistent = true;
 
    /**
     * Values for the select element (i.e. values of the selected options)
@@ -220,13 +220,14 @@ class HTML_QuickForm2_Element_Select extends HTML_QuickForm2_Element
         return $lastValue;
     }
 
-    public function setValue($value)
+    public function setValue($value) : self
     {
         if (is_array($value)) {
             $this->values = array_values($value);
         } else {
             $this->values = array($value);
         }
+
         return $this;
     }
 

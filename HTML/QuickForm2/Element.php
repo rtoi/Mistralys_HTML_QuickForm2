@@ -32,7 +32,7 @@
  */
 abstract class HTML_QuickForm2_Element extends HTML_QuickForm2_Node
 {
-    public function setName($name)
+    public function setName(?string $name) : self
     {
         $this->attributes['name'] = (string)$name;
         $this->updateValue();
@@ -65,7 +65,7 @@ abstract class HTML_QuickForm2_Element extends HTML_QuickForm2_Node
     * The default behaviour is to go through the complete list of the data
     * sources until the non-null value is found.
     */
-    protected function updateValue()
+    protected function updateValue() : void
     {
         $name = $this->getName();
         foreach ($this->getDataSources() as $ds) {
@@ -85,7 +85,7 @@ abstract class HTML_QuickForm2_Element extends HTML_QuickForm2_Node
     *
     * @return   HTML_QuickForm2_Renderer
     */
-    public function render(HTML_QuickForm2_Renderer $renderer)
+    public function render(HTML_QuickForm2_Renderer $renderer) : HTML_QuickForm2_Renderer
     {
         $renderer->renderElement($this);
         $this->renderClientRules($renderer->getJavascriptBuilder());

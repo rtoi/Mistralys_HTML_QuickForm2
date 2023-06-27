@@ -47,15 +47,14 @@ class HTML_QuickForm2_Element_Input extends HTML_QuickForm2_Element
         parent::onAttributeChange($name, $value);
     }
 
-    public function getType()
+    public function getType() : string
     {
         return $this->attributes['type'];
     }
 
-    public function setValue($value)
+    public function setValue($value) : self
     {
-        $this->setAttribute('value', (string)$value);
-        return $this;
+        return $this->setAttribute('value', (string)$value);
     }
 
     public function getRawValue()

@@ -13,7 +13,7 @@ use HTML_QuickForm2_Renderer;
  */
 class TestNodeImpl extends HTML_QuickForm2_Node
 {
-    public function getType()
+    public function getType() : string
     {
         return 'concrete';
     }
@@ -23,9 +23,9 @@ class TestNodeImpl extends HTML_QuickForm2_Node
         return '';
     }
 
-    public function setValue($value)
+    public function setValue($value) : self
     {
-        return '';
+        return $this;
     }
 
     public function __toString()
@@ -38,15 +38,16 @@ class TestNodeImpl extends HTML_QuickForm2_Node
         return '';
     }
 
-    public function setName($name)
+    public function setName(?string $name) : self
+    {
+        return $this;
+    }
+
+    protected function updateValue() : void
     {
     }
 
-    protected function updateValue()
-    {
-    }
-
-    public function validate()
+    public function validate() : bool
     {
         return parent::validate();
     }
@@ -61,7 +62,8 @@ class TestNodeImpl extends HTML_QuickForm2_Node
         return array();
     }
 
-    public function render(HTML_QuickForm2_Renderer $renderer)
+    public function render(HTML_QuickForm2_Renderer $renderer) : HTML_QuickForm2_Renderer
     {
+        return $renderer;
     }
 }

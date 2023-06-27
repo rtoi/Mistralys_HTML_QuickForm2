@@ -52,7 +52,7 @@ class HTML_QuickForm2_Element_InputImage extends HTML_QuickForm2_Element_Input
     *
     * @return $this
     */
-    public function setValue($value)
+    public function setValue($value) : self
     {
         return $this;
     }
@@ -95,7 +95,7 @@ class HTML_QuickForm2_Element_InputImage extends HTML_QuickForm2_Element_Input
         }
     }
 
-    protected function updateValue()
+    protected function updateValue() : void
     {
         foreach ($this->getDataSources() as $ds) {
             if ($ds instanceof HTML_QuickForm2_DataSource_Submit) {

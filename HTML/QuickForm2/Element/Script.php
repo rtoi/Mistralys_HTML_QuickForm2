@@ -38,7 +38,7 @@
  */
 class HTML_QuickForm2_Element_Script extends HTML_QuickForm2_Element_Static
 {
-    public function getType()
+    public function getType() : string
     {
         return 'script';
     }
@@ -67,11 +67,10 @@ class HTML_QuickForm2_Element_Script extends HTML_QuickForm2_Element_Static
     * @return   HTML_QuickForm2_Renderer
     * @see      HTML_QuickForm2_Renderer::renderHidden()
     */
-    public function render(HTML_QuickForm2_Renderer $renderer)
+    public function render(HTML_QuickForm2_Renderer $renderer) : HTML_QuickForm2_Renderer
     {
         $renderer->renderHidden($this);
 
         return $renderer;
     }
 }
-?>

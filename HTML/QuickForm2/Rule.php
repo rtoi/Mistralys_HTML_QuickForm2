@@ -326,12 +326,13 @@ abstract class HTML_QuickForm2_Rule
    /**
     * Sets the error message on the owner element
     */
-    protected function setOwnerError()
+    protected function setOwnerError() : void
     {
         $owner = $this->getOwner();
+        $message = $this->getMessage();
 
-        if (strlen($this->getMessage()) && !$owner->getError()) {
-            $owner->setError($this->getMessage());
+        if (!empty($message) && $owner->getError() === null) {
+            $owner->setError($message);
         }
     }
 

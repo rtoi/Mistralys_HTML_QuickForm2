@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
  */
 class HTML_QuickForm2_Renderer_ArrayTest extends TestCase
 {
-    private function _assertHasKeys($array, $keys): void
+    private function _assertHasKeys($array, array $keys): void
     {
         sort($keys);
         $realKeys = array_keys($array);

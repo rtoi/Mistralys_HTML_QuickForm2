@@ -43,7 +43,7 @@
  */
 class HTML_QuickForm2_Rule_Empty extends HTML_QuickForm2_Rule
 {
-    protected function validateOwner()
+    protected function validateOwner(): bool
     {
         $owner = $this->getOwner();
         $value = $owner->getValue();

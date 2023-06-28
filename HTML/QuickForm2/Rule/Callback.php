@@ -146,7 +146,7 @@ class HTML_QuickForm2_Rule_Callback extends HTML_QuickForm2_Rule
     *
     * @return   bool
     */
-    protected static function arrayHasSomeKeys($search, array $keys)
+    protected static function arrayHasSomeKeys($search, array $keys): bool
     {
         if (is_array($search)) {
             foreach ($keys as $key) {

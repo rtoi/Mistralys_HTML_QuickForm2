@@ -49,7 +49,7 @@ var validatorBackup;
 //in real application the password check will a bit be different, of course
 function check_password(password)
 {
-    return (password == 'qwerty');
+    return (password === 'qwerty');
 }
 
 function enableValidation(box)
@@ -70,9 +70,9 @@ function enableValidation(box)
 <?php
 
 // in real application the password check will a bit be different, of course
-function check_password($password)
+function check_password($password): bool
 {
-    return ($password == 'qwerty');
+    return ($password === 'qwerty');
 }
 
 //

@@ -60,7 +60,7 @@ class HTML_QuickForm2_Rule_Email extends HTML_QuickForm2_Rule
     *
     * @return   bool    whether element's value is in a commonly used email address format
     */
-    protected function validateOwner()
+    protected function validateOwner(): bool
     {
         $value = $this->getOwner()->getValue();
         $len = strlen($value);

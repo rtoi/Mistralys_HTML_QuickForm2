@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
  */
 class HTML_QuickForm2_Rule_CallbackTest extends TestCase
 {
-    public function checkNotFoo($value)
+    public function checkNotFoo($value): bool
     {
         return $value != 'foo';
     }

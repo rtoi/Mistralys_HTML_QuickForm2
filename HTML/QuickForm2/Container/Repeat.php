@@ -260,7 +260,7 @@ class HTML_QuickForm2_Container_Repeat extends HTML_QuickForm2_Container
      * @return bool Whether we were able to guess something
      * @see setIndexField()
      */
-    private function _guessIndexField()
+    private function _guessIndexField(): bool
     {
         $this->appendIndexTemplates();
         $this->passDataSources = false;

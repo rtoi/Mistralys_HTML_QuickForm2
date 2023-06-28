@@ -60,7 +60,11 @@
  */
 class HTML_QuickForm2_Rule_Callback extends HTML_QuickForm2_Rule
 {
-   /**
+    public const ERROR_INVALID_CALLBACK = 140201;
+    public const ERROR_INVALID_CALLBACK_ARGUMENTS = 140202;
+    public const ERROR_CANNOT_GENERATE_JS_CALLBACK = 140203;
+
+    /**
     * Validates the owner element
     *
     * @return   bool    the value returned by a callback function
@@ -96,23 +100,24 @@ class HTML_QuickForm2_Rule_Callback extends HTML_QuickForm2_Rule
                "(" . implode(', ', $arguments) . "); }";
     }
 
-   /**
-    * Finds a name for Javascript callback function
-    *
-    * The method first checks whether javascript callback 'js_callback' was
-    * provided to the Rule and returns that if found.
-    *
-    * If an explicit 'js_callback' was not provided, it tries to generate a name
-    * equal (for a given value of "equal") to PHP callback name. This may be useful
-    * if e.g. using HTML_AJAX package to generate class stubs in JS and in similar
-    * circumstances.
-    *
-    * If a callback does not have a name (it is a lambda function or a closure)
-    * then an exception will be raised.
-    *
-    * @return string
-    */
-    protected function findJavascriptName()
+    /**
+     * Finds a name for Javascript callback function
+     *
+     * The method first checks whether javascript callback 'js_callback' was
+     * provided to the Rule and returns that if found.
+     *
+     * If an explicit 'js_callback' was not provided, it tries to generate a name
+     * equal (for a given value of "equal") to PHP callback name. This may be useful
+     * if e.g. using HTML_AJAX package to generate class stubs in JS and in similar
+     * circumstances.
+     *
+     * If a callback does not have a name (it is a lambda function or a closure)
+     * then an exception will be raised.
+     *
+     * @return string
+     * @throws HTML_QuickForm2_InvalidArgumentException {@see self::ERROR_CANNOT_GENERATE_JS_CALLBACK} if the name cannot be determined automatically.
+     */
+    protected function findJavascriptName() : string
     {
         $config = $this->getConfig();
 
@@ -120,22 +125,32 @@ class HTML_QuickForm2_Rule_Callback extends HTML_QuickForm2_Rule
         if (isset($config['js_callback'])) {
             return $config['js_callback'];
         }
+
         // no luck, try to come up with a name similar to PHP one
         // function name, filter lambdas created via create_function...
-        if (is_string($config['callback']) && chr(0) != $config['callback'][0]) {
+        if (is_string($config['callback']) && chr(0) !== $config['callback'][0])
+        {
             return str_replace('::', '.', $config['callback']);
-        // object instance method
-        } elseif (is_array($config['callback']) && is_object($config['callback'][0])) {
-            return '(new ' . get_class($config['callback'][0]) . ').' . $config['callback'][1];
-        // static class method
-        } elseif (is_array($config['callback']) && is_string($config['callback'][0])) {
-            return $config['callback'][0] . '.' . $config['callback'][1];
-        // lambda, closure, whatever: no sane way to translate
-        } else {
-            throw new HTML_QuickForm2_InvalidArgumentException(
-                "Cannot generate Javascript callback name, please provide one"
-            );
         }
+
+        // object instance method
+        if (is_array($config['callback']) && is_object($config['callback'][0]))
+        {
+            return '(new ' . get_class($config['callback'][0]) . ').' . $config['callback'][1];
+        }
+
+        // static class method
+        if (is_array($config['callback']) && is_string($config['callback'][0]))
+        {
+            return $config['callback'][0] . '.' . $config['callback'][1];
+        }
+
+        // lambda, closure, whatever: no sane way to translate
+
+        throw new HTML_QuickForm2_InvalidArgumentException(
+            "Cannot generate Javascript callback name, please provide one",
+            self::ERROR_CANNOT_GENERATE_JS_CALLBACK
+        );
     }
 
    /**
@@ -220,16 +235,26 @@ class HTML_QuickForm2_Rule_Callback extends HTML_QuickForm2_Rule
         }
        
         $callbackName = null;
-        if (!is_callable($config['callback'], false, $callbackName)) {
+
+        if (!is_callable($config['callback'], false, $callbackName))
+        {
             throw new HTML_QuickForm2_InvalidArgumentException(
-                'Callback Rule requires a valid callback, \'' . $callbackName .
-                '\' was given'
+                sprintf(
+                    'Callback Rule requires a valid callback, [%s] was given.',
+                    $callbackName
+                ),
+                self::ERROR_INVALID_CALLBACK
             );
         }
-        if (array_key_exists('arguments', $config) && !is_array($config['arguments'])) {
+
+        if (array_key_exists('arguments', $config) && !is_array($config['arguments']))
+        {
             throw new HTML_QuickForm2_InvalidArgumentException(
-                'Callback Rule expects additional callback arguments to be an array, ' .
-                preg_replace('/\s+/', ' ', var_export($config['arguments'], true)) . ' given'
+                sprintf(
+                    'Callback Rule expects additional callback arguments to be an array, [%s] given.',
+                    preg_replace('/\s+/', ' ', var_export($config['arguments'], true))
+                ),
+                self::ERROR_INVALID_CALLBACK_ARGUMENTS
             );
         }
         return parent::setConfig($config + array('arguments' => array()));

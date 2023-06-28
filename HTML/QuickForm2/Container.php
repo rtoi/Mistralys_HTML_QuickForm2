@@ -718,9 +718,9 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
     * @param bool $inContainer Whether it should return a parameter
     *                          for qf.form.getContainerValue()
     *
-    * @return   string
+    * @return string
     */
-    public function getJavascriptValue($inContainer = false)
+    public function getJavascriptValue(bool $inContainer = false) : string
     {
         $args = array();
         foreach ($this as $child) {
@@ -731,7 +731,7 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
         return 'qf.$cv(' . implode(', ', $args) . ')';
     }
 
-    public function getJavascriptTriggers()
+    public function getJavascriptTriggers() : array
     {
         $triggers = array();
         foreach ($this as $child) {
@@ -739,6 +739,7 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
                 $triggers[$trigger] = true;
             }
         }
+
         return array_keys($triggers);
     }
 
@@ -801,16 +802,13 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
      * Goes through all elements and lets them do their
      * initialization as well.
      */
-     public function preRender()
+     public function preRender() : void
      {
          $elements = $this->getElements();
-         
-         $total = count($elements);
-         for($i=0; $i < $total; $i++) {
-             $elements[$i]->preRender();
+
+         foreach ($elements as $element)
+         {
+             $element->preRender();
          }
      }
 }
-
-
-?>

@@ -52,12 +52,12 @@ class TestNodeImpl extends HTML_QuickForm2_Node
         return parent::validate();
     }
 
-    public function getJavascriptValue($inContainer = false)
+    public function getJavascriptValue(bool $inContainer = false) : string
     {
         return '';
     }
 
-    public function getJavascriptTriggers()
+    public function getJavascriptTriggers() : array
     {
         return array();
     }

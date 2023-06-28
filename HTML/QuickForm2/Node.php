@@ -379,7 +379,7 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
         elseif (strpbrk($id, " \r\n\t\x0C"))
         {
             throw new HTML_QuickForm2_InvalidArgumentException(
-                "The value of 'id' attribute should not contain space characters",
+                "The value of the [id] attribute should not contain space characters",
                 self::ERROR_ID_CANNOT_CONTAIN_SPACES
             );
         }
@@ -392,7 +392,6 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
         
         return $this;
     }
-
 
    /**
     * Returns the element's value without filters applied
@@ -425,7 +424,7 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
    /**
     * Returns the element's label(s)
     *
-    * @return   string|array|NULL
+    * @return string|string[]|NULL
     */
     public function getLabel()
     {
@@ -436,11 +435,12 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
    /**
     * Sets the element's label(s)
     *
-    * @param string|array $label Label for the element (may be an array of labels)
+    * @param string|string[] $label Label for the element (can be an array of labels). The renderer
+    *                   must then know how to handle several labels.
     *
     * @return $this
     */
-    public function setLabel($label)
+    public function setLabel($label) : self
     {
         $this->data['label'] = $label;
         return $this;
@@ -543,7 +543,7 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
         }
     }
     
-    public function hasContainerParent(HTML_QuickForm2_Container $container = null)
+    public function hasContainerParent(HTML_QuickForm2_Container $container = null) : bool
     {
         if($container === null) {
             return false;
@@ -702,10 +702,9 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
     * element.
     *
     * @param HTML_QuickForm2_Rule $rule Validation rule to remove
-    *
-    * @return   HTML_QuickForm2_Rule    Removed rule
+    * @return HTML_QuickForm2_Rule The removed rule
     */
-    public function removeRule(HTML_QuickForm2_Rule $rule)
+    public function removeRule(HTML_QuickForm2_Rule $rule) : HTML_QuickForm2_Rule
     {
         foreach ($this->rules as $i => $r) {
             if ($r[0] === $rule) {
@@ -713,6 +712,7 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
                 break;
             }
         }
+
         return $rule;
     }
 
@@ -727,16 +727,16 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
     *     ->or_($second->createRule('nonempty'));
     * </code>
     *
-    * @param string $type    Rule type
-    * @param string $message Message to display if validation fails
-    * @param mixed  $options Configuration data for the rule
+    * @param string $type Rule type
+    * @param string|int|float|Stringable|NULL $message Message to display if validation fails
+    * @param mixed $options Configuration data for the rule
     *
-    * @return   HTML_QuickForm2_Rule    The created rule
-    * @throws   HTML_QuickForm2_InvalidArgumentException If rule type is unknown
-    * @throws   HTML_QuickForm2_NotFoundException        If class for the rule
+    * @return HTML_QuickForm2_Rule The created rule
+    * @throws HTML_QuickForm2_InvalidArgumentException If rule type is unknown
+    * @throws HTML_QuickForm2_NotFoundException If class for the rule
     *           can't be found and/or loaded from file
     */
-    public function createRule($type, $message = '', $options = null)
+    public function createRule(string $type, $message = '', $options = null) : HTML_QuickForm2_Rule
     {
         return HTML_QuickForm2_Factory::createRule($type, $this, $message, $options);
     }
@@ -745,15 +745,16 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
    /**
     * Checks whether an element is required
     *
-    * @return   boolean
+    * @return boolean
     */
-    public function isRequired()
+    public function isRequired() : bool
     {
         foreach ($this->rules as $rule) {
             if ($rule[0] instanceof HTML_QuickForm2_Rule_Required) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -833,7 +834,7 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
     *
     * @return string
     */
-    abstract public function getJavascriptValue($inContainer = false);
+    abstract public function getJavascriptValue(bool $inContainer = false) : string;
 
    /**
     * Returns IDs of form fields that should trigger "live" Javascript validation
@@ -841,9 +842,9 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
     * Rules added to this element with parameter HTML_QuickForm2_Rule::ONBLUR_CLIENT
     * will be run by after these form elements change or lose focus
     *
-    * @return array
+    * @return string[]
     */
-    abstract public function getJavascriptTriggers();
+    abstract public function getJavascriptTriggers() : array;
 
     /**
      * Adds a filter
@@ -896,9 +897,9 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
     * @param array $filter Array containing callback and additional callback
     *                      parameters
     */
-    protected static function applyFilter(&$value, $key, $filter)
+    protected static function applyFilter(&$value, $key, array $filter) : void
     {
-        list($callback, $options) = $filter;
+        [$callback, $options] = $filter;
         array_unshift($options, $value);
         $value = call_user_func_array($callback, $options);
     }
@@ -908,13 +909,14 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
      *
      * @param mixed $value Element value
      *
-     * @return   mixed   Filtered value
+     * @return mixed Filtered value
      */
     protected function applyFilters($value)
     {
         foreach ($this->filters as $filter) {
             self::applyFilter($value, null, $filter);
         }
+
         return $value;
     }
 
@@ -925,6 +927,18 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
     * @return HTML_QuickForm2_Renderer
     */
     abstract public function render(HTML_QuickForm2_Renderer $renderer) : HTML_QuickForm2_Renderer;
+
+    /**
+     * Shortcut to use the array renderer to render the element.
+     *
+     * @return array{id:string,html:string,value:mixed,type:string,required:bool,frozen:bool}
+     * @throws HTML_QuickForm2_InvalidArgumentException
+     * @throws HTML_QuickForm2_NotFoundException
+     */
+    public function renderToArray() : array
+    {
+        return $this->render(HTML_QuickForm2_Renderer::factory('array'))->toArray();
+    }
 
     /**
      * Makes the element optional by removing any required
@@ -964,7 +978,7 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
     * Retrieves any rules that may have been added to the element.
     * @return HTML_QuickForm2_Rule[]
     */
-    public function getRules()
+    public function getRules() : array
     {
         $result = array();
         foreach($this->rules as $entry) {
@@ -978,7 +992,7 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
     * Checks whether the element has any rules set.
     * @return bool
     */
-    public function hasRules()
+    public function hasRules() : bool
     {
         return !empty($this->rules);
     }
@@ -1007,7 +1021,7 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
         return null;
     }
     
-    public function preRender()
+    public function preRender() : void
     {
         
     }

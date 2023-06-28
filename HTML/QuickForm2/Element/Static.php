@@ -191,12 +191,12 @@ class HTML_QuickForm2_Element_Static extends HTML_QuickForm2_Element
         }
     }
 
-    public function getJavascriptValue($inContainer = false)
+    public function getJavascriptValue(bool $inContainer = false) : string
     {
         return '';
     }
 
-    public function getJavascriptTriggers()
+    public function getJavascriptTriggers() : array
     {
         return array();
     }

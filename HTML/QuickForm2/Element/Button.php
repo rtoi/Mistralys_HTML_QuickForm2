@@ -61,13 +61,13 @@ class HTML_QuickForm2_Element_Button extends HTML_QuickForm2_Element
    /**
     * Sets the contents of the button element
     *
-    * @param string $content Button content (HTML to add between <button></button> tags)
+    * @param string|int|float|Stringable|NULL $content Button content (HTML to add between <button></button> tags)
     *
     * @return $this
     */
-    function setContent($content)
+    public function setContent($content) : self
     {
-        $this->data['content'] = $content;
+        $this->data['content'] = (string)$content;
         return $this;
     }
     
@@ -84,10 +84,10 @@ class HTML_QuickForm2_Element_Button extends HTML_QuickForm2_Element
     
    /**
     * Sets the button label. This is an alias for the {@link setContent()} method.
-    * @param string $label Can contain HTML.
-    * @return HTML_QuickForm2_Element_Button
+    * @param string|int|float|Stringable|NULL $label Can contain HTML.
+    * @return $this
     */
-    public function setLabel($label)
+    public function setLabel($label) : self
     {
         return $this->setContent($label);
     }

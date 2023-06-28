@@ -100,12 +100,12 @@ abstract class HTML_QuickForm2_Element extends HTML_QuickForm2_Node
     *
     * @return string
     */
-    public function getJavascriptValue($inContainer = false)
+    public function getJavascriptValue(bool $inContainer = false) : string
     {
         return $inContainer? "'{$this->getId()}'": "qf.\$v('{$this->getId()}')";
     }
 
-    public function getJavascriptTriggers()
+    public function getJavascriptTriggers() : array
     {
         return array($this->getId());
     }

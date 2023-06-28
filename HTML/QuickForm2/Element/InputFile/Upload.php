@@ -30,7 +30,7 @@ class HTML_QuickForm2_Element_InputFile_Upload
     * Whether this is a valid uploaded file.
     * @return boolean
     */
-    public function isValid()
+    public function isValid() : bool
     {
         return $this->valid;
     }
@@ -43,9 +43,9 @@ class HTML_QuickForm2_Element_InputFile_Upload
     * @return string
     * @throws HTML_QuickForm2_Exception
     */
-    public function getName()
+    public function getName() : string
     {
-        return $this->getKey('name');
+        return (string)$this->getKey('name');
     }
     
     protected function getKey($name)

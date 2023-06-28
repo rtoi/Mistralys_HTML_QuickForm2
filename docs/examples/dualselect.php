@@ -137,22 +137,28 @@ class HTML_QuickForm2_Element_DualSelect extends HTML_QuickForm2_Element_Select
     * select-multiple. When returning a parameter for getContainerValue()
     * we should also provide the element's name.
     *
-    * @param  bool  Whether it should return a parameter for qf.form.getContainerValue()
-    * @return   string
+    * @param bool $inContainer Whether it should return a parameter for qf.form.getContainerValue()
+    * @return string
     */
-    public function getJavascriptValue($inContainer = false)
+    public function getJavascriptValue(bool $inContainer = false) : string
     {
         if ($inContainer) {
             return "{name: '{$this->getName()}[]', value: qf.elements.dualselect.getValue('{$this->getId()}-to')}";
-        } else {
-            return "qf.elements.dualselect.getValue('{$this->getId()}-to')";
         }
+
+        return "qf.elements.dualselect.getValue('{$this->getId()}-to')";
     }
 
-    public function getJavascriptTriggers()
+    public function getJavascriptTriggers() : array
     {
         $id = $this->getId();
-        return array("{$id}-from", "{$id}-to", "{$id}-fromto", "{$id}-tofrom");
+
+        return array(
+            "{$id}-from",
+            "{$id}-to",
+            "{$id}-fromto",
+            "{$id}-tofrom"
+        );
     }
 }
 

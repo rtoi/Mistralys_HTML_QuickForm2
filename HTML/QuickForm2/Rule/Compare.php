@@ -138,7 +138,7 @@ class HTML_QuickForm2_Rule_Compare extends HTML_QuickForm2_Rule
             $config = self::toCanonicalForm($globalConfig, 'operator');
         }
         if (null !== $localConfig && array() !== $localConfig) {
-            $config = (isset($config)? $config: array())
+            $config = ($config ?? array())
                       + self::toCanonicalForm($localConfig);
         }
         return $config;

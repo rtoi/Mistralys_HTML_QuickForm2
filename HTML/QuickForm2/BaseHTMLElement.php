@@ -356,7 +356,7 @@ abstract class BaseHTMLElement implements ArrayAccess
     public function getAttribute($name)
     {
         $name = strtolower($name);
-        return isset($this->attributes[$name])? $this->attributes[$name]: null;
+        return $this->attributes[$name] ?? null;
     }
 
     /**

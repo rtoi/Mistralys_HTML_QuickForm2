@@ -1,6 +1,6 @@
 # Changes in HTML_QuickForm2
 
-## v2.2.0 (Breaking)
+## v2.2.0 PHP8 support release (Breaking)
 - Core: Dropped the `PEAR_Exception` package.
 - Core: Now fully PHP8 compatible, without deprecated warnings.
 - Containers: Added `requireElementById()` for a guaranteed return type.

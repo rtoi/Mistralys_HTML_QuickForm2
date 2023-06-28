@@ -41,7 +41,7 @@ class FactoryTest extends QuickFormCase
 
     public function testNotRegisteredElement() : void
     {
-        $this->assertFalse(HTML_QuickForm2_Factory::isElementRegistered('foo_' . mt_rand()));
+        $this->assertFalse(HTML_QuickForm2_Factory::isElementRegistered('foo_' . random_int(0, mt_getrandmax())));
     }
 
     public function testElementTypeCaseInsensitive() : void
@@ -89,7 +89,7 @@ class FactoryTest extends QuickFormCase
 
     public function testNotRegisteredRule() : void
     {
-        $this->assertFalse(HTML_QuickForm2_Factory::isRuleRegistered('foo_' . mt_rand()));
+        $this->assertFalse(HTML_QuickForm2_Factory::isRuleRegistered('foo_' . random_int(0, mt_getrandmax())));
     }
 
     public function testRuleNameCaseInsensitive() : void

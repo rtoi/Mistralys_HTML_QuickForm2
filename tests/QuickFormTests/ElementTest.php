@@ -189,7 +189,7 @@ class HTML_QuickForm2_ElementTest extends TestCase
     {
         BaseHTMLElement::setOption('id_force_append_index', false);
 
-        $name = 'finno_' . mt_rand(0, 1000);
+        $name = 'finno_' . random_int(0, 1000);
         $el = new TestElementImpl($name);
         $this->assertEquals($name, $el->getId());
 

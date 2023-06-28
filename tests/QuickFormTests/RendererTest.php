@@ -82,7 +82,7 @@ class HTML_QuickForm2_RendererTest extends TestCase
 {
     public function testRegisterRenderer(): void
     {
-        $type = 'fake' . mt_rand();
+        $type = 'fake' . random_int(0, mt_getrandmax());
         HTML_Quickform2_Renderer::register($type, 'HTML_QuickForm2_FakeRenderer');
 
         $renderer = HTML_Quickform2_Renderer::factory($type);
@@ -91,7 +91,7 @@ class HTML_QuickForm2_RendererTest extends TestCase
 
     public function testRegisterPlugin(): void
     {
-        $type = 'fake' . mt_rand();
+        $type = 'fake' . random_int(0, mt_getrandmax());
         HTML_QuickForm2_Renderer::register($type, 'HTML_QuickForm2_FakeRenderer');
         HTML_QuickForm2_Renderer::registerPlugin($type, 'HTML_QuickForm2_FakeRenderer_HelloPlugin');
 
@@ -108,7 +108,7 @@ class HTML_QuickForm2_RendererTest extends TestCase
 
     public function testRegisterPluginOnlyOnce(): void
     {
-        $type = 'fake' . mt_rand();
+        $type = 'fake' . random_int(0, mt_getrandmax());
         HTML_QuickForm2_Renderer::register($type, 'HTML_QuickForm2_FakeRenderer');
         HTML_QuickForm2_Renderer::registerPlugin($type, 'HTML_QuickForm2_FakeRenderer_HelloPlugin');
 
@@ -123,7 +123,7 @@ class HTML_QuickForm2_RendererTest extends TestCase
 
     public function testDuplicateMethodNamesDisallowed(): void
     {
-        $type = 'fake' . mt_rand();
+        $type = 'fake' . random_int(0, mt_getrandmax());
         HTML_QuickForm2_Renderer::register($type, 'HTML_QuickForm2_FakeRenderer');
         HTML_QuickForm2_Renderer::registerPlugin($type, 'HTML_QuickForm2_FakeRenderer_HelloPlugin');
         HTML_QuickForm2_Renderer::registerPlugin($type, 'HTML_QuickForm2_FakeRenderer_AnotherHelloPlugin');

@@ -1,6 +1,6 @@
 <?php
 /**
- * Class representing a HTML form
+ * Class representing an HTML form
  *
  * PHP version 5
  *
@@ -19,6 +19,8 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+declare(strict_types=1);
+
 /**
  * Class representing an HTML form
  *
@@ -36,6 +38,7 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
     public const ERROR_ATTRIBUTE_IS_READONLY = 139402;
     public const ERROR_DATA_SOURCES_ARRAY_INVALID = 139403;
     public const ERROR_NOT_IMPLEMENTED = 139404;
+    public const ERROR_MULTIPART_REQUIRES_POST = 139405;
 
     /**
     * Data sources providing values for form elements
@@ -128,6 +131,15 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
     public function getDataReason() : array
     {
         return $this->dataReason;
+    }
+
+    /**
+     * Retrieves the form's method attribute.
+     * @return string Always lowercase, i.g. <code>post</code> or <code>get</code>.
+     */
+    public function getMethod() : string
+    {
+        return strtolower($this->getAttribute('method'));
     }
 
     protected function onAttributeChange(string $name, $value = null) : void
@@ -309,5 +321,32 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
     public function getEventHandler() : HTML_QuickForm2_EventHandler
     {
         return $this->eventHandler;
+    }
+
+    /**
+     * Whether the form is
+     * @return bool
+     */
+    public function isMultiPart() : bool
+    {
+        return $this->getAttribute('enctype') === 'multipart/form-data';
+    }
+
+    /**
+     * Makes the form use multipart encoding (used for file uploads).
+     *
+     * @return $this
+     * @throws HTML_QuickForm2_InvalidArgumentException {@see self::ERROR_MULTIPART_REQUIRES_POST} Thrown if the form's method is not <code>post</code>.
+     */
+    public function makeMultiPart() : self
+    {
+        if($this->getMethod() !== 'post') {
+            throw new HTML_QuickForm2_InvalidArgumentException(
+                'Only POST method forms can be made multipart.',
+                self::ERROR_MULTIPART_REQUIRES_POST
+            );
+        }
+
+        return $this->setAttribute('enctype', 'multipart/form-data');
     }
 }

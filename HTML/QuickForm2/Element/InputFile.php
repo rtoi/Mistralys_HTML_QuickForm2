@@ -19,6 +19,8 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+declare(strict_types=1);
+
 /**
  * Class for <input type="file" /> elements
  *
@@ -32,7 +34,10 @@
  */
 class HTML_QuickForm2_Element_InputFile extends HTML_QuickForm2_Element_Input
 {
-   /**
+    public const ERROR_FILES_CANNOT_USE_FILTERS = 140101;
+    public const ERROR_ELEMENT_HAS_NO_FORM = 140102;
+
+    /**
     * Language to display error messages in
     * @var  string
     */
@@ -40,7 +45,7 @@ class HTML_QuickForm2_Element_InputFile extends HTML_QuickForm2_Element_Input
 
    /**
     * Information on uploaded file, from submit data source
-    * @var array|NULL
+    * @var array{name:string,type:string,size:int,tmp_name:string,error:int}|NULL
     */
     protected ?array $value = null;
 
@@ -108,9 +113,9 @@ class HTML_QuickForm2_Element_InputFile extends HTML_QuickForm2_Element_Input
    /**
     * Returns the information on uploaded file
     *
-    * @return   array|null
+    * @return array{name:string,type:string,size:int,tmp_name:string,error:int}|null
     */
-    public function getRawValue()
+    public function getRawValue() : ?array
     {
         $this->checkPrerequisites();
         
@@ -120,9 +125,9 @@ class HTML_QuickForm2_Element_InputFile extends HTML_QuickForm2_Element_Input
    /**
     * Alias of getRawValue(), InputFile elements do not allow filters
     *
-    * @return   array|null
+    * @return array{name:string,type:string,size:int,tmp_name:string,error:int}|null
     */
-    public function getValue()
+    public function getValue() : ?array
     {
         return $this->getRawValue();
     }
@@ -139,7 +144,7 @@ class HTML_QuickForm2_Element_InputFile extends HTML_QuickForm2_Element_Input
         return $this;
     }
     
-    public function preRender()
+    public function preRender() : void
     {
         $this->checkPrerequisites();
     }
@@ -151,34 +156,21 @@ class HTML_QuickForm2_Element_InputFile extends HTML_QuickForm2_Element_Input
     * @throws HTML_QuickForm2_Exception
     * @throws HTML_QuickForm2_InvalidArgumentException
     */
-    protected function checkPrerequisites()
+    protected function checkPrerequisites() : void
     {
         $form = $this->getForm();
+
         if($form === null) {
             throw new HTML_QuickForm2_Exception(
                 sprintf(
                     'Cannot pre-render element [%s]: it has no form.',
                     $this->getName()
-                )
+                ),
+                self::ERROR_ELEMENT_HAS_NO_FORM
             );
         }
-        
-        if(strtolower($form->getAttribute('method')) == 'get') 
-        {
-            throw new HTML_QuickForm2_InvalidArgumentException(
-                'File upload elements can only be added to forms with post submit method'
-            );
-        }
-        
-        $this->checkEncoding();
-    }
-    
-    protected function checkEncoding()
-    {
-        $form = $this->getForm();
-        if($form !== null && $form->getAttribute('enctype') != 'multipart/form-data') {
-            $form->setAttribute('enctype', 'multipart/form-data');
-        } 
+
+        $form->makeMultiPart();
     }
 
     protected function updateValue() : void
@@ -244,26 +236,46 @@ class HTML_QuickForm2_Element_InputFile extends HTML_QuickForm2_Element_Input
         return parent::validate();
     }
 
+    /**
+     * NOTE: File input elements cannot use filters. This will
+     * throw an exception.
+     *
+     * @param callable $callback
+     * @param array<mixed> $options
+     * @return $this
+     * @throws HTML_QuickForm2_Exception {@see self::ERROR_FILES_CANNOT_USE_FILTERS}
+     */
     public function addFilter(callable $callback, array $options = array()) : self
     {
         throw new HTML_QuickForm2_Exception(
-            'InputFile elements do not support filters'
+            'InputFile elements do not support filters',
+            self::ERROR_FILES_CANNOT_USE_FILTERS
         );
     }
 
-    public function addRecursiveFilter($callback, array $options = array()) : self
+    /**
+     * NOTE: File inputs cannot use filters. This will throw
+     * an exception.
+     *
+     * @param callable $callback
+     * @param array<mixed> $options
+     * @return $this
+     * @throws HTML_QuickForm2_Exception {@see self::ERROR_FILES_CANNOT_USE_FILTERS}
+     */
+    public function addRecursiveFilter(callable $callback, array $options = array()) : self
     {
         throw new HTML_QuickForm2_Exception(
-            'InputFile elements do not support filters'
+            'InputFile elements do not support filters',
+            self::ERROR_FILES_CANNOT_USE_FILTERS
         );
     }
     
    /**
     * Adds a mime type to the accept attribute.
     * @param string $mime A mime type, e.g "image/png"
-    * @return HTML_QuickForm2_Element_InputFile
+    * @return $this
     */
-    public function addAccept($mime)
+    public function addAccept(string $mime) : self
     {
         $accepts = $this->getAttribute('accept');
         $result = array();
@@ -271,12 +283,41 @@ class HTML_QuickForm2_Element_InputFile extends HTML_QuickForm2_Element_Input
             $result = explode(',', $accepts);
         }
         
-        if(!in_array($mime, $result)) {
+        if(!in_array($mime, $result, true)) {
             $result[] = $mime;
         }
+
+        sort($result);
         
         $this->setAttribute('accept', implode(',', $result));
         return $this;
+    }
+
+    /**
+     * Gets the value of the <code>accept</code> attribute.
+     *
+     * @return string Comma-separated list of mime types.
+     * @see self::getAcceptMimes()
+     */
+    public function getAccept() : string
+    {
+        return $this->getAttribute('accept');
+    }
+
+    /**
+     * Like {@see self::getAccept()}, but returns the list of
+     * mime types in an array.
+     *
+     * @return string[]
+     */
+    public function getAcceptMimes() : array
+    {
+        $accept = $this->getAccept();
+        if(!empty($accept)) {
+            return explode(',', $accept);
+        }
+
+        return array();
     }
     
    /**
@@ -292,16 +333,15 @@ class HTML_QuickForm2_Element_InputFile extends HTML_QuickForm2_Element_Input
     * $el->addAccepts('image/jpeg', 'image/png');
     * </pre>
     * 
-    * @return HTML_QuickForm2_Element_InputFile
+    * @return $this
     */
-    public function addAccepts()
+    public function addAccepts(...$accepts) : self
     {
-        $args = func_get_args();
-        if(is_array($args[0])) {
-            $args = $args[0];
+        if(is_array($accepts[0])) {
+            $accepts = $accepts[0];
         }
         
-        foreach($args as $accept) {
+        foreach($accepts as $accept) {
             $this->addAccept($accept);
         }
         
@@ -310,8 +350,8 @@ class HTML_QuickForm2_Element_InputFile extends HTML_QuickForm2_Element_Input
 
    /**
     * Retrieves the upload instance for the uploaded file, if any.
-    * Make sure to check if there is a valid uploaded file using
-    * the upload's {@link HTML_QuickForm2_Element_InputFile_Upload::isValid()} 
+    * Make sure to check if there is a valid upload using the
+    * upload's {@link HTML_QuickForm2_Element_InputFile_Upload::isValid()}
     * method.
     *
     * If the form has not been submitted, the upload will, of course,
@@ -320,11 +360,8 @@ class HTML_QuickForm2_Element_InputFile extends HTML_QuickForm2_Element_Input
     * 
     * @return HTML_QuickForm2_Element_InputFile_Upload
     */
-    public function getUpload()
+    public function getUpload() : HTML_QuickForm2_Element_InputFile_Upload
     {
-        require_once __DIR__.'/InputFile/Upload.php';
-        
         return new HTML_QuickForm2_Element_InputFile_Upload($this, $this->getValue());
     }
 }
-

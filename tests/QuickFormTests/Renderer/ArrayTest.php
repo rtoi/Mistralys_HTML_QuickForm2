@@ -177,4 +177,3 @@ class HTML_QuickForm2_Renderer_ArrayTest extends TestCase
         $this->assertEquals('named label', $array['label_foo']);
     }
 }
-?>

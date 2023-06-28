@@ -120,8 +120,9 @@ class QuickFormTests extends TestCase
 
     public function testConstructorSetsIdAndMethod() : void
     {
-        $form1 = new HTML_QuickForm2(null);
-        $this->assertEquals('post', $form1->getAttribute('method'));
+        $form1 = new HTML_QuickForm2();
+        $this->assertSame('post', $form1->getAttribute('method'));
+        $this->assertSame('post', $form1->getMethod());
         $this->assertNotEquals(0, strlen($form1->getAttribute('id')));
 
         $form2 = new HTML_QuickForm2('foo', 'get');

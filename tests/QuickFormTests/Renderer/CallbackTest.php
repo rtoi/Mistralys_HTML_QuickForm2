@@ -205,7 +205,7 @@ class HTML_QuickForm2_Renderer_CallbackTest extends TestCase
         $renderer = HTML_Quickform2_Renderer::factory('callback')
             ->setCallbackForId(
                 'testMultipleLabels',
-                array(get_class($this), '_renderTestMultipleLabels')
+                array($this, '_renderTestMultipleLabels')
             );
 
         $this->assertEquals(

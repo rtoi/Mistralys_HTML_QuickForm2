@@ -39,7 +39,7 @@ abstract class HTML_QuickForm2_Controller_Page
    /**
     * Button name template (needs form ID and action name substituted by sprintf())
     */
-    const KEY_NAME = '_qf_%s_%s';
+    public const KEY_NAME = '_qf_%s_%s';
 
    /**
     * Whether populateForm() was already called

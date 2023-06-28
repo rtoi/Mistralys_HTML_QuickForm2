@@ -2,7 +2,7 @@
 
 class HTML_QuickForm2_Element_InputFile_Upload
 {
-    const ERROR_CANNOT_RETRIEVE_INVALID_UPLOAD_DATA = 31501;
+    public const ERROR_CANNOT_RETRIEVE_INVALID_UPLOAD_DATA = 31501;
     
    /**
     * @var HTML_QuickForm2_Element_InputFile

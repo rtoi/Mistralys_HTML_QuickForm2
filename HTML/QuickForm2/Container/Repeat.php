@@ -56,12 +56,12 @@ class HTML_QuickForm2_Container_Repeat extends HTML_QuickForm2_Container
     /**
      * Key to replace by actual item index in elements' names / ids / values
      */
-    const INDEX_KEY = ':idx:';
+    public const INDEX_KEY = ':idx:';
 
     /**
      * Regular expression used to check for valid indexes
      */
-    const INDEX_REGEXP = '/^[a-zA-Z0-9_]+$/';
+    public const INDEX_REGEXP = '/^[a-zA-Z0-9_]+$/';
 
     /**
      * Field used to search for available indexes

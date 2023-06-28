@@ -39,12 +39,12 @@ class HTML_QuickForm2_Controller implements IteratorAggregate
    /**
     * Key in $_REQUEST array that contains the ID of the Controller
     */
-    const KEY_ID = '_qfc_id';
+    public const KEY_ID = '_qfc_id';
 
    /**
     * Key in $_SESSION array that contains the Controller data (needs ID substituted via sprintf())
     */
-    const KEY_CONTAINER = '_%s_container';
+    public const KEY_CONTAINER = '_%s_container';
 
    /**
     * Whether the form is a wizard

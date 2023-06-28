@@ -6,6 +6,11 @@
 - Containers: Added `requireElementById()` for a guaranteed return type.
 - Exceptions: Removed the PEAR exception dependency.
 - Elements: Added `addRuleRequired()` helper method.
+- Elements: Added `renderToArray()` utility method.
+- InputFile: Added `getAccept()` and `getAcceptMimes()` methods.
+- InputFile: Added exception constants.
+- Form: Added `getMethod()`.
+- Form: Added `makeMultiPart()` and `isMultiPart()`.
 - Rules: Added static `setDefaultMessage()` to the required rule.
 - Rules: `setMessage()` now accepts more message variable types.
 - Exceptions: Added error codes to some exceptions.

@@ -84,10 +84,12 @@ class NodeTests extends TestCase
         $this->assertFalse($obj->toggleFrozen(), 'Elements should NOT be frozen by default');
 
         $oldFrozen = $obj->toggleFrozen(true);
+        $this->assertTrue($obj->isFrozen());
         $this->assertFalse($oldFrozen, 'toggleFrozen() should return previous frozen status');
         $this->assertTrue($obj->toggleFrozen());
 
         $this->assertTrue($obj->toggleFrozen(false), 'toggleFrozen() should return previous frozen status');
+        $this->assertFalse($obj->isFrozen());
         $this->assertFalse($obj->toggleFrozen());
     }
 

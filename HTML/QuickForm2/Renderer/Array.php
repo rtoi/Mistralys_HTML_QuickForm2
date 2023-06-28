@@ -164,9 +164,9 @@ class HTML_QuickForm2_Renderer_Array extends HTML_QuickForm2_Renderer
    /**
     * Returns the resultant array
     *
-    * @return array
+    * @return array{id:string,html:string,value:mixed,type:string,required:bool,frozen:bool}
     */
-    public function toArray()
+    public function toArray() : array
     {
         return $this->array;
     }

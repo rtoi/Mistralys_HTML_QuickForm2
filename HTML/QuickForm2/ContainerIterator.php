@@ -30,9 +30,9 @@
  * @version  Release: @package_version@
  * @link     https://pear.php.net/package/HTML_QuickForm2
  *
- * @implements RecursiveArrayIterator<int,HTML_QuickForm2_Node>
+ * @extends RecursiveArrayIterator<int,HTML_QuickForm2_Node>
  */
-class HTML_QuickForm2_ContainerIterator extends RecursiveArrayIterator implements RecursiveIterator
+class HTML_QuickForm2_ContainerIterator extends RecursiveArrayIterator
 {
     public function __construct(HTML_QuickForm2_Container $container)
     {

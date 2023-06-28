@@ -29,7 +29,7 @@
  * @license  https://opensource.org/licenses/BSD-3-Clause BSD 3-Clause License
  * @version  Release: @package_version@
  * @link     https://pear.php.net/package/HTML_QuickForm2
- * @implements IteratorAggregate<string,HTML_QuickForm2_Node>
+ * @implements IteratorAggregate<int,HTML_QuickForm2_Node>
  *
  * @method HTML_QuickForm2_Element_Button        addButton(string $name, $attributes = null, array $data = array())
  * @method HTML_QuickForm2_Element_InputCheckbox addCheckbox(string $name, $attributes = null, array $data = array())

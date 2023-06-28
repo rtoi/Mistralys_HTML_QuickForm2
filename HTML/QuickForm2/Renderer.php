@@ -43,10 +43,9 @@
 abstract class HTML_QuickForm2_Renderer
 {
    /**
-    * List of registered renderer types
-    * @var array
-    */
-    private static $_types = array(
+     * List of registered renderer types
+     */
+    private static array $_types = array(
         'callback' => array('HTML_QuickForm2_Renderer_Callback', null),
         'default'  => array('HTML_QuickForm2_Renderer_Default', null),
         'array'    => array('HTML_QuickForm2_Renderer_Array', null),

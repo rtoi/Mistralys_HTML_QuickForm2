@@ -42,10 +42,9 @@ abstract class HTML_QuickForm2_Controller_Page
     public const KEY_NAME = '_qf_%s_%s';
 
    /**
-    * Whether populateForm() was already called
-    * @var  boolean
-    */
-    private $_formPopulated = false;
+     * Whether populateForm() was already called
+     */
+    private bool $_formPopulated = false;
 
    /**
     * The form wrapped by this page

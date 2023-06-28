@@ -41,10 +41,9 @@ class HTML_QuickForm2_DataSource_SuperGlobal
     protected $files = array();
 
    /**
-    * Keys present in the $_FILES array
-    * @var array
-    */
-    private static $_fileKeys = array('name', 'type', 'size', 'tmp_name', 'error');
+     * Keys present in the $_FILES array
+     */
+    private static array $_fileKeys = array('name', 'type', 'size', 'tmp_name', 'error');
 
    /**
     * Class constructor, intializes the internal arrays from superglobals

@@ -26,8 +26,8 @@ use PHPUnit\Framework\TestCase;
  */
 class HTML_QuickForm2_Element_HierselectTest extends TestCase
 {
-    private $_primary   = array(1 => 'one', 2 => 'two');
-    private $_secondary = array(
+    private array $_primary   = array(1 => 'one', 2 => 'two');
+    private array $_secondary = array(
         1 => array(11 => 'one-one', 12 => 'one-two'),
         2 => array(21 => 'two-one', 22 => 'two-two')
     );

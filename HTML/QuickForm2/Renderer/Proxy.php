@@ -43,16 +43,14 @@
 class HTML_QuickForm2_Renderer_Proxy extends HTML_QuickForm2_Renderer
 {
    /**
-    * Renderer instance
-    * @var HTML_QuickForm2_Renderer
-    */
-    private $_renderer;
+     * Renderer instance
+     */
+    private \HTML_QuickForm2_Renderer $_renderer;
 
    /**
-    * Additional renderer methods to proxy via __call(), as returned by exportMethods()
-    * @var array
-    */
-    private $_rendererMethods = array();
+     * Additional renderer methods to proxy via __call(), as returned by exportMethods()
+     */
+    private array $_rendererMethods = array();
 
    /**
     * Reference to a list of registered renderer plugins for that renderer type
@@ -61,19 +59,16 @@ class HTML_QuickForm2_Renderer_Proxy extends HTML_QuickForm2_Renderer
     private $_pluginClasses;
 
    /**
-    * Plugins for this renderer
-    * @var array
-    */
-    private $_plugins = array();
+     * Plugins for this renderer
+     */
+    private array $_plugins = array();
 
    /**
-    * Plugin methods to call via __call() magic method
-    *
-    * Array has the form ('lowercase method name' => 'index in _plugins array')
-    *
-    * @var array
-    */
-    private $_pluginMethods = array();
+     * Plugin methods to call via __call() magic method
+     *
+     * Array has the form ('lowercase method name' => 'index in _plugins array')
+     */
+    private array $_pluginMethods = array();
 
    /**
     * Constructor, sets proxied renderer and its plugins

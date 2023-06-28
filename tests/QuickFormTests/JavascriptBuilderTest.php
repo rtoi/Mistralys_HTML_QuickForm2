@@ -31,7 +31,7 @@ class HTML_QuickForm2_JavascriptBuilderTest extends TestCase
         BaseHTMLElement::setOption('nonce', null);
     }
 
-    public function testEncode()
+    public function testEncode(): void
     {
         $this->assertEquals('null', HTML_QuickForm2_JavascriptBuilder::encode(null));
         $this->assertEquals('false', HTML_QuickForm2_JavascriptBuilder::encode(false));
@@ -59,7 +59,7 @@ class HTML_QuickForm2_JavascriptBuilderTest extends TestCase
         fclose($fp);
     }
 
-    public function testBaseLibrary()
+    public function testBaseLibrary(): void
     {
         $builder = new HTML_QuickForm2_JavascriptBuilder();
 
@@ -79,7 +79,7 @@ class HTML_QuickForm2_JavascriptBuilderTest extends TestCase
         $this->assertStringContainsString('<script', $libraries);
     }
 
-    public function testInlineLibraryNonce()
+    public function testInlineLibraryNonce(): void
     {
         $builder = new HTML_QuickForm2_JavascriptBuilder();
 
@@ -94,7 +94,7 @@ class HTML_QuickForm2_JavascriptBuilderTest extends TestCase
         $this->assertMatchesRegularExpression('/<script[^>]*nonce="' . $nonce . '"/', $libraries);
     }
 
-    public function testInlineMissingLibrary()
+    public function testInlineMissingLibrary(): void
     {
         $builder = new HTML_QuickForm2_JavascriptBuilder();
         $builder->addLibrary('missing', 'missing.js');
@@ -104,7 +104,7 @@ class HTML_QuickForm2_JavascriptBuilderTest extends TestCase
         $builder->getLibraries(true);
     }
 
-    public function testFormJavascript()
+    public function testFormJavascript(): void
     {
         $builder = new HTML_QuickForm2_JavascriptBuilder();
         $element = new HTML_QuickForm2_Element_InputText();
@@ -152,7 +152,7 @@ class HTML_QuickForm2_JavascriptBuilderTest extends TestCase
         $this->assertStringContainsString('setupCodeTwo', $scriptBoth);
     }
 
-    public function testFormJavascriptNonce()
+    public function testFormJavascriptNonce(): void
     {
         $builder = new HTML_QuickForm2_JavascriptBuilder();
         $builder->addElementJavascript('Some setup code');

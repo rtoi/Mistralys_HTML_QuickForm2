@@ -36,7 +36,7 @@ use QuickFormTests\CustomClasses\TestContainerImpl;
  */
 class ContainerTest extends TestCase
 {
-    public function testCanSetName()
+    public function testCanSetName(): void
     {
         $obj = new TestContainerImpl();
         $this->assertNotNull($obj->getName(), 'Containers should always have \'name\' attribute');
@@ -53,7 +53,7 @@ class ContainerTest extends TestCase
     }
 
 
-    public function testCanSetId()
+    public function testCanSetId(): void
     {
         $obj = new TestContainerImpl(null, array('id' => 'manual'));
         $this->assertEquals('manual', $obj->getId());
@@ -66,7 +66,7 @@ class ContainerTest extends TestCase
     }
 
 
-    public function testAutogenerateId()
+    public function testAutogenerateId(): void
     {
         $obj = new TestContainerImpl('somename');
         $this->assertNotEquals('', $obj->getId(), 'Should have an auto-generated \'id\' attribute');
@@ -76,7 +76,7 @@ class ContainerTest extends TestCase
     }
 
 
-    public function testCanNotRemoveNameOrId()
+    public function testCanNotRemoveNameOrId(): void
     {
         $obj = new TestContainerImpl('somename', array(), array('id' => 'someid'));
         try
@@ -100,7 +100,7 @@ class ContainerTest extends TestCase
     }
 
 
-    public function testAddAndGetElements()
+    public function testAddAndGetElements(): void
     {
         $e1 = new TestElementImpl2('e1');
         $e2 = new TestElementImpl2('e2');
@@ -113,7 +113,7 @@ class ContainerTest extends TestCase
     }
 
 
-    public function testNestedAddAndGetElements()
+    public function testNestedAddAndGetElements(): void
     {
         $e1 = new TestElementImpl2('a1');
         $e2 = new TestElementImpl2('a2');
@@ -134,7 +134,7 @@ class ContainerTest extends TestCase
     }
 
 
-    public function testCannotSetContainerOnSelf()
+    public function testCannotSetContainerOnSelf(): void
     {
         $e1 = new TestElementImpl2('d1');
         $e2 = new TestElementImpl2('d2');
@@ -164,7 +164,7 @@ class ContainerTest extends TestCase
     }
 
 
-    public function testAddSameElementMoreThanOnce()
+    public function testAddSameElementMoreThanOnce(): void
     {
         $e1 = new TestElementImpl2('g1');
         $e2 = new TestElementImpl2('g2');
@@ -178,7 +178,7 @@ class ContainerTest extends TestCase
         $this->assertSame($e2, $c1->getElementById($e2->getId()));
     }
 
-    public function testMoveElement()
+    public function testMoveElement(): void
     {
         $e1 = new TestElementImpl2('move1');
 
@@ -194,7 +194,7 @@ class ContainerTest extends TestCase
         $this->assertSame($e1, $c2->getElementById($e1->getId()));
     }
 
-    public function testRemoveElement()
+    public function testRemoveElement(): void
     {
         $e1 = new TestElementImpl2('i1');
         $e2 = new TestElementImpl2('i2');
@@ -210,7 +210,7 @@ class ContainerTest extends TestCase
         $this->assertSame($e1, $removed, 'removeChild() should return the old child');
     }
 
-    public function testCannotRemoveNonExisting()
+    public function testCannotRemoveNonExisting(): void
     {
         $e1 = new TestElementImpl2('remove1');
         $e2 = new TestElementImpl2('remove2');
@@ -249,7 +249,7 @@ class ContainerTest extends TestCase
         $this->fail('Expected HTML_QuickForm2_NotFoundException was not thrown');
     }
 
-    public function testInsertBefore()
+    public function testInsertBefore(): void
     {
         $e1 = new TestElementImpl2('k1');
         $e2 = new TestElementImpl2('k2');
@@ -278,7 +278,7 @@ class ContainerTest extends TestCase
         }
     }
 
-    public function testInsertBeforeNonExistingElement()
+    public function testInsertBeforeNonExistingElement(): void
     {
         $e1 = new TestElementImpl2('m1');
         $e2 = new TestElementImpl2('m2');
@@ -316,7 +316,7 @@ class ContainerTest extends TestCase
         $this->fail('Expected HTML_QuickForm2_NotFoundException was not thrown');
     }
 
-    public function testGetElementsByName()
+    public function testGetElementsByName(): void
     {
         $e1 = new TestElementImpl2('foo');
         $e2 = new TestElementImpl2('bar');
@@ -339,7 +339,7 @@ class ContainerTest extends TestCase
         $this->assertEquals(array($e5, $e1, $e3), $c2->getElementsByName('foo'));
     }
 
-    public function testDuplicateIdHandling()
+    public function testDuplicateIdHandling(): void
     {
         $e1 = new TestElementImpl2('dup1', array('id' => 'dup'));
         $e2 = new TestElementImpl2('dup2', array('id' => 'dup'));
@@ -361,7 +361,7 @@ class ContainerTest extends TestCase
         $this->assertSame($e1, $c2->getElementById('dup'));
     }
 
-    public function testFrozenStatusPropagates()
+    public function testFrozenStatusPropagates(): void
     {
         $cFreeze = new TestContainerImpl('cFreeze');
         $elFreeze = $cFreeze->appendChild(new TestElementImpl2('elFreeze'));
@@ -375,7 +375,7 @@ class ContainerTest extends TestCase
         $this->assertFalse($elFreeze->toggleFrozen(), 'Contained element should not be frozen');
     }
 
-    public function testPersistentFreezePropagates()
+    public function testPersistentFreezePropagates(): void
     {
         $cPers = new TestContainerImpl('cPersistent');
         $elPers = $cPers->appendChild(new TestElementImpl2('elPersistent'));
@@ -389,7 +389,7 @@ class ContainerTest extends TestCase
         $this->assertFalse($elPers->persistentFreeze(), 'Contained element should not have persistent freeze behaviour');
     }
 
-    public function testGetValue()
+    public function testGetValue(): void
     {
         $c1 = new TestContainerImpl('hasValues');
         $this->assertNull($c1->getValue());
@@ -412,7 +412,7 @@ class ContainerTest extends TestCase
         ), $c1->getValue());
     }
 
-    public function testGetRawValue()
+    public function testGetRawValue(): void
     {
         $c = new TestContainerImpl('filtered');
 
@@ -527,7 +527,7 @@ class ContainerTest extends TestCase
     /**
      * Checks that JS for container rules comes after js for rules on contained elements
      */
-    public function testRequest17576Client()
+    public function testRequest17576Client(): void
     {
         $container = new TestContainerImpl('aContainer');
         $element = $container->appendChild(new TestElementImpl2('anElement'));
@@ -554,7 +554,7 @@ class ContainerTest extends TestCase
         );
     }
 
-    public function testFrozenContainersHaveNoClientValidation()
+    public function testFrozenContainersHaveNoClientValidation(): void
     {
         $container = new TestContainerImpl('aContainer');
         $ruleContainer = $this->getMockBuilder('HTML_QuickForm2_Rule')
@@ -572,7 +572,7 @@ class ContainerTest extends TestCase
         );
     }
 
-    public function testGetValueBrackets()
+    public function testGetValueBrackets(): void
     {
         $c = new TestContainerImpl('withBrackets');
         $el1 = $c->appendChild(new TestElementImpl2('foo[]'));

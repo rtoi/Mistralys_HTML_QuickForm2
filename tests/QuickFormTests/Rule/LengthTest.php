@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
  */
 class HTML_QuickForm2_Rule_LengthTest extends TestCase
 {
-    public function testLimitsAreRequired()
+    public function testLimitsAreRequired(): void
     {
         $mockEl = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -46,7 +46,7 @@ class HTML_QuickForm2_Rule_LengthTest extends TestCase
         }
     }
 
-    public function testScalarLengthIsPositive()
+    public function testScalarLengthIsPositive(): void
     {
         $mockEl = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -67,7 +67,7 @@ class HTML_QuickForm2_Rule_LengthTest extends TestCase
         }
     }
 
-    public function testMinMaxLengthIsNonnegative()
+    public function testMinMaxLengthIsNonnegative(): void
     {
         $mockEl = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -88,7 +88,7 @@ class HTML_QuickForm2_Rule_LengthTest extends TestCase
         }
     }
 
-    public function testLimitsHandling()
+    public function testLimitsHandling(): void
     {
         $mockEl  = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -119,7 +119,7 @@ class HTML_QuickForm2_Rule_LengthTest extends TestCase
         $this->assertFalse($maxLength2->validate());
     }
 
-    public function testConfigCanonicalForm()
+    public function testConfigCanonicalForm(): void
     {
         $mockEl = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -138,7 +138,7 @@ class HTML_QuickForm2_Rule_LengthTest extends TestCase
         $this->assertEquals(array('min' => 0, 'max' => 2), $length->getConfig());
     }
 
-    public function testGlobalConfigOverrides()
+    public function testGlobalConfigOverrides(): void
     {
         $mockEl = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -171,7 +171,7 @@ class HTML_QuickForm2_Rule_LengthTest extends TestCase
         $this->assertEquals(array('min' => 3, 'max' => 4), $array2->getConfig());
     }
 
-    public function testConfigMerging()
+    public function testConfigMerging(): void
     {
         $this->assertEquals(
             array('min' => 1, 'max' => 0),
@@ -190,7 +190,7 @@ class HTML_QuickForm2_Rule_LengthTest extends TestCase
         );
     }
 
-    public function testEmptyFieldsAreSkipped()
+    public function testEmptyFieldsAreSkipped(): void
     {
         $mockEmpty = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',

@@ -70,7 +70,7 @@ class HTML_QuickForm2_Controller_SessionContainer
     * @param string $pageId Page ID
     * @param array  $values Page submit values
     */
-    public function storeValues($pageId, array $values)
+    public function storeValues($pageId, array $values): void
     {
         $this->data['values'][$pageId] = $values;
     }
@@ -94,7 +94,7 @@ class HTML_QuickForm2_Controller_SessionContainer
     * @param string $pageId Page ID
     * @param bool   $status Whether the page is valid
     */
-    public function storeValidationStatus($pageId, $status)
+    public function storeValidationStatus($pageId, $status): void
     {
         $this->data['valid'][$pageId] = (bool)$status;
     }
@@ -153,7 +153,7 @@ class HTML_QuickForm2_Controller_SessionContainer
     * @param string $name  Parameter name
     * @param string $value Parameter value
     */
-    public function storeOpaque($name, $value)
+    public function storeOpaque($name, $value): void
     {
         if (!array_key_exists('opaque', $this->data)) {
             $this->data['opaque'] = array();

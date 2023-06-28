@@ -90,7 +90,7 @@ abstract class HTML_QuickForm2_Controller_Page
     *
     * @param HTML_QuickForm2_Controller $controller controller the page belongs to
     */
-    public function setController(HTML_QuickForm2_Controller $controller)
+    public function setController(HTML_QuickForm2_Controller $controller): void
     {
         $this->controller = $controller;
     }
@@ -111,7 +111,7 @@ abstract class HTML_QuickForm2_Controller_Page
     * @param string                            $actionName action name
     * @param HTML_QuickForm2_Controller_Action $action     the handler for the action
     */
-    public function addHandler($actionName, HTML_QuickForm2_Controller_Action $action)
+    public function addHandler($actionName, HTML_QuickForm2_Controller_Action $action): void
     {
         $this->handlers[$actionName] = $action;
     }
@@ -201,7 +201,7 @@ abstract class HTML_QuickForm2_Controller_Page
    /**
     * Wrapper around populateForm() ensuring that it is only called once
     */
-    final public function populateFormOnce()
+    final public function populateFormOnce(): void
     {
         if (!$this->_formPopulated) {
             if (!empty($this->controller) && $this->controller->propagateId()) {

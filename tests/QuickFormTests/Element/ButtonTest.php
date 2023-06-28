@@ -34,7 +34,7 @@ class HTML_QuickForm2_Element_ButtonTest extends TestCase
         );
     }
 
-    public function testConstructorSetsContent()
+    public function testConstructorSetsContent(): void
     {
         $button = new HTML_QuickForm2_Element_Button('foo', null, array('content' => 'Some string'));
         $this->assertMatchesRegularExpression('!<button[^>]*>Some string</button>!', $button->__toString());
@@ -48,7 +48,7 @@ class HTML_QuickForm2_Element_ButtonTest extends TestCase
         $this->assertFalse($button->toggleFrozen());
     }
 
-    public function testSetValueFromSubmitDataSource()
+    public function testSetValueFromSubmitDataSource(): void
     {
         $form = new HTML_QuickForm2('buttons', 'post', null, false);
         $foo = $form->appendChild(new HTML_QuickForm2_Element_Button('foo', array('type' => 'submit')));

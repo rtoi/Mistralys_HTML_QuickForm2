@@ -129,7 +129,7 @@ abstract class HTML_QuickForm2_Renderer
     *
     * @throws   HTML_QuickForm2_InvalidArgumentException if type already registered
     */
-    final public static function register($type, $className, $includeFile = null)
+    final public static function register($type, $className, $includeFile = null): void
     {
         $type = strtolower($type);
         self::$_types[$type] = array($className, $includeFile);

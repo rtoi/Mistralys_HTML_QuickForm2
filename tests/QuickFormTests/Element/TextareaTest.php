@@ -26,14 +26,14 @@ use PHPUnit\Framework\TestCase;
  */
 class HTML_QuickForm2_Element_TextareaTest extends TestCase
 {
-    public function testTextareaIsEmptyByDefault()
+    public function testTextareaIsEmptyByDefault(): void
     {
         $area = new HTML_QuickForm2_Element_Textarea();
         $this->assertNull($area->getValue());
         $this->assertMatchesRegularExpression('!\\s*<textarea[^>]*></textarea>\\s*!', $area->__toString());
     }
 
-    public function testSetAndGetValue()
+    public function testSetAndGetValue(): void
     {
         $area = new HTML_QuickForm2_Element_Textarea();
         $this->assertSame($area, $area->setValue('Some string'));
@@ -45,7 +45,7 @@ class HTML_QuickForm2_Element_TextareaTest extends TestCase
         $this->assertMatchesRegularExpression('!\\s*<textarea[^>]*>Some string</textarea>\\s*!', $area->__toString());
     }
 
-    public function testValueOutputIsEscaped()
+    public function testValueOutputIsEscaped(): void
     {
         $area = new HTML_QuickForm2_Element_Textarea();
         $area->setValue('<foo>');

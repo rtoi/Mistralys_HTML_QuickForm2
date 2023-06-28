@@ -43,7 +43,7 @@ abstract class HTML_QuickForm2_Renderer_Plugin
     *
     * @param HTML_QuickForm2_Renderer $renderer base renderer
     */
-    public function setRenderer(HTML_QuickForm2_Renderer $renderer)
+    public function setRenderer(HTML_QuickForm2_Renderer $renderer): void
     {
         $this->renderer = $renderer;
     }

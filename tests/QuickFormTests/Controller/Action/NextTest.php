@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase;
 class HTML_QuickForm2_Controller_Action_NextTest
     extends TestCase
 {
-    public function testWizardBehaviour()
+    public function testWizardBehaviour(): void
     {
         $formOne = $this->getMockBuilder('HTML_QuickForm2')
             ->setMethods(array('validate'))
@@ -88,7 +88,7 @@ class HTML_QuickForm2_Controller_Action_NextTest
         $this->assertEquals('jump to page one', $pageTwo->handle('next'));
     }
 
-    public function testNonWizardBehaviour()
+    public function testNonWizardBehaviour(): void
     {
         $formOne = $this->getMockBuilder('HTML_QuickForm2')
             ->setMethods(array('validate'))

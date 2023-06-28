@@ -778,7 +778,10 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
         return false;
     }
 
-    public function getValues()
+    /**
+     * @return array<string,mixed>
+     */
+    public function getValues() : array
     {
         /* @var $element HTML_QuickForm2_Node */
         

@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
  */
 class HTML_QuickForm2_Rule_NotCallbackTest extends TestCase
 {
-    public function testNegatesResult()
+    public function testNegatesResult(): void
     {
         $mockEl  = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',

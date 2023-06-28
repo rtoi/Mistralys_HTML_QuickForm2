@@ -66,7 +66,7 @@ class NodeTests extends TestCase
         $form->requireElementById('unknown-node');
     }
 
-    public function testCanSetLabel()
+    public function testCanSetLabel(): void
     {
         $obj = new TestNodeImpl();
         $this->assertNull($obj->getLabel());
@@ -78,7 +78,7 @@ class NodeTests extends TestCase
         $this->assertEquals('another label', $obj2->getLabel());
     }
 
-    public function testCanFreezeAndUnfreeze()
+    public function testCanFreezeAndUnfreeze(): void
     {
         $obj = new TestNodeImpl();
         $this->assertFalse($obj->toggleFrozen(), 'Elements should NOT be frozen by default');
@@ -91,7 +91,7 @@ class NodeTests extends TestCase
         $this->assertFalse($obj->toggleFrozen());
     }
 
-    public function testCanSetPersistentFreeze()
+    public function testCanSetPersistentFreeze(): void
     {
         $obj = new TestNodeImpl();
         $this->assertFalse($obj->persistentFreeze(), 'Frozen element\'s data should NOT persist by default');
@@ -146,7 +146,7 @@ class NodeTests extends TestCase
         $this->assertEquals('An error message', $invalid->getError());
     }
 
-    public function testValidateUntilErrorMessage()
+    public function testValidateUntilErrorMessage(): void
     {
         $preError = new TestNodeImpl();
         $preError->setError('some message');
@@ -190,7 +190,7 @@ class NodeTests extends TestCase
         $this->assertEquals('some error', $manyRules->getError());
     }
 
-    public function testRemoveRule()
+    public function testRemoveRule(): void
     {
         $node = new TestNodeImpl();
         $removed = $node->addRule(
@@ -204,7 +204,7 @@ class NodeTests extends TestCase
         $this->assertTrue($node->validate());
     }
 
-    public function testAddRuleOnlyOnce()
+    public function testAddRuleOnlyOnce(): void
     {
         $node = new TestNodeImpl();
         $mock = $node->addRule(
@@ -220,7 +220,7 @@ class NodeTests extends TestCase
         $this->assertFalse($node->validate());
     }
 
-    public function testRemoveRuleOnChangingOwner()
+    public function testRemoveRuleOnChangingOwner(): void
     {
         $nodeOne = new TestNodeImpl();
         $nodeTwo = new TestNodeImpl();
@@ -238,7 +238,7 @@ class NodeTests extends TestCase
         $this->assertFalse($nodeTwo->validate());
     }
 
-    public function testElementIsNotRequiredByDefault()
+    public function testElementIsNotRequiredByDefault(): void
     {
         $node = new TestNodeImpl();
         $this->assertFalse($node->isRequired());
@@ -250,7 +250,7 @@ class NodeTests extends TestCase
      * @dataProvider invalidIdProvider
      * @link http://pear.php.net/bugs/17576
      */
-    public function testRequest18683($id)
+    public function testRequest18683($id): void
     {
         $this->expectException(HTML_QuickForm2_InvalidArgumentException::class);
 

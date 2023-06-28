@@ -44,7 +44,7 @@ class HTML_QuickForm2_ElementTest extends TestCase
         BaseHTMLElement::setOption('id_force_append_index', true);
     }
 
-    public function testCanSetName()
+    public function testCanSetName(): void
     {
         $obj = new TestElementImpl();
         $this->assertNotNull($obj->getName(), 'Elements should always have \'name\' attribute');
@@ -60,7 +60,7 @@ class HTML_QuickForm2_ElementTest extends TestCase
     }
 
 
-    public function testCanSetId()
+    public function testCanSetId(): void
     {
         $obj = new TestElementImpl(null, array('id' => 'manual'));
         $this->assertEquals('manual', $obj->getId());
@@ -73,7 +73,7 @@ class HTML_QuickForm2_ElementTest extends TestCase
     }
 
 
-    public function testCanNotRemoveNameOrId()
+    public function testCanNotRemoveNameOrId(): void
     {
         $obj = new TestElementImpl('somename', array(), array('id' => 'someid'));
         try {
@@ -91,7 +91,7 @@ class HTML_QuickForm2_ElementTest extends TestCase
     }
 
 
-    public function testUniqueIdsGenerated()
+    public function testUniqueIdsGenerated(): void
     {
         $names = array(
             '', 'value', 'array[]', 'array[8]', 'array[60000]', 'array[20]',
@@ -115,7 +115,7 @@ class HTML_QuickForm2_ElementTest extends TestCase
     }
 
 
-    public function testManualIdsNotReused()
+    public function testManualIdsNotReused(): void
     {
         // use a unique element name for this test, to avoid conflicts
         // with other tests.
@@ -141,7 +141,7 @@ class HTML_QuickForm2_ElementTest extends TestCase
         }
     }
 
-    public function testSetValueFromSubmitDatasource()
+    public function testSetValueFromSubmitDatasource(): void
     {
         $form = new HTML_QuickForm2('form1');
         $elFoo = $form->appendChild(new TestElementImpl('foo'));
@@ -151,7 +151,7 @@ class HTML_QuickForm2_ElementTest extends TestCase
         $this->assertNull($elBar->getValue());
     }
 
-    public function testDataSourcePriority()
+    public function testDataSourcePriority(): void
     {
         $form = new HTML_QuickForm2('form1');
         $form->addDataSource(new HTML_QuickForm2_DataSource_Array(array(
@@ -165,7 +165,7 @@ class HTML_QuickForm2_ElementTest extends TestCase
         $this->assertEquals('default value', $elBar->getValue());
     }
 
-    public function testUpdateValueFromNewDataSource()
+    public function testUpdateValueFromNewDataSource(): void
     {
         $form = new HTML_QuickForm2('form2');
         $el = $form->appendChild(new TestElementImpl('foo'));
@@ -177,7 +177,7 @@ class HTML_QuickForm2_ElementTest extends TestCase
         $this->assertEquals('updated value', $el->getValue());
     }
 
-    public function testUpdateValueOnNameChange()
+    public function testUpdateValueOnNameChange(): void
     {
         $form = new HTML_QuickForm2('form1');
         $elFoo = $form->appendChild(new TestElementImpl('foo'));
@@ -185,7 +185,7 @@ class HTML_QuickForm2_ElementTest extends TestCase
         $this->assertEquals('another value', $elFoo->getValue());
     }
 
-    public function testGenerateIdsWithoutIndexes()
+    public function testGenerateIdsWithoutIndexes(): void
     {
         BaseHTMLElement::setOption('id_force_append_index', false);
 
@@ -197,7 +197,7 @@ class HTML_QuickForm2_ElementTest extends TestCase
         $this->assertEquals($name . '-bar', $el2->getId());
     }
 
-    public function testUniqueIdsGeneratedWithoutIndexes()
+    public function testUniqueIdsGeneratedWithoutIndexes(): void
     {
         BaseHTMLElement::setOption('id_force_append_index', false);
 
@@ -208,7 +208,7 @@ class HTML_QuickForm2_ElementTest extends TestCase
      * Prevent generating ids like "0-0" for (grouped) elements named "0"
      * @see http://news.php.net/php.pear.general/31496
      */
-    public function testGeneratedIdsShouldNotStartWithNumbers()
+    public function testGeneratedIdsShouldNotStartWithNumbers(): void
     {
         $el = new TestElementImpl('0');
         $this->assertDoesNotMatchRegularExpression('/^\d/', $el->getId());
@@ -218,7 +218,7 @@ class HTML_QuickForm2_ElementTest extends TestCase
      * If data source contains explicitly provided null values, those should be used
      * @link http://pear.php.net/bugs/bug.php?id=20295
      */
-    public function testBug20295()
+    public function testBug20295(): void
     {
         $form = new HTML_QuickForm2('bug20295');
         $el = $form->appendChild(new TestElementImpl('foo'));

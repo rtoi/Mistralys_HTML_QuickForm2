@@ -35,13 +35,13 @@ class HTML_QuickForm2_Element_InputCheckboxTest extends TestCase
         $_GET = array();
     }
 
-    public function testDefaultValueAttributeIs1()
+    public function testDefaultValueAttributeIs1(): void
     {
         $box = new HTML_QuickForm2_Element_InputCheckbox();
         $this->assertEquals('1', $box->getAttribute('value'));
     }
 
-    public function testCheckboxUncheckedOnSubmit()
+    public function testCheckboxUncheckedOnSubmit(): void
     {
         $formPost = new HTML_QuickForm2('boxed', 'post', null, false);
         $box1 = $formPost->appendChild(new HTML_QuickForm2_Element_InputCheckbox('box1'));
@@ -69,7 +69,7 @@ class HTML_QuickForm2_Element_InputCheckboxTest extends TestCase
     * Allow to properly set values for checkboxes named like 'box[]'
     * @see http://pear.php.net/bugs/bug.php?id=16806
     */
-    public function testRequest16806()
+    public function testRequest16806(): void
     {
         $formPost = new HTML_QuickForm2('request16806', 'post', null, false);
 
@@ -86,7 +86,7 @@ class HTML_QuickForm2_Element_InputCheckboxTest extends TestCase
     * Notices were emitted when 'content' key was missing from $data
     * @see http://pear.php.net/bugs/bug.php?id=16816
     */
-    public function testBug16816()
+    public function testBug16816(): void
     {
         $box = new HTML_QuickForm2_Element_InputCheckbox(
             'vegetable[1]', array('value' => 2, 'checked' => 1), array('label' => 'pea')
@@ -99,7 +99,7 @@ class HTML_QuickForm2_Element_InputCheckboxTest extends TestCase
     * Explicitly setting value to 0 resulted in value="1"
     * @see http://news.php.net/php.pear.general/31496
     */
-    public function testValue0()
+    public function testValue0(): void
     {
         $box = new HTML_QuickForm2_Element_InputCheckbox(
             'testBox', array('value' => 0)
@@ -110,7 +110,7 @@ class HTML_QuickForm2_Element_InputCheckboxTest extends TestCase
     /**
      * If a form contained only non-submit data sources, 'checked' attribute was unlikely to be ever cleared
      */
-    public function testCheckedAttributeShouldBeCleared()
+    public function testCheckedAttributeShouldBeCleared(): void
     {
         $formNoSubmit = new HTML_QuickForm2('neverSubmitted');
         $box1 = new HTML_QuickForm2_Element_InputCheckbox('box1', 'checked');
@@ -135,7 +135,7 @@ class HTML_QuickForm2_Element_InputCheckboxTest extends TestCase
      * If data source contains explicitly provided null values, those should be used
      * @link http://pear.php.net/bugs/bug.php?id=20295
      */
-    public function testBug20295()
+    public function testBug20295(): void
     {
         $form = new HTML_QuickForm2('bug20295');
         $box  = $form->addCheckbox('box', array('value' => 'yep', 'checked' => 'checked'));

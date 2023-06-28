@@ -45,7 +45,7 @@ class HTML_QuickForm2_Element_InputImageTest extends TestCase
         $this->assertFalse($image->toggleFrozen());
     }
 
-    public function testPhpBug745Workaround()
+    public function testPhpBug745Workaround(): void
     {
         $image1 = new HTML_QuickForm2_Element_InputImage('foo');
         $this->assertMatchesRegularExpression('/name="foo"/', $image1->__toString());
@@ -59,7 +59,7 @@ class HTML_QuickForm2_Element_InputImageTest extends TestCase
         $this->assertEquals('foo[bar][]', $image3->getName());
     }
 
-    public function testSetValueFromSubmitDataSource()
+    public function testSetValueFromSubmitDataSource(): void
     {
         $form = new HTML_QuickForm2('image', 'post', null, false);
         $foo = $form->appendChild(new HTML_QuickForm2_Element_InputImage('foo'));

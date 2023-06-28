@@ -26,13 +26,13 @@ use PHPUnit\Framework\TestCase;
  */
 class HTML_QuickForm2_Element_FieldsetTest extends TestCase
 {
-    public function testFieldsetIsEmptyByDefault()
+    public function testFieldsetIsEmptyByDefault(): void
     {
         $fs = new HTML_QuickForm2_Container_Fieldset();
         $this->assertMatchesRegularExpression('!\s*<fieldset id="[^"]+">\s*</fieldset>\s*!', $fs->__toString());
     }
 
-    public function testLegend()
+    public function testLegend(): void
     {
         $fs = new HTML_QuickForm2_Container_Fieldset(null, null, array('label' => 'legend'));
         $this->assertMatchesRegularExpression('!\s*<fieldset[^>]+>\s*<legend id="[^"]+-legend">legend</legend>\s*</fieldset>\s*!', $fs->__toString());

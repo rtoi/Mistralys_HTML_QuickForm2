@@ -77,7 +77,7 @@ class HTML_QuickForm2_Container_Repeat_JavascriptBuilder
      *
      * @param HTML_QuickForm2_JavascriptBuilder $recipient original Javascript builder
      */
-    public function passLibraries(HTML_QuickForm2_JavascriptBuilder $recipient)
+    public function passLibraries(HTML_QuickForm2_JavascriptBuilder $recipient): void
     {
         foreach ($this->libraries as $name => $library) {
             $recipient->addLibrary(

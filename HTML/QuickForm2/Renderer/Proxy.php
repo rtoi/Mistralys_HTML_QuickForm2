@@ -217,32 +217,32 @@ class HTML_QuickForm2_Renderer_Proxy extends HTML_QuickForm2_Renderer
         return $this;
     }
 
-    public function renderElement(HTML_QuickForm2_Node $element)
+    public function renderElement(HTML_QuickForm2_Node $element): void
     {
         $this->_renderer->renderElement($element);
     }
 
-    public function renderHidden(HTML_QuickForm2_Node $element)
+    public function renderHidden(HTML_QuickForm2_Node $element): void
     {
         $this->_renderer->renderHidden($element);
     }
 
-    public function startForm(HTML_QuickForm2_Node $form)
+    public function startForm(HTML_QuickForm2_Node $form): void
     {
         $this->_renderer->startForm($form);
     }
 
-    public function finishForm(HTML_QuickForm2_Node $form)
+    public function finishForm(HTML_QuickForm2_Node $form): void
     {
         $this->_renderer->finishForm($form);
     }
 
-    public function startContainer(HTML_QuickForm2_Node $container)
+    public function startContainer(HTML_QuickForm2_Node $container): void
     {
         $this->_renderer->startContainer($container);
     }
 
-    public function finishContainer(HTML_QuickForm2_Node $container)
+    public function finishContainer(HTML_QuickForm2_Node $container): void
     {
         $this->_renderer->finishContainer($container);
     }

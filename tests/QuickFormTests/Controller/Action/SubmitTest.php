@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase;
 class HTML_QuickForm2_Controller_Action_SubmitTest
     extends TestCase
 {
-    public function testProcessIfValid()
+    public function testProcessIfValid(): void
     {
         $mockForm = $this->getMockBuilder('HTML_QuickForm2')
             ->setMethods(array('validate', 'getValue'))
@@ -54,7 +54,7 @@ class HTML_QuickForm2_Controller_Action_SubmitTest
         $this->assertEquals(array('foo' => 'bar'), $controller->getValue());
     }
 
-    public function testDisplayIfInvalid()
+    public function testDisplayIfInvalid(): void
     {
         $mockForm = $this->getMockBuilder('HTML_QuickForm2')
             ->setMethods(array('validate', 'getValue'))
@@ -81,7 +81,7 @@ class HTML_QuickForm2_Controller_Action_SubmitTest
         $this->assertEquals(array('foo' => 'bar'), $controller->getValue());
     }
 
-    public function testRedirectToInvalidPage()
+    public function testRedirectToInvalidPage(): void
     {
         $pageFirst = $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
             ->setMethods(array('populateForm'))

@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
  */
 class HTML_QuickForm2_Rule_NonemptyTest extends TestCase
 {
-    function testValidateGenericElement()
+    function testValidateGenericElement(): void
     {
         $mockValid = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -49,7 +49,7 @@ class HTML_QuickForm2_Rule_NonemptyTest extends TestCase
         $this->assertEquals('an error', $mockInvalid->getError());
     }
 
-    function testValidateInputFileElement()
+    function testValidateInputFileElement(): void
     {
         $mockValid = $this->getMockBuilder('HTML_QuickForm2_Element_InputFile')
             ->setMethods(array('getValue'))
@@ -82,7 +82,7 @@ class HTML_QuickForm2_Rule_NonemptyTest extends TestCase
         $this->assertEquals('an error', $mockInvalid->getError());
     }
 
-    public function testDefaultConfig()
+    public function testDefaultConfig(): void
     {
         $mockEl = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -92,7 +92,7 @@ class HTML_QuickForm2_Rule_NonemptyTest extends TestCase
         $this->assertEquals(1, $rule->getConfig());
     }
 
-    public function testPositiveNumberRequired()
+    public function testPositiveNumberRequired(): void
     {
         $mockEl = $this->getMockBuilder('HTML_QuickForm2_Element')
         ->setMethods(array(
@@ -111,7 +111,7 @@ class HTML_QuickForm2_Rule_NonemptyTest extends TestCase
    /**
     * @see  http://pear.php.net/bugs/bug.php?id=12610
     */
-    function testValidateSelectMultiple()
+    function testValidateSelectMultiple(): void
     {
         $options     = array('1' => 'Option 1', '2' => 'Option 2');
         $multiSelect = new HTML_QuickForm2_Element_Select(
@@ -128,7 +128,7 @@ class HTML_QuickForm2_Rule_NonemptyTest extends TestCase
         $this->assertFalse($nonEmpty->validate());
     }
 
-    function testValidateContainer()
+    function testValidateContainer(): void
     {
         $mockContainer = $this->getMockBuilder('HTML_QuickForm2_Container')
             ->setMethods(array('getType', 'setValue', '__toString'))
@@ -146,7 +146,7 @@ class HTML_QuickForm2_Rule_NonemptyTest extends TestCase
         $this->assertEquals('', $bar->getError());
     }
 
-    function testValidateNestedContainer()
+    function testValidateNestedContainer(): void
     {
         $mockOuter = $this->getMockBuilder('HTML_QuickForm2_Container')
             ->setMethods(array('getType', 'setValue', '__toString'))
@@ -165,7 +165,7 @@ class HTML_QuickForm2_Rule_NonemptyTest extends TestCase
         $this->assertFalse($nonEmpty->validate());
     }
 
-    public function testContainerValidationTriggers()
+    public function testContainerValidationTriggers(): void
     {
         $mockContainer = $this->getMockBuilder('HTML_QuickForm2_Container')
             ->setMethods(array('getType', 'setValue', '__toString'))

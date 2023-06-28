@@ -191,7 +191,7 @@ class HTML_QuickForm2_Element_Hierselect extends HTML_QuickForm2_Container_Group
    /**
     * Loads options for child Select elements
     */
-    private function _loadChildOptions()
+    private function _loadChildOptions(): void
     {
         $idx           = 0;
         $this->_values = array();

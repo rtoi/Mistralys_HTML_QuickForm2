@@ -118,7 +118,7 @@ class HTML_QuickForm2_JavascriptBuilder
     * @param string $absPath  filesystem path where the file resides, used when inlining
     *                         libraries, $defaultAbsPath will be used if not given
     */
-    public function addLibrary($name, $fileName, $webPath = null, $absPath = null)
+    public function addLibrary($name, $fileName, $webPath = null, $absPath = null): void
     {
         $this->libraries[strtolower($name)] = array(
             'file' => $fileName, 'webPath' => $webPath, 'absPath' => $absPath
@@ -173,7 +173,7 @@ class HTML_QuickForm2_JavascriptBuilder
     *
     * @param string $formId
     */
-    public function setFormId($formId)
+    public function setFormId($formId): void
     {
         $this->formId = $formId;
         $this->rules[$this->formId]          = array();
@@ -189,7 +189,7 @@ class HTML_QuickForm2_JavascriptBuilder
     * @param bool                 $triggers Whether rule code should contain
     *                                       "triggers" for live validation
     */
-    public function addRule(HTML_QuickForm2_Rule $rule, $triggers = false)
+    public function addRule(HTML_QuickForm2_Rule $rule, $triggers = false): void
     {
         $this->rules[$this->formId][] = $rule->getJavascript($triggers);
     }
@@ -200,7 +200,7 @@ class HTML_QuickForm2_JavascriptBuilder
     *
     * @param string $script
     */
-    public function addElementJavascript($script)
+    public function addElementJavascript($script): void
     {
         $this->scripts[$this->formId][] = $script;
     }
@@ -209,7 +209,7 @@ class HTML_QuickForm2_JavascriptBuilder
    /**
     * Enables generating a validator for the current form even if no rules are present
     */
-    public function forceValidator()
+    public function forceValidator(): void
     {
         $this->forceValidator[$this->formId] = true;
     }

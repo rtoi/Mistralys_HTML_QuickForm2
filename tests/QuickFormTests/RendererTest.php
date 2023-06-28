@@ -28,15 +28,15 @@ class HTML_QuickForm2_FakeRenderer extends HTML_QuickForm2_Renderer
 {
     public $name = 'fake';
 
-    public function renderElement(HTML_QuickForm2_Node $element) {}
-    public function renderHidden(HTML_QuickForm2_Node $element) {}
-    public function startForm(HTML_QuickForm2_Node $form) {}
-    public function finishForm(HTML_QuickForm2_Node $form) {}
-    public function startContainer(HTML_QuickForm2_Node $container) {}
-    public function finishContainer(HTML_QuickForm2_Node $container) {}
+    public function renderElement(HTML_QuickForm2_Node $element): void {}
+    public function renderHidden(HTML_QuickForm2_Node $element): void {}
+    public function startForm(HTML_QuickForm2_Node $form): void {}
+    public function finishForm(HTML_QuickForm2_Node $form): void {}
+    public function startContainer(HTML_QuickForm2_Node $container): void {}
+    public function finishContainer(HTML_QuickForm2_Node $container): void {}
     public function startGroup(HTML_QuickForm2_Container_Group $group) : void {}
     public function finishGroup(HTML_QuickForm2_Container_Group $group) : void {}
-    public function reset() {}
+    public function reset(): void {}
 }
 
 /**
@@ -80,7 +80,7 @@ class HTML_QuickForm2_FakeRenderer_AnotherHelloPlugin
  */
 class HTML_QuickForm2_RendererTest extends TestCase
 {
-    public function testRegisterRenderer()
+    public function testRegisterRenderer(): void
     {
         $type = 'fake' . mt_rand();
         HTML_Quickform2_Renderer::register($type, 'HTML_QuickForm2_FakeRenderer');
@@ -89,7 +89,7 @@ class HTML_QuickForm2_RendererTest extends TestCase
         $this->assertInstanceOf('HTML_QuickForm2_Renderer', $renderer);
     }
 
-    public function testRegisterPlugin()
+    public function testRegisterPlugin(): void
     {
         $type = 'fake' . mt_rand();
         HTML_QuickForm2_Renderer::register($type, 'HTML_QuickForm2_FakeRenderer');
@@ -106,7 +106,7 @@ class HTML_QuickForm2_RendererTest extends TestCase
         $this->assertEquals('Goodbye, fake!', $renderer->sayGoodbye());
     }
 
-    public function testRegisterPluginOnlyOnce()
+    public function testRegisterPluginOnlyOnce(): void
     {
         $type = 'fake' . mt_rand();
         HTML_QuickForm2_Renderer::register($type, 'HTML_QuickForm2_FakeRenderer');
@@ -121,7 +121,7 @@ class HTML_QuickForm2_RendererTest extends TestCase
         $this->fail('Expected HTML_QuickForm2_InvalidArgumentException was not thrown');
     }
 
-    public function testDuplicateMethodNamesDisallowed()
+    public function testDuplicateMethodNamesDisallowed(): void
     {
         $type = 'fake' . mt_rand();
         HTML_QuickForm2_Renderer::register($type, 'HTML_QuickForm2_FakeRenderer');

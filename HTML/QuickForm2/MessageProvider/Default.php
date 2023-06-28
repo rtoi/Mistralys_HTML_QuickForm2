@@ -293,7 +293,7 @@ class HTML_QuickForm2_MessageProvider_Default implements HTML_QuickForm2_Message
     * @param string       $langId    Language
     * @param string|array $message   Translated message
     */
-    public function set(array $messageId, $langId, $message)
+    public function set(array $messageId, $langId, $message): void
     {
         $key = array_shift($messageId);
         if (empty($this->messages[$key])) {

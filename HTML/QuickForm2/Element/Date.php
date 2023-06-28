@@ -274,7 +274,7 @@ class HTML_QuickForm2_Element_Date extends HTML_QuickForm2_Container_Group
      * @param string $v
      * @param string $k
      */
-    private function _shortYearCallback(&$v, $k)
+    private function _shortYearCallback(&$v, $k): void
     {
         $v = substr($v,-2);
     }
@@ -285,7 +285,7 @@ class HTML_QuickForm2_Element_Date extends HTML_QuickForm2_Container_Group
      * @param $v
      * @param $k
      */
-    private function _shortHourCallback(&$v, $k)
+    private function _shortHourCallback(&$v, $k): void
     {
         $v = intval($v);
     }

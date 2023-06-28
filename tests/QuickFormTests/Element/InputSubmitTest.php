@@ -41,7 +41,7 @@ class HTML_QuickForm2_Element_InputSubmitTest extends TestCase
         $this->assertFalse($submit->toggleFrozen());
     }
 
-    public function testSetValueFromSubmitDataSource()
+    public function testSetValueFromSubmitDataSource(): void
     {
         $form = new HTML_QuickForm2('submit', 'post', null, false);
         $foo = $form->appendChild(new HTML_QuickForm2_Element_InputSubmit('foo'));

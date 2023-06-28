@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase;
 class HTML_QuickForm2_Controller_Action_DirectTest
     extends TestCase
 {
-    public function testPerform()
+    public function testPerform(): void
     {
         $source = $this->getMockBuilder('HTML_QuickForm2')
             ->setMethods(array('validate', 'getValue'))

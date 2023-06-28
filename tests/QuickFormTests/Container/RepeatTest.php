@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
  */
 class HTML_QuickForm2_Container_RepeatTest extends TestCase
 {
-    public function testCannotAddRepeatToRepeat()
+    public function testCannotAddRepeatToRepeat(): void
     {
         $repeatOne = new HTML_QuickForm2_Container_Repeat();
         $repeatTwo = new HTML_QuickForm2_Container_Repeat();
@@ -36,7 +36,7 @@ class HTML_QuickForm2_Container_RepeatTest extends TestCase
         $repeatOne->setPrototype($repeatTwo);
     }
     
-    public function testCannotAddRepeatToContainer()
+    public function testCannotAddRepeatToContainer(): void
     {
         $repeatOne = new HTML_QuickForm2_Container_Repeat();
         $repeatTwo = new HTML_QuickForm2_Container_Repeat();
@@ -50,7 +50,7 @@ class HTML_QuickForm2_Container_RepeatTest extends TestCase
         $fieldset->appendChild($repeatTwo);
     }
 
-    public function testPrototypeRequiredForDOMAndOutput1()
+    public function testPrototypeRequiredForDOMAndOutput1(): void
     {
         $repeat = new HTML_QuickForm2_Container_Repeat();
         $text   = new HTML_QuickForm2_Element_InputText('aTextBox');
@@ -60,7 +60,7 @@ class HTML_QuickForm2_Container_RepeatTest extends TestCase
         $repeat->appendChild($text);
     }
     
-    public function testPrototypeRequiredForDOMAndOutput2()
+    public function testPrototypeRequiredForDOMAndOutput2(): void
     {
         $repeat = new HTML_QuickForm2_Container_Repeat();
         $text   = new HTML_QuickForm2_Element_InputText('aTextBox');
@@ -70,7 +70,7 @@ class HTML_QuickForm2_Container_RepeatTest extends TestCase
         $repeat->insertBefore($text);
     }
     
-    public function testPrototypeRequiredForDOMAndOutput3()
+    public function testPrototypeRequiredForDOMAndOutput3(): void
     {
         $repeat = new HTML_QuickForm2_Container_Repeat();
         
@@ -79,7 +79,7 @@ class HTML_QuickForm2_Container_RepeatTest extends TestCase
         $repeat->render(HTML_QuickForm2_Renderer::factory('default'));
     }
 
-    public function testElementsAreAddedToPrototype()
+    public function testElementsAreAddedToPrototype(): void
     {
         $fieldset = new HTML_QuickForm2_Container_Fieldset();
         $repeat   = new HTML_QuickForm2_Container_Repeat(
@@ -98,7 +98,7 @@ class HTML_QuickForm2_Container_RepeatTest extends TestCase
         $this->assertNull($textOne->getContainer());
     }
 
-    public function testSetIndexesExplicitly()
+    public function testSetIndexesExplicitly(): void
     {
         $repeat = new HTML_QuickForm2_Container_Repeat();
         $this->assertEquals(array(), $repeat->getIndexes());
@@ -107,7 +107,7 @@ class HTML_QuickForm2_Container_RepeatTest extends TestCase
         $this->assertEquals(array('foo', 'bar', 'baz', 25), $repeat->getIndexes());
     }
 
-    public function testSetIndexFieldExplicitly()
+    public function testSetIndexFieldExplicitly(): void
     {
         $form = new HTML_QuickForm2('testIndexField');
         $form->addDataSource(new HTML_QuickForm2_DataSource_Array(array(
@@ -134,7 +134,7 @@ class HTML_QuickForm2_Container_RepeatTest extends TestCase
         $this->assertEquals(array('a', 'd'), $repeat->getIndexes());
     }
 
-    public function testGuessIndexField()
+    public function testGuessIndexField(): void
     {
         $form = new HTML_QuickForm2('guessIndexField');
         $form->addDataSource(new HTML_QuickForm2_DataSource_Array(array(
@@ -166,7 +166,7 @@ class HTML_QuickForm2_Container_RepeatTest extends TestCase
         $this->assertEquals(array('foo', 'bar'), $repeat->getIndexes());
     }
 
-    public function testGetValue()
+    public function testGetValue(): void
     {
         $values = array(
             'foo' => array('a' => 'a value', 'b' => 'b value', 'c' => 'c value'),
@@ -193,7 +193,7 @@ class HTML_QuickForm2_Container_RepeatTest extends TestCase
         $this->assertEquals($values, $repeat->getValue());
     }
 
-    public function testFrozenRepeatShouldNotContainJavascript()
+    public function testFrozenRepeatShouldNotContainJavascript(): void
     {
         $repeat = new HTML_QuickForm2_Container_Repeat();
         $repeat->setPrototype(new HTML_QuickForm2_Container_Fieldset());
@@ -237,7 +237,7 @@ class HTML_QuickForm2_Container_RepeatTest extends TestCase
         $this->assertEquals('a message', $ary['elements'][3]['elements'][0]['error']);
     }
 
-    public function testForeachWarningOnGetValue()
+    public function testForeachWarningOnGetValue(): void
     {
         $fieldset = new HTML_QuickForm2_Container_Fieldset();
         $repeat   = new HTML_QuickForm2_Container_Repeat(
@@ -253,7 +253,7 @@ class HTML_QuickForm2_Container_RepeatTest extends TestCase
      * Contents of static elements within repeat erroneously cleared
      * @link http://pear.php.net/bugs/bug.php?id=19802
      */
-    public function testBug19802()
+    public function testBug19802(): void
     {
         $fieldset = new HTML_QuickForm2_Container_Fieldset();
         $repeat   = new HTML_QuickForm2_Container_Repeat(
@@ -276,7 +276,7 @@ class HTML_QuickForm2_Container_RepeatTest extends TestCase
      * If defaults contain null values, previous values are reused
      * @link http://pear.php.net/bugs/bug.php?id=20295
      */
-    public function testBug20295()
+    public function testBug20295(): void
     {
         $form = new HTML_QuickForm2('repeat-bug');
         $form->addDataSource(new HTML_QuickForm2_DataSource_Array(array(
@@ -296,7 +296,7 @@ class HTML_QuickForm2_Container_RepeatTest extends TestCase
         $this->assertEquals('', $value['buggy']['extra'][2]);
     }
 
-    public function testValidatorAlwaysPresentWhenClientRulesAdded()
+    public function testValidatorAlwaysPresentWhenClientRulesAdded(): void
     {
         $fieldset = new HTML_QuickForm2_Container_Fieldset();
         $repeat   = new HTML_QuickForm2_Container_Repeat(

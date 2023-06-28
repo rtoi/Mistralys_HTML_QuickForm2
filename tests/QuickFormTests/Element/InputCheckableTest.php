@@ -26,13 +26,13 @@ use PHPUnit\Framework\TestCase;
  */
 class HTML_QuickForm2_Element_InputCheckableTest extends TestCase
 {
-    public function testConstructorSetsContent()
+    public function testConstructorSetsContent(): void
     {
         $checkable = new HTML_QuickForm2_Element_InputCheckable('foo', null, array('content' => 'I am foo'));
         $this->assertEquals('I am foo', $checkable->getContent());
     }
 
-    public function testContentRendering()
+    public function testContentRendering(): void
     {
         $checkable = new HTML_QuickForm2_Element_InputCheckable(
             'foo', array('id' => 'checkableFoo'), array('content' => 'I am foo')
@@ -50,7 +50,7 @@ class HTML_QuickForm2_Element_InputCheckableTest extends TestCase
         $this->assertDoesNotMatchRegularExpression('!<label!', $checkable->__toString());
     }
 
-    public function testEmptyContentRendering()
+    public function testEmptyContentRendering(): void
     {
         $checkable = new HTML_QuickForm2_Element_InputCheckable(
             'foo1', array('id' => 'checkableFoo1')
@@ -58,7 +58,7 @@ class HTML_QuickForm2_Element_InputCheckableTest extends TestCase
         $this->assertDoesNotMatchRegularExpression('!<label!', $checkable->__toString());
     }
 
-    public function testSetAndGetValue()
+    public function testSetAndGetValue(): void
     {
         $checkable = new HTML_QuickForm2_Element_InputCheckable();
         $checkable->setAttribute('value', 'my value');
@@ -77,7 +77,7 @@ class HTML_QuickForm2_Element_InputCheckableTest extends TestCase
         $this->assertEquals('my value', $checkable->getValue());
     }
 
-    public function testGetValueDisabled()
+    public function testGetValueDisabled(): void
     {
         $checkable = new HTML_QuickForm2_Element_InputCheckable();
         $checkable->setAttribute('value', 'my value');
@@ -88,7 +88,7 @@ class HTML_QuickForm2_Element_InputCheckableTest extends TestCase
         $this->assertNull($checkable->getValue());
     }
 
-    public function testFrozenHtmlGeneration()
+    public function testFrozenHtmlGeneration(): void
     {
         $checkable = new HTML_QuickForm2_Element_InputCheckable(
             'checkableFreeze', array('value' => 'my value'), array('content' => 'freeze me')
@@ -102,7 +102,7 @@ class HTML_QuickForm2_Element_InputCheckableTest extends TestCase
         $this->assertDoesNotMatchRegularExpression('!<input!', $checkable->__toString());
     }
 
-    public function testBug15708()
+    public function testBug15708(): void
     {
         $form = new HTML_QuickForm2('bug15708');
         $form->addDataSource(new HTML_QuickForm2_DataSource_Array(array(

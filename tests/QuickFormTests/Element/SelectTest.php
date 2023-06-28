@@ -45,7 +45,7 @@ class SelectTest extends TestCase
         $_GET = array();
     }
 
-    public function testSelectIsEmptyByDefault()
+    public function testSelectIsEmptyByDefault(): void
     {
         $sel = new HTML_QuickForm2_Element_Select();
         $this->assertNull($sel->getValue());
@@ -55,7 +55,7 @@ class SelectTest extends TestCase
         );
     }
 
-    public function testSelectSingleValueIsScalar()
+    public function testSelectSingleValueIsScalar(): void
     {
         $sel = new HTML_QuickForm2_Element_Select();
         $sel->addOption('Text', 'Value');
@@ -74,7 +74,7 @@ class SelectTest extends TestCase
         $this->assertEquals('Value', $sel2->getValue());
     }
 
-    public function testSelectMultipleValueIsArray()
+    public function testSelectMultipleValueIsArray(): void
     {
         $sel = new HTML_QuickForm2_Element_Select('mult', array('multiple'));
         $sel->addOption('Text', 'Value');
@@ -91,7 +91,7 @@ class SelectTest extends TestCase
         $this->assertEquals(array('Value', 'Different Value'), $sel->getValue());
     }
 
-    public function testDisabledSelectHasNoValue()
+    public function testDisabledSelectHasNoValue(): void
     {
         $sel = new HTML_QuickForm2_Element_Select('disableMe', array('disabled'));
         $sel->addOption('Text', 'Value');
@@ -100,7 +100,7 @@ class SelectTest extends TestCase
         $this->assertNull($sel->getValue());
     }
 
-    public function testDisabledOptionsDoNotProduceValues()
+    public function testDisabledOptionsDoNotProduceValues(): void
     {
         $sel = new HTML_QuickForm2_Element_Select();
         $sel->addOption('Disabled Text', 'Disabled Value', array('disabled'));
@@ -110,7 +110,7 @@ class SelectTest extends TestCase
     }
 
 
-    public function testAddOption()
+    public function testAddOption(): void
     {
         $sel = new HTML_QuickForm2_Element_Select();
         $sel->addOption('Text', 'Value');
@@ -186,7 +186,7 @@ class SelectTest extends TestCase
         $this->assertSame(3, $sel->countOptions());
     }
 
-    public function testAddOptgroup()
+    public function testAddOptgroup(): void
     {
         $sel = new HTML_QuickForm2_Element_Select();
         $optgroup = $sel->addOptgroup('Label');
@@ -204,7 +204,7 @@ class SelectTest extends TestCase
         );
     }
 
-    public function testAddOptionToOptgroup()
+    public function testAddOptionToOptgroup(): void
     {
         $sel = new HTML_QuickForm2_Element_Select();
         $optgroup = $sel->addOptgroup('Label');
@@ -233,7 +233,7 @@ class SelectTest extends TestCase
         );
     }
 
-    public function testLoadOptions()
+    public function testLoadOptions(): void
     {
         $sel = new HTML_QuickForm2_Element_Select('loadOptions', array('multiple'));
         $this->assertSame($sel, $sel->loadOptions(array('one' => 'First', 'two' => 'Second')));
@@ -257,13 +257,13 @@ class SelectTest extends TestCase
         $this->assertEquals(array('two'), $sel->getValue());
     }
 
-    public function testSelectMultipleName()
+    public function testSelectMultipleName(): void
     {
         $sel = new HTML_QuickForm2_Element_Select('foo', array('multiple'));
         $this->assertMatchesRegularExpression('/name="foo\\[\\]"/', $sel->__toString());
     }
 
-    public function testFrozenHtmlGeneration()
+    public function testFrozenHtmlGeneration(): void
     {
         $sel = new HTML_QuickForm2_Element_Select('foo');
         $sel->addOption('Text', 'Value');
@@ -289,7 +289,7 @@ class SelectTest extends TestCase
         $this->assertDoesNotMatchRegularExpression('/[<>]/', $sel->__toString());
     }
 
-    public function testSelectMultipleFrozenHtmlGeneration()
+    public function testSelectMultipleFrozenHtmlGeneration(): void
     {
         $sel = new HTML_QuickForm2_Element_Select('foo', array('multiple'));
         $sel->addOption('FirstText', 'FirstValue');
@@ -311,7 +311,7 @@ class SelectTest extends TestCase
         );
     }
 
-    public function testSelectMultipleNoOptionsSelectedOnSubmit()
+    public function testSelectMultipleNoOptionsSelectedOnSubmit(): void
     {
         $options = array('1' => 'Option 1', '2' => 'Option 2');
 
@@ -342,7 +342,7 @@ class SelectTest extends TestCase
         $this->assertEquals(array('1', '2'), $multiple2->getValue());
     }
 
-    public function testBug11138()
+    public function testBug11138(): void
     {
         $options = array('2' => 'TwoWithoutZero', '02' => 'TwoWithZero');
 
@@ -375,7 +375,7 @@ class SelectTest extends TestCase
      * @link http://pear.php.net/bugs/bug.php?id=13088
      * @link http://pear.php.net/bugs/bug.php?id=16974
      */
-    public function testDisableIntrinsicValidation()
+    public function testDisableIntrinsicValidation(): void
     {
         $selectSingle = new HTML_QuickForm2_Element_Select(
             'foo', null, array('intrinsic_validation' => false)
@@ -399,7 +399,7 @@ class SelectTest extends TestCase
      * If data source contains explicitly provided null values, those should be used
      * @link http://pear.php.net/bugs/bug.php?id=20295
      */
-    public function testBug20295()
+    public function testBug20295(): void
     {
         $form = new HTML_QuickForm2('bug20295');
         $ms = $form->addSelect('multiselect', array('multiple'))

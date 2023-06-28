@@ -32,7 +32,7 @@ class HTML_QuickForm2_Controller_Action_DisplayTest
     *
     * @link http://pear.php.net/bugs/bug.php?id=2323
     */
-    public function testBug2323()
+    public function testBug2323(): void
     {
         $pageFirst = $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
             ->setMethods(array('populateForm'))
@@ -62,7 +62,7 @@ class HTML_QuickForm2_Controller_Action_DisplayTest
         $this->assertEquals('jump to first', $pageSecond->handle('display'));
     }
 
-    public function testLoadFromSessionContainerOnDisplay()
+    public function testLoadFromSessionContainerOnDisplay(): void
     {
         $mockForm = $this->getMockBuilder('HTML_QuickForm2')
             ->setMethods(array('validate'))
@@ -94,7 +94,7 @@ class HTML_QuickForm2_Controller_Action_DisplayTest
         $this->assertEquals('bar', $foo->getValue());
     }
 
-    public function testNoLoadFromSessionContainerOnOtherActions()
+    public function testNoLoadFromSessionContainerOnOtherActions(): void
     {
         $mockForm = $this->getMockBuilder('HTML_QuickForm2')
             ->setMethods(array('validate'))

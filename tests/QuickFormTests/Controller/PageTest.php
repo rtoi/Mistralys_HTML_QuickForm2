@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
  */
 class HTML_QuickForm2_Controller_PageTest extends TestCase
 {
-    public function testPopulateFormOnce()
+    public function testPopulateFormOnce(): void
     {
         $mockPage = $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
             ->setMethods(array('populateForm'))
@@ -38,7 +38,7 @@ class HTML_QuickForm2_Controller_PageTest extends TestCase
         $mockPage->populateFormOnce();
     }
 
-    public function testActionHandlerPrecedence()
+    public function testActionHandlerPrecedence(): void
     {
         $controller = new HTML_QuickForm2_Controller('precedence');
         $mockPage   = $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
@@ -69,7 +69,7 @@ class HTML_QuickForm2_Controller_PageTest extends TestCase
         $this->assertEquals('foo specific', $mockPage->handle('foo'));
     }
 
-    public function testDefaultActionHandler()
+    public function testDefaultActionHandler(): void
     {
         $controller = new HTML_QuickForm2_Controller('defaultDisplay');
         $mockPage   = $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
@@ -84,7 +84,7 @@ class HTML_QuickForm2_Controller_PageTest extends TestCase
         ob_end_clean();
     }
 
-    public function testSetDefaultAction()
+    public function testSetDefaultAction(): void
     {
         $mockPage = $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
             ->setMethods(array('populateForm'))
@@ -102,7 +102,7 @@ class HTML_QuickForm2_Controller_PageTest extends TestCase
         $this->assertStringContainsString('base64', $default->getAttribute('src'));
     }
 
-    public function testDefaultActionIsFirstElement()
+    public function testDefaultActionIsFirstElement(): void
     {
         $mockPage = $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
             ->setMethods(array('populateForm'))
@@ -118,7 +118,7 @@ class HTML_QuickForm2_Controller_PageTest extends TestCase
         }
     }
 
-    public function testPropagateControllerId()
+    public function testPropagateControllerId(): void
     {
         $noPropPage = $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
             ->setMethods(array('populateForm'))

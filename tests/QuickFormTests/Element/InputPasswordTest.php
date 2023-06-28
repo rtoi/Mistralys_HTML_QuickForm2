@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
  */
 class HTML_QuickForm2_Element_InputPasswordTest extends TestCase
 {
-    public function testFrozenOutputIsMasked()
+    public function testFrozenOutputIsMasked(): void
     {
         $input = new HTML_QuickForm2_Element_InputPassword('foo');
         $input->setValue('bar');

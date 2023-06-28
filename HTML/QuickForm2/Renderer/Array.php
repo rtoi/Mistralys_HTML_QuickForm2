@@ -229,7 +229,7 @@ class HTML_QuickForm2_Renderer_Array extends HTML_QuickForm2_Renderer
     *
     * @param array $element
     */
-    public function pushScalar(array $element)
+    public function pushScalar(array $element): void
     {
         if (!empty($element['required'])) {
             $this->hasRequired = true;
@@ -246,7 +246,7 @@ class HTML_QuickForm2_Renderer_Array extends HTML_QuickForm2_Renderer
     *
     * @param array $container
     */
-    public function pushContainer(array $container)
+    public function pushContainer(array $container): void
     {
         if (!empty($container['required'])) {
             $this->hasRequired = true;
@@ -286,7 +286,7 @@ class HTML_QuickForm2_Renderer_Array extends HTML_QuickForm2_Renderer
    /**#@+
     * Implementations of abstract methods from {@link HTML_QuickForm2_Renderer}
     */
-    public function renderElement(HTML_QuickForm2_Node $element)
+    public function renderElement(HTML_QuickForm2_Node $element): void
     {
         $ary = $this->buildCommonFields($element) + array(
             'html'     => $element->__toString(),
@@ -297,7 +297,7 @@ class HTML_QuickForm2_Renderer_Array extends HTML_QuickForm2_Renderer
         $this->pushScalar($ary);
     }
 
-    public function renderHidden(HTML_QuickForm2_Node $element)
+    public function renderHidden(HTML_QuickForm2_Node $element): void
     {
         if ($this->options['group_hiddens']) {
             $this->array['hidden'][] = $element->__toString();
@@ -306,7 +306,7 @@ class HTML_QuickForm2_Renderer_Array extends HTML_QuickForm2_Renderer
         }
     }
 
-    public function startForm(HTML_QuickForm2_Node $form)
+    public function startForm(HTML_QuickForm2_Node $form): void
     {
         $this->reset();
 
@@ -320,7 +320,7 @@ class HTML_QuickForm2_Renderer_Array extends HTML_QuickForm2_Renderer
         $this->containers  = array(&$this->array['elements']);
     }
 
-    public function finishForm(HTML_QuickForm2_Node $form)
+    public function finishForm(HTML_QuickForm2_Node $form): void
     {
         $this->finishContainer($form);
         if ($this->hasRequired) {
@@ -329,7 +329,7 @@ class HTML_QuickForm2_Renderer_Array extends HTML_QuickForm2_Renderer
         $this->array['javascript'] = $this->getJavascriptBuilder()->getFormJavascript($form->getId());
     }
 
-    public function startContainer(HTML_QuickForm2_Node $container)
+    public function startContainer(HTML_QuickForm2_Node $container): void
     {
         $ary = $this->buildCommonContainerFields($container) + array(
             'required' => $container->isRequired(),
@@ -338,7 +338,7 @@ class HTML_QuickForm2_Renderer_Array extends HTML_QuickForm2_Renderer
         $this->pushContainer($ary);
     }
 
-    public function finishContainer(HTML_QuickForm2_Node $container)
+    public function finishContainer(HTML_QuickForm2_Node $container): void
     {
         array_pop($this->containers);
     }

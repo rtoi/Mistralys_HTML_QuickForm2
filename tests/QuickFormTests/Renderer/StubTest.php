@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
  */
 class HTML_QuickForm2_Renderer_StubTest extends TestCase
 {
-    public function testHasRequired()
+    public function testHasRequired(): void
     {
         $form     = new HTML_QuickForm2('testHasRequired');
         $text     = $form->addText('anElement');
@@ -40,7 +40,7 @@ class HTML_QuickForm2_Renderer_StubTest extends TestCase
         $this->assertTrue($renderer->hasRequired());
     }
 
-    public function testGroupErrors()
+    public function testGroupErrors(): void
     {
         $form     = new HTML_QuickForm2('testGroupErrors');
         $text     = $form->addText('anElement', array('id' => 'anElement'))
@@ -56,7 +56,7 @@ class HTML_QuickForm2_Renderer_StubTest extends TestCase
         $this->assertEquals(array('anElement' => 'an error'), $renderer->getErrors());
     }
 
-    public function testGroupHiddens()
+    public function testGroupHiddens(): void
     {
         $form     = new HTML_QuickForm2('testGroupHiddens', 'post', null, false);
         $hidden   = $form->addHidden('aHiddenElement');

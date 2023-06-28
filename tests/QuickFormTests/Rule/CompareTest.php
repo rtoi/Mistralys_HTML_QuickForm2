@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
  */
 class HTML_QuickForm2_Rule_CompareTest extends TestCase
 {
-    public function testOperandRequired()
+    public function testOperandRequired(): void
     {
         $mockEl  = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -46,7 +46,7 @@ class HTML_QuickForm2_Rule_CompareTest extends TestCase
         }
     }
 
-    public function testDefaultOperatorIsEqual()
+    public function testDefaultOperatorIsEqual(): void
     {
         $mockEl  = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -62,7 +62,7 @@ class HTML_QuickForm2_Rule_CompareTest extends TestCase
         $this->assertFalse($compareBar->validate());
     }
 
-    public function testCompareToOtherElement()
+    public function testCompareToOtherElement(): void
     {
         $mockFirst = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -82,7 +82,7 @@ class HTML_QuickForm2_Rule_CompareTest extends TestCase
         $this->assertEquals('not equal', $mockFirst->getError());
     }
 
-    public function testDisallowBogusOperators()
+    public function testDisallowBogusOperators(): void
     {
         $mockEl  = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -96,7 +96,7 @@ class HTML_QuickForm2_Rule_CompareTest extends TestCase
         }
     }
 
-    public function testOptionsHandling()
+    public function testOptionsHandling(): void
     {
         $mockEl  = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -119,7 +119,7 @@ class HTML_QuickForm2_Rule_CompareTest extends TestCase
         $this->assertTrue($arrayAssoc->validate());
     }
 
-    public function testConfigHandling()
+    public function testConfigHandling(): void
     {
         $mockEl  = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -146,7 +146,7 @@ class HTML_QuickForm2_Rule_CompareTest extends TestCase
         $this->assertTrue($arrayAssoc->validate());
     }
 
-    public function testConfigOverridesOptions()
+    public function testConfigOverridesOptions(): void
     {
         $mockEl  = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -164,7 +164,7 @@ class HTML_QuickForm2_Rule_CompareTest extends TestCase
         $this->assertTrue($rule2->validate());
     }
 
-    public function testBug10754()
+    public function testBug10754(): void
     {
         $mockFrom = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -186,7 +186,7 @@ class HTML_QuickForm2_Rule_CompareTest extends TestCase
         $this->assertTrue($ruleAccounts->validate());
     }
 
-    public function testValidationTriggers()
+    public function testValidationTriggers(): void
     {
         $foo = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType', 'getRawValue', 'setValue', '__toString'))

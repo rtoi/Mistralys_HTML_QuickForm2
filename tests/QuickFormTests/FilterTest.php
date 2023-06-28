@@ -53,7 +53,7 @@ class HTML_QuickForm2_FilterTest extends TestCase
         );
     }
 
-    public function testFiltersShouldPreserveNulls()
+    public function testFiltersShouldPreserveNulls(): void
     {
         $mockElement = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -74,7 +74,7 @@ class HTML_QuickForm2_FilterTest extends TestCase
         $this->assertNull($mockContainer->getValue());
     }
 
-    public function testContainerValidation()
+    public function testContainerValidation(): void
     {
         $form = new HTML_QuickForm2('filters', 'post', null, false);
         $username = $form->addElement('text', 'foo');
@@ -84,7 +84,7 @@ class HTML_QuickForm2_FilterTest extends TestCase
         $this->assertSame('', $username->getValue());
     }
 
-    public function testSelect()
+    public function testSelect(): void
     {
         $form = new HTML_QuickForm2('filters', 'post', null, false);
         $select = $form->addSelect('sel')->loadOptions(
@@ -93,7 +93,7 @@ class HTML_QuickForm2_FilterTest extends TestCase
         $this->assertEquals('value2', $select->getValue());
     }
 
-    public function testSelectMultipleRecursive()
+    public function testSelectMultipleRecursive(): void
     {
         $form = new HTML_QuickForm2('filters', 'post', null, false);
         $select = $form->addSelect('baz', array('multiple' => 'multiple'))->loadOptions(
@@ -102,7 +102,7 @@ class HTML_QuickForm2_FilterTest extends TestCase
         $this->assertEquals(array('value1', 'value2'), $select->getValue());
     }
 
-    public function testSelectMultipleNonRecursive()
+    public function testSelectMultipleNonRecursive(): void
     {
         $s = new HTML_QuickForm2_Element_Select('foo', array('multiple' => 'multiple'),
                                                 array('intrinsic_validation' => false));
@@ -112,7 +112,7 @@ class HTML_QuickForm2_FilterTest extends TestCase
         $this->assertEquals(2, $s->getValue());
     }
 
-    public function testInputCheckable()
+    public function testInputCheckable(): void
     {
         $form = new HTML_QuickForm2('filters', 'post', null, false);
         $check = $form->appendChild(
@@ -128,7 +128,7 @@ class HTML_QuickForm2_FilterTest extends TestCase
         $this->assertEquals('value', $check->getValue());
     }
 
-    public function testButton()
+    public function testButton(): void
     {
         $form = new HTML_QuickForm2('filters', 'post', null, false);
         $form->addDataSource(new HTML_QuickForm2_DataSource_Array(array(
@@ -139,7 +139,7 @@ class HTML_QuickForm2_FilterTest extends TestCase
         $this->assertEquals('value', $button->getValue());
     }
 
-    public function testInput()
+    public function testInput(): void
     {
         $form = new HTML_QuickForm2('filters', 'post', null, false);
         $foo = $form->addText('foo');
@@ -148,7 +148,7 @@ class HTML_QuickForm2_FilterTest extends TestCase
         $this->assertEquals(trim($_POST['foo']), $foo->getValue());
     }
 
-    public function testTextarea()
+    public function testTextarea(): void
     {
         $form = new HTML_QuickForm2('filters', 'post', null, false);
         $area = $form->addTextarea('bar');
@@ -156,7 +156,7 @@ class HTML_QuickForm2_FilterTest extends TestCase
         $this->assertEquals('value', $area->getValue());
     }
 
-    public function testContainer()
+    public function testContainer(): void
     {
         $c1 = new HTML_QuickForm2_ContainerFilterImpl('filter');
         $this->assertNull($c1->getValue());
@@ -196,7 +196,7 @@ class HTML_QuickForm2_FilterTest extends TestCase
         $this->assertEquals('cc',  $el3->getValue());
     }
 
-    public function testGroup()
+    public function testGroup(): void
     {
         $value1     = array('foo' => 'foo');
         $value1F    = array('foo' => 'F');
@@ -229,7 +229,7 @@ class HTML_QuickForm2_FilterTest extends TestCase
         $this->assertEquals($formValueF, $form->getValue());
     }
 
-    public function testContainerNonRecursive()
+    public function testContainerNonRecursive(): void
     {
         $c = new HTML_QuickForm2_ContainerFilterImpl('nonrecursive');
         $el1 = $c->addElement('text', 'el1')->setValue(' foo');

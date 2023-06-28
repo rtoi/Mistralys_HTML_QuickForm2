@@ -161,7 +161,7 @@ body {
 
 class TabbedProcess implements HTML_QuickForm2_Controller_Action
 {
-    public function perform(HTML_QuickForm2_Controller_Page $page, $name)
+    public function perform(HTML_QuickForm2_Controller_Page $page, $name): void
     {
         echo "Submit successful!<br>\n<pre>\n";
         var_dump($page->getController()->getValue());

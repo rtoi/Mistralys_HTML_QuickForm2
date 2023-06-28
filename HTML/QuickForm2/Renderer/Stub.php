@@ -123,7 +123,7 @@ class HTML_QuickForm2_Renderer_Stub extends HTML_QuickForm2_Renderer
      *
      * @param HTML_QuickForm2_Node $element Element being rendered
      */
-    public function renderElement(HTML_QuickForm2_Node $element)
+    public function renderElement(HTML_QuickForm2_Node $element): void
     {
         if ($element->isRequired()) {
             $this->required = true;
@@ -138,7 +138,7 @@ class HTML_QuickForm2_Renderer_Stub extends HTML_QuickForm2_Renderer
      *
      * @param HTML_QuickForm2_Node $element Hidden element being rendered
      */
-    public function renderHidden(HTML_QuickForm2_Node $element)
+    public function renderHidden(HTML_QuickForm2_Node $element): void
     {
         if ($this->options['group_hiddens']) {
             $this->hidden[] = $element->__toString();
@@ -150,7 +150,7 @@ class HTML_QuickForm2_Renderer_Stub extends HTML_QuickForm2_Renderer
      *
      * @param HTML_QuickForm2_Node $form Form being rendered
      */
-    public function startForm(HTML_QuickForm2_Node $form)
+    public function startForm(HTML_QuickForm2_Node $form): void
     {
         $this->reset();
     }
@@ -160,7 +160,7 @@ class HTML_QuickForm2_Renderer_Stub extends HTML_QuickForm2_Renderer
      *
      * @param HTML_QuickForm2_Node $form Form being rendered
      */
-    public function finishForm(HTML_QuickForm2_Node $form)
+    public function finishForm(HTML_QuickForm2_Node $form): void
     {
         $this->renderElement($form);
     }
@@ -170,7 +170,7 @@ class HTML_QuickForm2_Renderer_Stub extends HTML_QuickForm2_Renderer
      *
      * @param HTML_QuickForm2_Node $container Container being rendered
      */
-    public function startContainer(HTML_QuickForm2_Node $container)
+    public function startContainer(HTML_QuickForm2_Node $container): void
     {
     }
 
@@ -179,7 +179,7 @@ class HTML_QuickForm2_Renderer_Stub extends HTML_QuickForm2_Renderer
      *
      * @param HTML_QuickForm2_Node $container Container being rendered
      */
-    public function finishContainer(HTML_QuickForm2_Node $container)
+    public function finishContainer(HTML_QuickForm2_Node $container): void
     {
         $this->renderElement($container);
     }

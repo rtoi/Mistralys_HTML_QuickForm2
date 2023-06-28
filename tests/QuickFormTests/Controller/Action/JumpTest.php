@@ -48,7 +48,7 @@ class HTML_QuickForm2_Controller_Action_JumpTest
     *
     * @link http://pear.php.net/bugs/bug.php?id=13087
     */
-    public function testRedirectToAbsoluteUrl()
+    public function testRedirectToAbsoluteUrl(): void
     {
         // Examples from RFC 3986 section 5.4, except those with fragments
         $rfc3986tests = array(
@@ -105,7 +105,7 @@ class HTML_QuickForm2_Controller_Action_JumpTest
         }
     }
 
-    public function testCannotRedirectPastInvalidPageInWizard()
+    public function testCannotRedirectPastInvalidPageInWizard(): void
     {
         $controller = new HTML_QuickForm2_Controller('twopagewizard', true);
         $controller->addPage(
@@ -128,7 +128,7 @@ class HTML_QuickForm2_Controller_Action_JumpTest
         );
     }
 
-    public function testPropagateControllerId()
+    public function testPropagateControllerId(): void
     {
         $noPropPage = $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
             ->setMethods(array('populateForm'))
@@ -160,7 +160,7 @@ class HTML_QuickForm2_Controller_Action_JumpTest
     *
     * @link http://pear.php.net/bugs/bug.php?id=16328
     */
-    public function testBug16328()
+    public function testBug16328(): void
     {
         $_SERVER['HTTPS'] = 'OFF';
 
@@ -181,7 +181,7 @@ class HTML_QuickForm2_Controller_Action_JumpTest
     *
     * @link http://pear.php.net/bugs/bug.php?id=19216
     */
-    public function testBug19216()
+    public function testBug19216(): void
     {
         $controller = new HTML_QuickForm2_Controller('bug19216');
         $mockPage   = $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
@@ -204,7 +204,7 @@ class HTML_QuickForm2_Controller_Action_JumpTest
         $this->assertStringStartsWith('http://1.2.3.4/foo?', $mockPage->handle('jump'));
     }
 
-    public function testHttpHostWithPortNumber()
+    public function testHttpHostWithPortNumber(): void
     {
         $controller = new HTML_QuickForm2_Controller('weirdhost');
         $mockPage   = $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
@@ -219,7 +219,7 @@ class HTML_QuickForm2_Controller_Action_JumpTest
         $this->assertStringStartsWith('http://example.org/foo?', $mockPage->handle('jump'));
     }
 
-    public function testHttpXForwardedHost()
+    public function testHttpXForwardedHost(): void
     {
         $_SERVER['HTTP_X_FORWARDED_HOST'] = 'example.org, example.com';
         $_SERVER['HTTP_HOST']             = 'localhost';

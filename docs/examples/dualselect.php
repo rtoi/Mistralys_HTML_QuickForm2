@@ -172,7 +172,7 @@ class HTML_QuickForm2_Element_DualSelect extends HTML_QuickForm2_Element_Select
 class HTML_QuickForm2_Renderer_Default_DualSelectPlugin
     extends HTML_QuickForm2_Renderer_Plugin
 {
-    public function setRenderer(HTML_QuickForm2_Renderer $renderer)
+    public function setRenderer(HTML_QuickForm2_Renderer $renderer): void
     {
         parent::setRenderer($renderer);
         if (empty($this->renderer->templatesForClass['html_quickform2_element_dualselect'])) {
@@ -206,7 +206,7 @@ TPL;
         }
     }
 
-    public function renderDualSelect(HTML_QuickForm2_Node $element)
+    public function renderDualSelect(HTML_QuickForm2_Node $element): void
     {
         $elTpl = $this->renderer->prepareTemplate($this->renderer->findTemplate($element), $element);
         foreach ($element->toArray() as $k => $v) {

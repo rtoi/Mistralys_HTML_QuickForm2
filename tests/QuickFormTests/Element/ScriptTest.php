@@ -31,7 +31,7 @@ class HTML_QuickForm2_Element_ScriptTest extends TestCase
         BaseHTMLElement::setOption('nonce', null);
     }
 
-    public function testInlineScriptNonce()
+    public function testInlineScriptNonce(): void
     {
         $element = new HTML_QuickForm2_Element_Script();
         $element->setContent('Some javascript');

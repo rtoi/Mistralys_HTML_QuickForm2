@@ -32,7 +32,7 @@ class HTML_QuickForm2_Element_HierselectTest extends TestCase
         2 => array(21 => 'two-one', 22 => 'two-two')
     );
 
-    public function testUpdateValueOnNameChange()
+    public function testUpdateValueOnNameChange(): void
     {
         $form = new HTML_QuickForm2('testHierselectForm');
         $form->addDataSource(new HTML_QuickForm2_DataSource_Array(array(
@@ -50,7 +50,7 @@ class HTML_QuickForm2_Element_HierselectTest extends TestCase
      * If data source contains explicitly provided null values, those should be used
      * @link http://pear.php.net/bugs/bug.php?id=20295
      */
-    public function testBug20295()
+    public function testBug20295(): void
     {
         $form = new HTML_QuickForm2('bug20295');
 

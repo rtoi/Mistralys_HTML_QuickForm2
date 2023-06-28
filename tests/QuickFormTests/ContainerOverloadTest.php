@@ -27,7 +27,7 @@ use QuickFormTests\CustomClasses\TestContainerImpl;
  */
 class HTML_QuickForm2_ContainerOverloadTest extends TestCase
 {
-    public function testAddElements()
+    public function testAddElements(): void
     {
         $c = new TestContainerImpl('cCOT1');
         $el1 = $c->addText('eCOT1', array('size' => 30), array('label' => 'Label'));
@@ -43,7 +43,7 @@ class HTML_QuickForm2_ContainerOverloadTest extends TestCase
     }
 
 
-    public function testAddElementsWithBracketsInName()
+    public function testAddElementsWithBracketsInName(): void
     {
         $c = new TestContainerImpl('cCOT0');
         $el1 = $c->addCheckbox('chCOT[]');
@@ -56,7 +56,7 @@ class HTML_QuickForm2_ContainerOverloadTest extends TestCase
         $this->assertSame($el2, $c->getElementById($el2id));
     }
 
-    public function testAddUnknownType()
+    public function testAddUnknownType(): void
     {
         $c = new TestContainerImpl('cCOT2');
         try {
@@ -69,7 +69,7 @@ class HTML_QuickForm2_ContainerOverloadTest extends TestCase
     }
 
 
-    public function testAddElementWithUnderscoreInType()
+    public function testAddElementWithUnderscoreInType(): void
     {
         HTML_QuickForm2_Factory::registerElement('super_box', HTML_QuickForm2_Element_InputCheckbox::class);
         $this->assertTrue(HTML_QuickForm2_Factory::isElementRegistered('super_box'));

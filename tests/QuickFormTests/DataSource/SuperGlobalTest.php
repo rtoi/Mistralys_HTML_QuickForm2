@@ -86,7 +86,7 @@ class HTML_QuickForm2_DataSource_SuperGlobalTest extends TestCase
         );
     }
 
-    public function testRequestMethodGet()
+    public function testRequestMethodGet(): void
     {
         $ds1 = new HTML_QuickForm2_DataSource_SuperGlobal('GET');
         $this->assertEquals('some value', $ds1->getValue('foo'));
@@ -94,7 +94,7 @@ class HTML_QuickForm2_DataSource_SuperGlobalTest extends TestCase
         $this->assertEquals('me\\\\please', $ds1->getValue('baz[unescape]'));
     }
 
-    public function testRequestMethodPost()
+    public function testRequestMethodPost(): void
     {
         $ds1 = new HTML_QuickForm2_DataSource_SuperGlobal('POST');
         $this->assertEquals('post value', $ds1->getValue('foo'));
@@ -102,7 +102,7 @@ class HTML_QuickForm2_DataSource_SuperGlobalTest extends TestCase
         $this->assertEquals('or\\\\else', $ds1->getValue('baz[unescape]'));
     }
 
-    public function testGetUploadReturnsNullForAbsentValue()
+    public function testGetUploadReturnsNullForAbsentValue(): void
     {
         $ds = new HTML_QuickForm2_DataSource_SuperGlobal('POST');
         $this->assertNull($ds->getUpload('missing'));
@@ -110,7 +110,7 @@ class HTML_QuickForm2_DataSource_SuperGlobalTest extends TestCase
         $this->assertNull($ds->getUpload('baz[escape][missing]'));
     }
 
-    public function testGetUpload()
+    public function testGetUpload(): void
     {
         $ds1 = new HTML_QuickForm2_DataSource_SuperGlobal('POST');
 
@@ -142,7 +142,7 @@ class HTML_QuickForm2_DataSource_SuperGlobalTest extends TestCase
    /**
     * See PEAR bugs #8414 and #8123
     */
-    public function testQuotesAndBackslashesEscaped()
+    public function testQuotesAndBackslashesEscaped(): void
     {
         $ds = new HTML_QuickForm2_DataSource_SuperGlobal('POST');
         $this->assertEquals(array(

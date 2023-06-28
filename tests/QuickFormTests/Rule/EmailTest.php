@@ -31,7 +31,7 @@ class HTML_QuickForm2_Rule_EmailTest extends TestCase
     * @param string $address  "email address" being tested
     * @param bool   $expected whether given address should be valid
     */
-    public function testValidate($address, $expected)
+    public function testValidate($address, $expected): void
     {
         $element = new HTML_QuickForm2_Element_InputText('email');
         $element->setValue($address);

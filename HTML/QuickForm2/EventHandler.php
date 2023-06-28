@@ -149,7 +149,7 @@ class HTML_QuickForm2_EventHandler
     * 
     * @param int $handlerID
     */
-    public function removeHandler($handlerID)
+    public function removeHandler($handlerID): void
     {
         foreach($this->handlers as $name => $handlers) {
             if(isset($handlers[$handlerID])) {

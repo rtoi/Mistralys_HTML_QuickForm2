@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase;
 class HTML_QuickForm2_Controller_Action_BackTest
     extends TestCase
 {
-    public function testPerform()
+    public function testPerform(): void
     {
         $formOne = new HTML_QuickForm2('formOne');
         $formOne->addElement('text', 'foo')->setValue('foo value');
@@ -59,7 +59,7 @@ class HTML_QuickForm2_Controller_Action_BackTest
         $this->assertContains('foo value', $controller->getSessionContainer()->getValues('formOne'));
     }
 
-    public function testNoValidationForWizards()
+    public function testNoValidationForWizards(): void
     {
         $mockForm = $this->getMockBuilder('HTML_QuickForm2')
             ->setMethods(array('validate'))

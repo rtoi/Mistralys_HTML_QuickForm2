@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
  */
 class HTML_QuickForm2_Rule_MimeTypeTest extends TestCase
 {
-    public function testMimeTypeIsRequired()
+    public function testMimeTypeIsRequired(): void
     {
         $file = new HTML_QuickForm2_Element_InputFile('foo');
         try {
@@ -37,7 +37,7 @@ class HTML_QuickForm2_Rule_MimeTypeTest extends TestCase
         }
     }
 
-    public function testCanOnlyValidateFileUploads()
+    public function testCanOnlyValidateFileUploads(): void
     {
         $mockEl  = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -51,7 +51,7 @@ class HTML_QuickForm2_Rule_MimeTypeTest extends TestCase
         }
     }
 
-    public function testMissingUploadsAreSkipped()
+    public function testMissingUploadsAreSkipped(): void
     {
         $mockNoUpload = $this->getMockBuilder('HTML_QuickForm2_Element_InputFile')
             ->setMethods(array('getValue'))
@@ -68,7 +68,7 @@ class HTML_QuickForm2_Rule_MimeTypeTest extends TestCase
         $this->assertTrue($mimeType->validate());
     }
 
-    public function testOptionsHandling()
+    public function testOptionsHandling(): void
     {
         $mockFile = $this->getMockBuilder('HTML_QuickForm2_Element_InputFile')
             ->setMethods(array('getValue'))
@@ -89,7 +89,7 @@ class HTML_QuickForm2_Rule_MimeTypeTest extends TestCase
         $this->assertTrue($typeImage->validate());
     }
 
-    public function testConfigHandling()
+    public function testConfigHandling(): void
     {
         $mockFile = $this->getMockBuilder('HTML_QuickForm2_Element_InputFile')
             ->setMethods(array('getValue'))
@@ -114,7 +114,7 @@ class HTML_QuickForm2_Rule_MimeTypeTest extends TestCase
         $this->assertTrue($typeImage->validate());
     }
 
-    public function testConfigOverridesOptions()
+    public function testConfigOverridesOptions(): void
     {
         $mockFile = $this->getMockBuilder('HTML_QuickForm2_Element_InputFile')
             ->setMethods(array('getValue'))

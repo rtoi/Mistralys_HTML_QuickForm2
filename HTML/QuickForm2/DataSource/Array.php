@@ -100,7 +100,7 @@ class HTML_QuickForm2_DataSource_Array implements HTML_QuickForm2_DataSource_Nul
     * 
     * @param array $values
     */
-    public function setValues($values)
+    public function setValues($values): void
     {
         $this->values = array_merge($this->values, $values);
     }

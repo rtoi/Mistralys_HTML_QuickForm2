@@ -260,7 +260,7 @@ class HTML_QuickForm2_Renderer_Default extends HTML_QuickForm2_Renderer
     *
     * @param HTML_QuickForm2_Node $element Element being rendered
     */
-    public function renderElement(HTML_QuickForm2_Node $element)
+    public function renderElement(HTML_QuickForm2_Node $element): void
     {
         $elTpl = $this->prepareTemplate($this->findTemplate($element), $element);
         $this->html[count($this->html) - 1][] = str_replace(
@@ -273,7 +273,7 @@ class HTML_QuickForm2_Renderer_Default extends HTML_QuickForm2_Renderer
     *
     * @param HTML_QuickForm2_Node $element Hidden element being rendered
     */
-    public function renderHidden(HTML_QuickForm2_Node $element)
+    public function renderHidden(HTML_QuickForm2_Node $element): void
     {
         if ($this->options['group_hiddens']) {
             $this->hiddenHtml .= $element->__toString();
@@ -289,7 +289,7 @@ class HTML_QuickForm2_Renderer_Default extends HTML_QuickForm2_Renderer
     *
     * @param HTML_QuickForm2_Node $container Container being rendered
     */
-    public function startContainer(HTML_QuickForm2_Node $container)
+    public function startContainer(HTML_QuickForm2_Node $container): void
     {
         $this->html[]    = array();
         $this->groupId[] = false;
@@ -300,7 +300,7 @@ class HTML_QuickForm2_Renderer_Default extends HTML_QuickForm2_Renderer
     *
     * @param HTML_QuickForm2_Node $container Container being rendered
     */
-    public function finishContainer(HTML_QuickForm2_Node $container)
+    public function finishContainer(HTML_QuickForm2_Node $container): void
     {
         array_pop($this->groupId);
 
@@ -363,7 +363,7 @@ class HTML_QuickForm2_Renderer_Default extends HTML_QuickForm2_Renderer
     *
     * @param HTML_QuickForm2_Node $form Form being rendered
     */
-    public function startForm(HTML_QuickForm2_Node $form)
+    public function startForm(HTML_QuickForm2_Node $form): void
     {
         $this->reset();
     }
@@ -373,7 +373,7 @@ class HTML_QuickForm2_Renderer_Default extends HTML_QuickForm2_Renderer
     *
     * @param HTML_QuickForm2_Node $form Form being rendered
     */
-    public function finishForm(HTML_QuickForm2_Node $form)
+    public function finishForm(HTML_QuickForm2_Node $form): void
     {
         $formTpl = str_replace(
             array('{attributes}', '{hidden}', '{errors}'),

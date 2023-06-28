@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
  */
 class HTML_QuickForm2_Rule_NotRegexTest extends TestCase
 {
-    public function testEmptyFieldsAreSkipped()
+    public function testEmptyFieldsAreSkipped(): void
     {
         $mockEmpty = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -52,7 +52,7 @@ class HTML_QuickForm2_Rule_NotRegexTest extends TestCase
         $this->assertTrue($ruleFile->validate());
     }
 
-    public function testNegatesResult()
+    public function testNegatesResult(): void
     {
         $mockComment = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',

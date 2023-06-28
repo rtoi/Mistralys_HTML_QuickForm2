@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
  */
 class HTML_QuickForm2_Rule_MaxFileSizeTest extends TestCase
 {
-    public function testPositiveSizeLimitIsRequired()
+    public function testPositiveSizeLimitIsRequired(): void
     {
         $file    = new HTML_QuickForm2_Element_InputFile('foo');
         try {
@@ -43,7 +43,7 @@ class HTML_QuickForm2_Rule_MaxFileSizeTest extends TestCase
         }
     }
 
-    public function testCanOnlyValidateFileUploads()
+    public function testCanOnlyValidateFileUploads(): void
     {
         $mockEl  = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -58,7 +58,7 @@ class HTML_QuickForm2_Rule_MaxFileSizeTest extends TestCase
         $this->fail('The expected HTML_QuickForm2_InvalidArgumentException was not thrown');
     }
 
-    public function testMissingUploadsAreSkipped()
+    public function testMissingUploadsAreSkipped(): void
     {
         $mockNoUpload = $this->getMockBuilder('HTML_QuickForm2_Element_InputFile')
             ->setMethods(array('getValue'))
@@ -75,7 +75,7 @@ class HTML_QuickForm2_Rule_MaxFileSizeTest extends TestCase
         $this->assertTrue($maxSize->validate());
     }
 
-    public function testOptionsHandling()
+    public function testOptionsHandling(): void
     {
         $mockFile = $this->getMockBuilder('HTML_QuickForm2_Element_InputFile')
             ->setMethods(array('getValue'))
@@ -95,7 +95,7 @@ class HTML_QuickForm2_Rule_MaxFileSizeTest extends TestCase
         $this->assertTrue($size2048->validate());
     }
 
-    public function testConfigHandling()
+    public function testConfigHandling(): void
     {
         $mockFile = $this->getMockBuilder('HTML_QuickForm2_Element_InputFile')
             ->setMethods(array('getValue'))
@@ -120,7 +120,7 @@ class HTML_QuickForm2_Rule_MaxFileSizeTest extends TestCase
         $this->assertTrue($size2048->validate());
     }
 
-    public function testConfigOverridesOptions()
+    public function testConfigOverridesOptions(): void
     {
         $mockFile = $this->getMockBuilder('HTML_QuickForm2_Element_InputFile')
             ->setMethods(array('getValue'))

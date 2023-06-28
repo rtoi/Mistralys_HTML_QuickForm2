@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
  */
 class HTML_QuickForm2_Element_StaticTest extends TestCase
 {
-    public function testSetContent()
+    public function testSetContent(): void
     {
         $obj = new HTML_QuickForm2_Element_Static();
         $this->assertEquals('', (string)$obj);
@@ -34,7 +34,7 @@ class HTML_QuickForm2_Element_StaticTest extends TestCase
         $this->assertEquals('<b>content</b>', (string)$obj);
     }
 
-    public function testCanSetAndGetValue()
+    public function testCanSetAndGetValue(): void
     {
         $obj = new HTML_QuickForm2_Element_Static();
         $obj->setValue('<b>content</b>');
@@ -42,7 +42,7 @@ class HTML_QuickForm2_Element_StaticTest extends TestCase
         $this->assertNull($obj->getValue());
     }
 
-    public function testUpdateValueNoInject()
+    public function testUpdateValueNoInject(): void
     {
         $_POST = array(
             'foo' => '<b>exploit</b>',
@@ -74,7 +74,7 @@ class HTML_QuickForm2_Element_StaticTest extends TestCase
         $this->assertEquals('<b>content</b>', (string)$obj);
     }
 
-    public function testCannotValidate()
+    public function testCannotValidate(): void
     {
         $static = new HTML_QuickForm2_Element_Static('novalidate');
         
@@ -86,7 +86,7 @@ class HTML_QuickForm2_Element_StaticTest extends TestCase
         ->getMock();
     }
 
-    public function testCanRemoveName()
+    public function testCanRemoveName(): void
     {
         $foo = new HTML_QuickForm2_Element_Static('foo', array('id' => 'bar'));
         $foo->removeAttribute('name');
@@ -97,7 +97,7 @@ class HTML_QuickForm2_Element_StaticTest extends TestCase
         $this->assertNull($bar->getAttribute('name'));
     }
 
-    public function testTagName()
+    public function testTagName(): void
     {
         $img = new HTML_QuickForm2_Element_Static(
             'picture', array('alt' => 'foo', 'src' => 'pr0n.gif'),
@@ -113,7 +113,7 @@ class HTML_QuickForm2_Element_StaticTest extends TestCase
         $this->assertMatchesRegularExpression('!<div[^<>]*class="foo"[^<>]*>bar</div>!', $div->__toString());
     }
 
-    public function testDisallowedTagNames()
+    public function testDisallowedTagNames(): void
     {
         $this->expectException(HTML_QuickForm2_InvalidArgumentException::class);
         
@@ -124,7 +124,7 @@ class HTML_QuickForm2_Element_StaticTest extends TestCase
      * If data source contains explicitly provided null values, those should be used
      * @link http://pear.php.net/bugs/bug.php?id=20295
      */
-    public function testBug20295()
+    public function testBug20295(): void
     {
         $form   = new HTML_QuickForm2('bug20295');
         $static = $form->addStatic('foo', array(), array('content' => 'not empty'));
@@ -135,7 +135,7 @@ class HTML_QuickForm2_Element_StaticTest extends TestCase
         $this->assertNull($static->getContent());
     }
 
-    public function testErroneousContentRemovalAfterFixForBug20295()
+    public function testErroneousContentRemovalAfterFixForBug20295(): void
     {
         $form = new HTML_QuickForm2('afterbug20295');
         $form->addDataSource(new HTML_QuickForm2_DataSource_Array());

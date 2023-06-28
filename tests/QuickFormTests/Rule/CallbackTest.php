@@ -31,7 +31,7 @@ class HTML_QuickForm2_Rule_CallbackTest extends TestCase
         return $value != 'foo';
     }
 
-    public function testValidCallbackRequired()
+    public function testValidCallbackRequired(): void
     {
         $mockEl  = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -52,7 +52,7 @@ class HTML_QuickForm2_Rule_CallbackTest extends TestCase
         }
     }
 
-    public function testOptionsHandling()
+    public function testOptionsHandling(): void
     {
         $mockEl  = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -73,7 +73,7 @@ class HTML_QuickForm2_Rule_CallbackTest extends TestCase
         $this->assertTrue($inArray->validate());
     }
 
-    public function testConfigHandling()
+    public function testConfigHandling(): void
     {
         $mockEl  = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -98,7 +98,7 @@ class HTML_QuickForm2_Rule_CallbackTest extends TestCase
         $this->assertFalse($inArray2->validate());
     }
 
-    public function testConfigOverridesOptions()
+    public function testConfigOverridesOptions(): void
     {
         $mockEl  = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',

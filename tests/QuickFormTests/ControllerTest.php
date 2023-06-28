@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
  */
 class HTML_QuickForm2_ControllerTest extends TestCase
 {
-    public function testSetExplicitID()
+    public function testSetExplicitID(): void
     {
         $controller = new HTML_QuickForm2_Controller('foo', false, false);
         $this->assertEquals('foo', $controller->getId());
@@ -34,7 +34,7 @@ class HTML_QuickForm2_ControllerTest extends TestCase
         $this->assertFalse($controller->propagateId());
     }
 
-    public function testFindID1()
+    public function testFindID1(): void
     {
         $_SESSION = array();
         $_REQUEST = array();
@@ -44,7 +44,7 @@ class HTML_QuickForm2_ControllerTest extends TestCase
         new HTML_QuickForm2_Controller();
     }
     
-    public function testFindID2()
+    public function testFindID2(): void
     {
         $_SESSION = array();
         $_REQUEST = array(
@@ -56,7 +56,7 @@ class HTML_QuickForm2_ControllerTest extends TestCase
         new HTML_QuickForm2_Controller();
     }
     
-    public function testFindID3()
+    public function testFindID3(): void
     {
         $_REQUEST = array(
             HTML_QuickForm2_Controller::KEY_ID => 'foo'
@@ -78,7 +78,7 @@ class HTML_QuickForm2_ControllerTest extends TestCase
         $this->assertTrue($controller->propagateId());
     }
 
-    public function testContainer()
+    public function testContainer(): void
     {
         $_SESSION = array();
         $_REQUEST = array();
@@ -92,7 +92,7 @@ class HTML_QuickForm2_ControllerTest extends TestCase
         $this->assertEquals(array(), $_SESSION);
     }
 
-    public function testAddPage()
+    public function testAddPage(): void
     {
         $firstPage  = $this->getMockBuilder('HTML_QuickForm2_Controller_Page')
             ->setMethods(array('populateForm'))
@@ -120,7 +120,7 @@ class HTML_QuickForm2_ControllerTest extends TestCase
         } catch (HTML_QuickForm2_InvalidArgumentException $e) {}
     }
 
-    public function testDefaultActionName()
+    public function testDefaultActionName(): void
     {
         $controller = new HTML_QuickForm2_Controller('foo');
 
@@ -138,7 +138,7 @@ class HTML_QuickForm2_ControllerTest extends TestCase
         $this->assertEquals(array('aPage', 'display'), $controller->getActionName());
     }
 
-    public function testGetActionName()
+    public function testGetActionName(): void
     {
         $_SESSION = array();
         $_REQUEST = array(
@@ -168,7 +168,7 @@ class HTML_QuickForm2_ControllerTest extends TestCase
         $this->assertEquals(array('foo', 'bar'), $controller1->getActionName());
     }
 
-    public function testIsValidSimple()
+    public function testIsValidSimple(): void
     {
         $controller = new HTML_QuickForm2_Controller('simpleIsValid');
         $controller->addPage(
@@ -189,7 +189,7 @@ class HTML_QuickForm2_ControllerTest extends TestCase
         $this->assertTrue($controller->isValid($second));
     }
 
-    public function testIsValidNotVisited()
+    public function testIsValidNotVisited(): void
     {
         $controller = new HTML_QuickForm2_Controller('isValidUnseen', false);
         $controller->addPage(
@@ -224,7 +224,7 @@ class HTML_QuickForm2_ControllerTest extends TestCase
     *
     * @see http://pear.php.net/bugs/bug.php?id=8687
     */
-    public function testBug8687()
+    public function testBug8687(): void
     {
         $mockForm = $this->getMockBuilder('HTML_QuickForm2')
             ->setMethods(array('validate'))

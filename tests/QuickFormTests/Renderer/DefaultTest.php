@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
  */
 class HTML_QuickForm2_Renderer_DefaultTest extends TestCase
 {
-    public function testRenderElementUsingMostAppropriateTemplate()
+    public function testRenderElementUsingMostAppropriateTemplate(): void
     {
         $element = HTML_QuickForm2_Factory::createElement(
             'text', 'foo', array('id' => 'testRenderElement')
@@ -58,7 +58,7 @@ class HTML_QuickForm2_Renderer_DefaultTest extends TestCase
         );
     }
 
-    public function testRenderRequiredElement()
+    public function testRenderRequiredElement(): void
     {
         $element = HTML_QuickForm2_Factory::createElement(
             'text', 'foo', array('id' => 'testRenderRequiredElement')
@@ -81,7 +81,7 @@ class HTML_QuickForm2_Renderer_DefaultTest extends TestCase
         );
     }
 
-    public function testRenderElementWithValidationError()
+    public function testRenderElementWithValidationError(): void
     {
         $element = HTML_QuickForm2_Factory::createElement(
             'text', 'foo', array('id' => 'testElementWithError')
@@ -113,7 +113,7 @@ class HTML_QuickForm2_Renderer_DefaultTest extends TestCase
         );
     }
 
-    public function testRenderElementWithSingleLabel()
+    public function testRenderElementWithSingleLabel(): void
     {
         $element = HTML_QuickForm2_Factory::createElement(
             'text', 'foo', array('id' => 'testSingleLabel')
@@ -135,7 +135,7 @@ class HTML_QuickForm2_Renderer_DefaultTest extends TestCase
         );
     }
 
-    public function testRenderElementWithMultipleLabels()
+    public function testRenderElementWithMultipleLabels(): void
     {
         $element = HTML_QuickForm2_Factory::createElement(
             'text', 'foo', array('id' => 'testMultipleLabels')
@@ -159,7 +159,7 @@ class HTML_QuickForm2_Renderer_DefaultTest extends TestCase
         );
     }
 
-    public function testRenderRequiredNote()
+    public function testRenderRequiredNote(): void
     {
         $form = new HTML_QuickForm2('reqnote');
         $element = $form->addText('testReqnote');
@@ -173,7 +173,7 @@ class HTML_QuickForm2_Renderer_DefaultTest extends TestCase
         $this->assertStringContainsString('<div class="reqnote">This is requi-i-i-ired!</div>', $form->render($renderer)->__toString());
     }
 
-    public function testRenderGroupedErrors()
+    public function testRenderGroupedErrors(): void
     {
         $form     = new HTML_QuickForm2('groupedErrors');
         $element  = $form->addText('testGroupedErrors')->setError('Some error');
@@ -190,7 +190,7 @@ class HTML_QuickForm2_Renderer_DefaultTest extends TestCase
         );
     }
 
-    public function testRenderGroupedHiddens()
+    public function testRenderGroupedHiddens(): void
     {
         $form     = new HTML_QuickForm2('groupedHiddens');
         $hidden1  = $form->addHidden('hidden1');
@@ -208,7 +208,7 @@ class HTML_QuickForm2_Renderer_DefaultTest extends TestCase
         $this->assertStringContainsString($hidden1->__toString() . $hidden2->__toString(), $html);
     }
 
-    public function testRenderGroupedElementUsingMostAppropriateTemplate()
+    public function testRenderGroupedElementUsingMostAppropriateTemplate(): void
     {
         $group   = HTML_QuickForm2_Factory::createElement('group', 'foo', array('id' => 'testRenderGroup'));
         $element = $group->addElement('text', 'bar', array('id' => 'testRenderGroupedElement'));
@@ -248,7 +248,7 @@ class HTML_QuickForm2_Renderer_DefaultTest extends TestCase
         );
     }
 
-    public function testRenderGroupedElementsWithSeparators()
+    public function testRenderGroupedElementsWithSeparators(): void
     {
         $group = HTML_QuickForm2_Factory::createElement('group', 'foo', array('id' => 'testSeparators'));
         $element1 = $group->addElement('text', 'bar');

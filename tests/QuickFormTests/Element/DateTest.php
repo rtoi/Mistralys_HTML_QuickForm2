@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
 
 class HTML_QuickForm2_Element_DateTest extends TestCase
 {
-    public function testInvalidMessageProvider()
+    public function testInvalidMessageProvider(): void
     {
         $this->expectException(HTML_QuickForm2_InvalidArgumentException::class);
         
@@ -35,7 +35,7 @@ class HTML_QuickForm2_Element_DateTest extends TestCase
         return array('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Caturday');
     }
 
-    public function testCallbackMessageProvider()
+    public function testCallbackMessageProvider(): void
     {
         $date = new HTML_QuickForm2_Element_Date('callback', null, array(
             'format'          => 'l',
@@ -44,7 +44,7 @@ class HTML_QuickForm2_Element_DateTest extends TestCase
         $this->assertStringContainsString('<option value="6">Caturday</option>', $date->__toString());
     }
 
-    public function testObjectMessageProvider()
+    public function testObjectMessageProvider(): void
     {
         $mockProvider = $this->getMockBuilder('HTML_QuickForm2_MessageProvider')
             ->setMethods(array('get'))
@@ -62,7 +62,7 @@ class HTML_QuickForm2_Element_DateTest extends TestCase
     * Support for minHour and maxHour
     * @see http://pear.php.net/bugs/4061
     */
-    public function testRequest4061()
+    public function testRequest4061(): void
     {
         $date = new HTML_QuickForm2_Element_Date('MaxMinHour', null, array(
             'format' => 'H', 'minHour' => 22, 'maxHour' => 6
@@ -81,7 +81,7 @@ class HTML_QuickForm2_Element_DateTest extends TestCase
     * Support for minMonth and maxMonth
     * @see http://pear.php.net/bugs/5957
     */
-    public function testRequest5957()
+    public function testRequest5957(): void
     {
         $date = new HTML_QuickForm2_Element_Date('MaxMinMonth', null, array(
             'format' => 'F', 'minMonth' => 10, 'maxMonth' => 3
@@ -90,14 +90,14 @@ class HTML_QuickForm2_Element_DateTest extends TestCase
         $this->assertStringNotContainsString('January', $date->__toString());
     }
 
-    public function testSetValueAcceptsDateTime()
+    public function testSetValueAcceptsDateTime(): void
     {
         $date = new HTML_QuickForm2_Element_Date('DateTimeTest', null, array('format' => 'Ymd'));
         $date->setValue(new DateTime('2012-06-26'));
         $this->assertEquals(array('Y' => 2012, 'm' => 6, 'd' => 26), $date->getValue());
     }
 
-    public function testSetValueAcceptsDateTimeImmutable()
+    public function testSetValueAcceptsDateTimeImmutable(): void
     {
         if (version_compare(phpversion(), '5.5.0', '<')) {
             $this->markTestSkipped("DateTimeImmutable is available since PHP 5.5");
@@ -111,7 +111,7 @@ class HTML_QuickForm2_Element_DateTest extends TestCase
      * If data source contains explicitly provided null values, those should be used
      * @link http://pear.php.net/bugs/bug.php?id=20295
      */
-    public function testBug20295()
+    public function testBug20295(): void
     {
         $form = new HTML_QuickForm2('bug20295');
         $date = $form->addDate('aDate', null, array('format' => 'Ymd'))

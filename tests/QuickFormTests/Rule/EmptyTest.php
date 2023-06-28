@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
  */
 class HTML_QuickForm2_Rule_EmptyTest extends TestCase
 {
-    public function testValidateGenericElement()
+    public function testValidateGenericElement(): void
     {
         $mockValid = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -49,7 +49,7 @@ class HTML_QuickForm2_Rule_EmptyTest extends TestCase
         $this->assertEquals('an error', $mockInvalid->getError());
     }
 
-    public function testValidateInputFileElement()
+    public function testValidateInputFileElement(): void
     {
         $mockValid = $this->getMockBuilder('HTML_QuickForm2_Element_InputFile')
             ->setMethods(array('getValue'))
@@ -82,7 +82,7 @@ class HTML_QuickForm2_Rule_EmptyTest extends TestCase
         $this->assertEquals('an error', $mockInvalid->getError());
     }
 
-    public function testFailedUploadIsNotEmpty()
+    public function testFailedUploadIsNotEmpty(): void
     {
         $mockFailed = $this->getMockBuilder('HTML_QuickForm2_Element_InputFile')
             ->setMethods(array('getValue'))
@@ -100,7 +100,7 @@ class HTML_QuickForm2_Rule_EmptyTest extends TestCase
         $this->assertEquals('an error', $mockFailed->getError());
     }
 
-    public function testValidateArray()
+    public function testValidateArray(): void
     {
         $mockElEmpty = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',

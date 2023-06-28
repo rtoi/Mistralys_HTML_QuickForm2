@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
  */
 class HTML_QuickForm2_Rule_EachTest extends TestCase
 {
-    public function testTemplateRuleNeeded()
+    public function testTemplateRuleNeeded(): void
     {
         $mockEl = $this->getMockBuilder('HTML_QuickForm2_Container')
             ->setMethods(array('getType', 'setValue', '__toString'))
@@ -45,7 +45,7 @@ class HTML_QuickForm2_Rule_EachTest extends TestCase
         }
     }
 
-    public function testCannotUseRequiredAsTemplate()
+    public function testCannotUseRequiredAsTemplate(): void
     {
         $mockEl = $this->getMockBuilder('HTML_QuickForm2_Container')
             ->setMethods(array('getType', 'setValue', '__toString'))
@@ -58,7 +58,7 @@ class HTML_QuickForm2_Rule_EachTest extends TestCase
         }
     }
 
-    public function testCanOnlyValidateContainers()
+    public function testCanOnlyValidateContainers(): void
     {
         $mockEl = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -74,7 +74,7 @@ class HTML_QuickForm2_Rule_EachTest extends TestCase
         }
     }
 
-    public function testValidatesWithTemplateRule()
+    public function testValidatesWithTemplateRule(): void
     {
         $mockContainer = $this->getMockBuilder('HTML_QuickForm2_Container')
             ->setMethods(array('getType', 'setValue', '__toString'))
@@ -92,7 +92,7 @@ class HTML_QuickForm2_Rule_EachTest extends TestCase
         $this->assertTrue($each->validate());
     }
 
-    public function testSetsErrorOnContainer()
+    public function testSetsErrorOnContainer(): void
     {
         $mockContainer = $this->getMockBuilder('HTML_QuickForm2_Container')
             ->setMethods(array('getType', 'setValue', '__toString'))
@@ -108,7 +108,7 @@ class HTML_QuickForm2_Rule_EachTest extends TestCase
         $this->assertEquals('', $bar->getError());
     }
 
-    public function testChainedRulesAreIgnored()
+    public function testChainedRulesAreIgnored(): void
     {
         $mockContainer = $this->getMockBuilder('HTML_QuickForm2_Container')
             ->setMethods(array('getType', 'setValue', '__toString'))
@@ -128,7 +128,7 @@ class HTML_QuickForm2_Rule_EachTest extends TestCase
         $this->assertTrue($each->validate());
     }
 
-    public function testValidateNestedContainer()
+    public function testValidateNestedContainer(): void
     {
         $mockOuter = $this->getMockBuilder('HTML_QuickForm2_Container')
             ->setMethods(array('getType', 'setValue', '__toString'))
@@ -149,7 +149,7 @@ class HTML_QuickForm2_Rule_EachTest extends TestCase
         $this->assertTrue($each->validate());
     }
 
-    public function testIgnoresStaticServerSide()
+    public function testIgnoresStaticServerSide(): void
     {
         $mockContainer = $this->getMockBuilder('HTML_QuickForm2_Container')
             ->setMethods(array('getType', 'setValue', '__toString'))
@@ -167,7 +167,7 @@ class HTML_QuickForm2_Rule_EachTest extends TestCase
         $this->assertTrue($each->validate());
     }
 
-    public function testIgnoresStaticClientSide()
+    public function testIgnoresStaticClientSide(): void
     {
         $mockContainer = $this->getMockBuilder('HTML_QuickForm2_Container')
             ->setMethods(array('getType', 'setValue', '__toString'))
@@ -185,7 +185,7 @@ class HTML_QuickForm2_Rule_EachTest extends TestCase
         $this->assertStringNotContainsString('staticCallback', $each->getJavascript());
     }
 
-    public function testValidationTriggers()
+    public function testValidationTriggers(): void
     {
         $mockContainer = $this->getMockBuilder('HTML_QuickForm2_Container')
             ->setMethods(array('getType', 'setValue', '__toString'))

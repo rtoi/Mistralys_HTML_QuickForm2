@@ -190,7 +190,7 @@ class HTML_QuickForm2_Controller implements IteratorAggregate
    /**
     * Removes the session variable containing the controller data
     */
-    public function destroySessionContainer()
+    public function destroySessionContainer(): void
     {
         unset($_SESSION[sprintf(self::KEY_CONTAINER, $this->id)]);
         $this->sessionContainer = null;
@@ -247,7 +247,7 @@ class HTML_QuickForm2_Controller implements IteratorAggregate
     * @param string                            $actionName action name
     * @param HTML_QuickForm2_Controller_Action $action     the handler for the action
     */
-    public function addHandler($actionName, HTML_QuickForm2_Controller_Action $action)
+    public function addHandler($actionName, HTML_QuickForm2_Controller_Action $action): void
     {
         $this->handlers[$actionName] = $action;
     }
@@ -424,7 +424,7 @@ class HTML_QuickForm2_Controller implements IteratorAggregate
     *
     * @param HTML_QuickForm2_DataSource $datasource Data source
     */
-    public function addDataSource(HTML_QuickForm2_DataSource $datasource)
+    public function addDataSource(HTML_QuickForm2_DataSource $datasource): void
     {
         $this->getSessionContainer()->storeDatasources(
             array_merge(

@@ -53,7 +53,7 @@ class HTML_QuickForm2_DataSource_ArrayTest extends TestCase
         ));
     }
 
-    public function testReturnsNullForAbsentValue()
+    public function testReturnsNullForAbsentValue(): void
     {
         $this->assertNull($this->ds->getValue('something'));
         $this->assertNull($this->ds->getValue('bar[missing]'));
@@ -61,7 +61,7 @@ class HTML_QuickForm2_DataSource_ArrayTest extends TestCase
         $this->assertNull($this->ds->getValue('foo[key]'));
     }
 
-    public function testGetValue()
+    public function testGetValue(): void
     {
         $this->assertEquals('some value', $this->ds->getValue('foo'));
         $this->assertEquals(
@@ -75,13 +75,13 @@ class HTML_QuickForm2_DataSource_ArrayTest extends TestCase
    /**
     * See PEAR bugs #8414 and #8123
     */
-    public function testQuotesAndBackslashesEscaped()
+    public function testQuotesAndBackslashesEscaped(): void
     {
         $this->assertEquals('yes', $this->ds->getValue('escape[o\'really]'));
         $this->assertEquals('no', $this->ds->getValue('escape[oh\\no]'));
     }
 
-    public function testHasValue()
+    public function testHasValue(): void
     {
         $this->assertTrue($this->ds->hasValue('foo'));
         $this->assertTrue($this->ds->hasValue('quux'));

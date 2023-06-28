@@ -38,7 +38,7 @@ class HTML_QuickForm2_Rule_ImplConst extends HTML_QuickForm2_Rule
  */
 class HTML_QuickForm2_RuleTest extends TestCase
 {
-    public function testSetAndGetOptions()
+    public function testSetAndGetOptions(): void
     {
         $rule = new HTML_QuickForm2_Rule_ImplConst(
             new HTML_QuickForm2_Element_InputText('foo'), 'a message', 'bar'
@@ -49,7 +49,7 @@ class HTML_QuickForm2_RuleTest extends TestCase
         $this->assertEquals('baz', $rule->getConfig());
     }
 
-    public function testSetAndGetMessage()
+    public function testSetAndGetMessage(): void
     {
         $rule = new HTML_QuickForm2_Rule_ImplConst(
             new HTML_QuickForm2_Element_InputText('foo'), 'a message', 'bar'
@@ -60,7 +60,7 @@ class HTML_QuickForm2_RuleTest extends TestCase
         $this->assertEquals('another message', $rule->getMessage());
     }
 
-    public function testValidateSingle()
+    public function testValidateSingle(): void
     {
         $ruleTrue = new HTML_QuickForm2_Rule_ImplConst(
             new HTML_QuickForm2_Element_InputText('ruleTrue'), 'a message', true
@@ -73,7 +73,7 @@ class HTML_QuickForm2_RuleTest extends TestCase
         $this->assertFalse($ruleFalse->validate());
     }
 
-    public function testValidateChained()
+    public function testValidateChained(): void
     {
         $elTest = new HTML_QuickForm2_Element_InputText('testAndOr');
         $ruleAnd = new HTML_QuickForm2_Rule_ImplConst($elTest, 'a message', true);
@@ -85,7 +85,7 @@ class HTML_QuickForm2_RuleTest extends TestCase
         $this->assertTrue($ruleOr->validate());
     }
 
-    public function testOperatorPrecedence()
+    public function testOperatorPrecedence(): void
     {
         // true = true or true and false != ((true or true) and false) = false
         $elTest = new HTML_QuickForm2_Element_InputText('testPrecedence');
@@ -96,7 +96,7 @@ class HTML_QuickForm2_RuleTest extends TestCase
         $this->assertTrue($ruleTrue->validate());
     }
 
-    public function testShortCircuitedEvaluationAnd()
+    public function testShortCircuitedEvaluationAnd(): void
     {
         $elTest = new HTML_QuickForm2_Element_InputText('testShortCircuitedAnd');
         $ruleTrue = new HTML_QuickForm2_Rule_ImplConst($elTest, '...', true);
@@ -119,7 +119,7 @@ class HTML_QuickForm2_RuleTest extends TestCase
         $ruleFalse->validate();
     }
 
-    public function testShortCircuitedEvaluationOr()
+    public function testShortCircuitedEvaluationOr(): void
     {
         $elTest = new HTML_QuickForm2_Element_InputText('testShortCircuitedOr');
         $ruleTrue = new HTML_QuickForm2_Rule_ImplConst($elTest, '...', true);
@@ -142,7 +142,7 @@ class HTML_QuickForm2_RuleTest extends TestCase
         $ruleFalse->validate();
     }
 
-    public function testSetErrorOnlyOnChainFailure()
+    public function testSetErrorOnlyOnChainFailure(): void
     {
         $elTest = new HTML_QuickForm2_Element_InputText('valid');
         $chain  = new HTML_QuickForm2_Rule_ImplConst($elTest, 'bogus error', false);
@@ -158,7 +158,7 @@ class HTML_QuickForm2_RuleTest extends TestCase
         $this->assertEquals('genuine error', $elTest->getError());
     }
 
-    public function testDefaultConfigMerging()
+    public function testDefaultConfigMerging(): void
     {
         $this->assertEquals('foo', HTML_QuickForm2_Rule::mergeConfig('foo', null));
         $this->assertEquals('bar', HTML_QuickForm2_Rule::mergeConfig('foo', 'bar'));
@@ -171,7 +171,7 @@ class HTML_QuickForm2_RuleTest extends TestCase
         $this->assertEquals('bar', $el->createRule('with-config', '', 'foo')->getConfig());
     }
 
-    public function testValidationTriggers()
+    public function testValidationTriggers(): void
     {
         $el = new HTML_QuickForm2_Element_InputText('foo', array('id' => 'foo'));
         $rule = $this->getMockBuilder('HTML_QuickForm2_Rule')
@@ -186,7 +186,7 @@ class HTML_QuickForm2_RuleTest extends TestCase
         $this->assertStringNotContainsString('qf.LiveRule', $rule->getJavascript(false));
     }
 
-    public function testChainedValidationTriggers()
+    public function testChainedValidationTriggers(): void
     {
         $foo = new HTML_QuickForm2_Element_InputText('foo', array('id' => 'foo'));
         $bar = new HTML_QuickForm2_Element_InputText('bar', array('id' => 'bar'));
@@ -218,7 +218,7 @@ class HTML_QuickForm2_RuleTest extends TestCase
         $this->assertStringContainsString('baz', $m[0]);
     }
 
-    public function testCannotSetErrorsOnHiddenElements1()
+    public function testCannotSetErrorsOnHiddenElements1(): void
     {
         $hidden = new HTML_QuickForm2_Element_InputHidden('noError');
 

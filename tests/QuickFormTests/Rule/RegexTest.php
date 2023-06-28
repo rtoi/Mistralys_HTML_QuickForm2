@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
  */
 class HTML_QuickForm2_Rule_RegexTest extends TestCase
 {
-    public function testRegexIsRequired()
+    public function testRegexIsRequired(): void
     {
         $mockEl = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -41,7 +41,7 @@ class HTML_QuickForm2_Rule_RegexTest extends TestCase
         }
     }
 
-    public function testOptionsHandling()
+    public function testOptionsHandling(): void
     {
         $mockEl = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -57,7 +57,7 @@ class HTML_QuickForm2_Rule_RegexTest extends TestCase
         $this->assertTrue($alphaNum->validate());
     }
 
-    public function testConfigHandling()
+    public function testConfigHandling(): void
     {
         $mockEl  = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -77,7 +77,7 @@ class HTML_QuickForm2_Rule_RegexTest extends TestCase
         $this->assertFalse($numeric->validate());
     }
 
-    public function testConfigOverridesOptions()
+    public function testConfigOverridesOptions(): void
     {
         $mockEl  = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -93,7 +93,7 @@ class HTML_QuickForm2_Rule_RegexTest extends TestCase
         $this->assertTrue($override->validate());
     }
 
-    public function testBug10799()
+    public function testBug10799(): void
     {
         $mockInvalid = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -106,7 +106,7 @@ class HTML_QuickForm2_Rule_RegexTest extends TestCase
         $this->assertFalse($ruleNumeric->validate());
     }
 
-    public function testCheckUploadFilename()
+    public function testCheckUploadFilename(): void
     {
         $mockValid = $this->getMockBuilder('HTML_QuickForm2_Element_InputFile')
             ->setMethods(array('getValue'))
@@ -137,7 +137,7 @@ class HTML_QuickForm2_Rule_RegexTest extends TestCase
         $this->assertFalse($rule->validate());
     }
 
-    public function testEmptyFieldsAreSkipped()
+    public function testEmptyFieldsAreSkipped(): void
     {
         $mockEmpty = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',
@@ -163,7 +163,7 @@ class HTML_QuickForm2_Rule_RegexTest extends TestCase
         $this->assertTrue($ruleFile->validate());
     }
 
-    public function testRequest12736()
+    public function testRequest12736(): void
     {
         $mockEl = $this->getMockBuilder('HTML_QuickForm2_Element')
             ->setMethods(array('getType',

@@ -17,6 +17,7 @@
 - Unit Tests: Ongoing modernisation.
 - Unit Tests: Added the base test case class `QuickFormCase`.
 - Unit Tests: Moved mock classes to individual files.
+- Unit Tests: Added tests to increase code coverage for unused methods.
 - Factory: Deprecated the old class loading mechanisms.
 - Factory: Removed the file parameter from `registerElements()`.
 - Factory: Parameter `$includeFile` in `registerRule()` is deprecated.
@@ -24,7 +25,7 @@
 - Loader: Added `requireClassExists()`.
 - Examples: They can now be opened in the browser (via a webserver).
 
-### Breaking changes:
+### Breaking changes
 
 - The `HTML_QuickForm2_Exception` no longer extends `PEAR_Exception`, but
   simply the vanilla `Exception` class with a slightly more lenient 
@@ -33,13 +34,11 @@
 - Some error exception error messages have changed. If you relied on 
   matching the text to detect the exact exception, please switch to 
   the new exception codes.
+- If you have any custom elements, they will have to be adjusted because
+  method return types and property types have been added in the base
+  node class, `HTML_QuickForm2_Node`.
 
-#### Added node method return types
-
-If you have any custom elements, they will have to be adjusted because
-method return types and property types have been added.
-
-### Deprecated methods:
+### Deprecated methods
 
 - `HTML_QuickForm2_Loader::autoload()`.
 - `HTML_QuickForm2_Loader::loadClass()`.

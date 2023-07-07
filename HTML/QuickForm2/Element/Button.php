@@ -50,7 +50,7 @@ class HTML_QuickForm2_Element_Button extends HTML_QuickForm2_Element
 
     public function getType() : string
     {
-        return $this->getAttribute('type');
+        return (string)$this->getAttribute('type');
     }
 
     public function isFreezable(): bool

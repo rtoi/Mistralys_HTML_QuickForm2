@@ -19,6 +19,8 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+declare(strict_types=1);
+
 /**
  * Class for a group of elements used to input dates (and times).
  *
@@ -32,6 +34,24 @@
  */
 class HTML_QuickForm2_Element_Date extends HTML_QuickForm2_Container_Group
 {
+    public const ERROR_INVALID_MESSAGE_PROVIDER = 141201;
+
+    public const SETTING_FORMAT = 'format';
+    public const SETTING_MAX_YEAR = 'maxYear';
+    public const SETTING_MIN_YEAR = 'minYear';
+    public const SETTING_EMPTY_OPTION_ENABLED = 'addEmptyOption';
+    public const SETTING_EMPTY_OPTION_VALUE = 'emptyOptionValue';
+    public const SETTING_EMPTY_OPTION_TEXT = 'emptyOptionText';
+    public const DEFAULT_FORMAT = 'dMY';
+    public const NAMES_MONTHS_SHORT = 'months_short';
+    public const NAMES_MONTHS_LONG = 'months_long';
+    public const NAMES_WEEKDAYS_SHORT = 'weekdays_short';
+    public const NAMES_WEEKDAYS_LONG = 'weekdays_long';
+    public const SETTING_MIN_HOUR = 'minHour';
+    public const SETTING_MAX_HOUR = 'maxHour';
+    public const SETTING_MIN_MONTH = 'minMonth';
+    public const SETTING_MAX_MONTH = 'maxMonth';
+
     public function getType() : string
     {
         return 'date';
@@ -39,44 +59,46 @@ class HTML_QuickForm2_Element_Date extends HTML_QuickForm2_Container_Group
 
    /**
     * Various options to control the element's display.
-    * @var      array
+    * @var array<string,mixed>
     */
     protected $data = array(
-        'format'           => 'dMY',
-        'minYear'          => 2001,
-        'maxYear'          => null, // set in the constructor
-        'addEmptyOption'   => false,
-        'emptyOptionValue' => '',
-        'emptyOptionText'  => '&nbsp;',
+        self::SETTING_FORMAT => self::DEFAULT_FORMAT,
+        self::SETTING_MIN_YEAR => 2001,
+        self::SETTING_MAX_YEAR => null, // set in the constructor
+        self::SETTING_EMPTY_OPTION_ENABLED => false,
+        self::SETTING_EMPTY_OPTION_VALUE => '',
+        self::SETTING_EMPTY_OPTION_TEXT => '&nbsp;',
         'optionIncrement'  => array('i' => 1, 's' => 1),
         // request #4061: max and min hours (only for 'H' modifier)
-        'minHour'          => 0,
-        'maxHour'          => 23,
+        self::SETTING_MIN_HOUR => 0,
+        self::SETTING_MAX_HOUR => 23,
         // request #5957: max and min months
-        'minMonth'         => 1,
-        'maxMonth'         => 12
+        self::SETTING_MIN_MONTH => 1,
+        self::SETTING_MAX_MONTH => 12
     );
 
    /**
     * Language code
-    * @var  string
+    * @var string|NULL
     */
-    protected $language = null;
+    protected ?string $language = null;
 
    /**
     * Message provider for option texts
-    * @var  callable|HTML_QuickForm2_MessageProvider
+    * @var callable|HTML_QuickForm2_MessageProvider
     */
     protected $messageProvider;
+    private bool $initDone;
 
    /**
     * Class constructor
     *
     * The following keys may appear in $data array:
+    *
     * - 'messageProvider': a callback or an instance of a class implementing
     *   HTML_QuickForm2_MessageProvider interface, this will be used to get
-    *   localized names of months and weekdays. Some of the default ones will
-    *   be used if not given.
+    *   localized names of months and weekdays. Default ones will be used if
+    *   not given.
     * - 'language': date language, use 'locale' here to display month / weekday
     *   names according to the current locale.
     * - 'format': Format of the date, based on PHP's date() function.
@@ -90,7 +112,7 @@ class HTML_QuickForm2_Element_Date extends HTML_QuickForm2_Container_Group
     *       m => Month numbers
     *       Y => Four digit year
     *       y => Two digit year
-    *       h => 12 hour format
+    *       h => 12-hour format
     *       H => 24 hour format
     *       i => Minutes
     *       s => Seconds
@@ -104,8 +126,8 @@ class HTML_QuickForm2_Element_Date extends HTML_QuickForm2_Container_Group
     * - 'emptyOptionValue': The value passed by the empty option.
     * - 'emptyOptionText': The text displayed for the empty option.
     * - 'optionIncrement': Step to increase the option values by (works for 'i' and 's')
-    * - 'minHour': Minimum hour in hour select (only for 24 hour format!)
-    * - 'maxHour': Maximum hour in hour select (only for 24 hour format!)
+    * - 'minHour': Minimum hour in hour select (only for 24-hour format!)
+    * - 'maxHour': Maximum hour in hour select (only for 24-hour format!)
     * - 'minMonth': Minimum month in month select
     * - 'maxMonth': Maximum month in month select
     *
@@ -117,39 +139,94 @@ class HTML_QuickForm2_Element_Date extends HTML_QuickForm2_Container_Group
     */
     public function __construct($name = null, $attributes = null, array $data = array())
     {
+        $this->initDone = false;
+
         if (isset($data['messageProvider'])) {
-            if (!is_callable($data['messageProvider'])
-                && !$data['messageProvider'] instanceof HTML_QuickForm2_MessageProvider
-            ) {
-                throw new HTML_QuickForm2_InvalidArgumentException(
-                    "messageProvider: expecting a callback or an implementation"
-                    . " of HTML_QuickForm2_MessageProvider"
-                );
-            }
-            $this->messageProvider = $data['messageProvider'];
-        } else {
-            if (isset($data['language']) && 'locale' == $data['language']) {
+            $this->setMessageProvider($data['messageProvider']);
+        }
+
+        if (isset($data['language'])) {
+            $this->setLanguage($data['language']);
+        }
+
+        unset($data['messageProvider'], $data['language']);
+
+        // http://pear.php.net/bugs/bug.php?id=18171
+        $this->data[self::SETTING_MAX_YEAR] = date('Y');
+
+        parent::__construct($name, $attributes, $data);
+
+        $this->generateSelects();
+
+        $this->initDone = true;
+    }
+
+    public function setLanguage(string $lang) : self
+    {
+        $this->language = $lang;
+        return $this;
+    }
+
+    /**
+     * @param callable|HTML_QuickForm2_MessageProvider|mixed $provider
+     * @return $this
+     * @throws HTML_QuickForm2_InvalidArgumentException
+     */
+    public function setMessageProvider($provider) : self
+    {
+        if (
+            is_callable($provider)
+            ||
+            $provider instanceof HTML_QuickForm2_MessageProvider
+        ) {
+            $this->messageProvider = $provider;
+            return $this;
+        }
+
+        throw new HTML_QuickForm2_InvalidArgumentException(
+            sprintf(
+                "messageProvider: expecting a callback or an implementation of %s",
+                HTML_QuickForm2_MessageProvider::class
+            ),
+            self::ERROR_INVALID_MESSAGE_PROVIDER
+        );
+    }
+
+    /**
+     * @return HTML_QuickForm2_MessageProvider|callable
+     */
+    public function getMessageProvider()
+    {
+        if(!isset($this->messageProvider)) {
+            if ($this->getLanguage() === 'locale') {
                 $this->messageProvider = new HTML_QuickForm2_MessageProvider_Strftime();
             } else {
                 $this->messageProvider = HTML_QuickForm2_MessageProvider_Default::getInstance();
             }
         }
-        if (isset($data['language'])) {
-            $this->language = $data['language'];
+
+        return $this->messageProvider;
+    }
+
+    public function getLanguage() : ?string
+    {
+        return $this->language;
+    }
+
+    protected function generateSelects() : void
+    {
+        if($this->selectsGenerated === true || !$this->initDone) {
+            return;
         }
-        unset($data['messageProvider'], $data['language']);
 
-        // http://pear.php.net/bugs/bug.php?id=18171
-        $this->data['maxYear'] = date('Y');
-
-        parent::__construct($name, $attributes, $data);
+        $this->selectsGenerated = true;
 
         $backslash = false;
         $separators = array();
         $separator =  '';
 
-        for ($i = 0, $length = strlen($this->data['format']); $i < $length; $i++) {
-            $sign = $this->data['format'][$i];
+        for ($i = 0, $length = strlen($this->data[self::SETTING_FORMAT]); $i < $length; $i++) {
+            $sign = $this->data[self::SETTING_FORMAT][$i];
             if ($backslash) {
                 $backslash  = false;
                 $separator .= $sign;
@@ -157,110 +234,114 @@ class HTML_QuickForm2_Element_Date extends HTML_QuickForm2_Container_Group
                 $loadSelect = true;
                 $options    = array();
                 switch ($sign) {
-                case 'D':
-                    // Sunday is 0 like with 'w' in date()
-                    $options = $this->messageProvider instanceof HTML_QuickForm2_MessageProvider
-                               ? $this->messageProvider->get(array('date', 'weekdays_short'), $this->language)
-                               : call_user_func($this->messageProvider, array('date', 'weekdays_short'), $this->language);
-                    break;
-                case 'l':
-                    $options = $this->messageProvider instanceof HTML_QuickForm2_MessageProvider
-                               ? $this->messageProvider->get(array('date', 'weekdays_long'), $this->language)
-                               : call_user_func($this->messageProvider, array('date', 'weekdays_long'), $this->language);
-                    break;
-                case 'd':
-                    $options = $this->createOptionList(1, 31);
-                    break;
-                case 'M':
-                case 'm':
-                case 'F':
-                    $options = $this->createOptionList(
-                        $this->data['minMonth'],
-                        $this->data['maxMonth'],
-                        $this->data['minMonth'] > $this->data['maxMonth'] ? -1 : 1
-                    );
-                    if ('M' == $sign || 'F' == $sign) {
-                        $key   = 'M' == $sign ? 'months_short' : 'months_long';
-                        $names = $this->messageProvider instanceof HTML_QuickForm2_MessageProvider
-                                 ? $this->messageProvider->get(array('date', $key), $this->language)
-                                 : call_user_func($this->messageProvider, array('date', $key), $this->language);
-                        foreach ($options as $k => &$v) {
-                            $v = $names[$k - 1];
+                    case 'D':
+                        // Sunday is 0 like with 'w' in date()
+                        $options = $this->getWeekdayNames(self::NAMES_WEEKDAYS_SHORT);
+                        break;
+                    case 'l':
+                        $options = $this->getWeekdayNames(self::NAMES_WEEKDAYS_LONG);
+                        break;
+                    case 'd':
+                        $options = $this->createOptionList(1, 31);
+                        break;
+                    case 'M':
+                    case 'm':
+                    case 'F':
+                        $min = $this->getMinMonth();
+                        $max = $this->getMaxMonth();
+                        $options = $this->createOptionList(
+                            $min,
+                            $max,
+                            $min > $max ? -1 : 1
+                        );
+                        if ('M' === $sign || 'F' === $sign) {
+                            $key   = 'M' === $sign ? self::NAMES_MONTHS_SHORT : self::NAMES_MONTHS_LONG;
+                            $names = $this->getMonthNames($key);
+
+                            foreach ($options as $k => $value) {
+                                $options[$k] = $names[$k - 1];
+                            }
                         }
-                    }
-                    break;
-                case 'Y':
-                    $options = $this->createOptionList(
-                        $this->data['minYear'],
-                        $this->data['maxYear'],
-                        $this->data['minYear'] > $this->data['maxYear']? -1: 1
-                    );
-                    break;
-                case 'y':
-                    $options = $this->createOptionList(
-                        $this->data['minYear'],
-                        $this->data['maxYear'],
-                        $this->data['minYear'] > $this->data['maxYear']? -1: 1
-                    );
-                    array_walk($options, array($this, '_shortYearCallback'));
-                    break;
-                case 'h':
-                    $options = $this->createOptionList(1, 12);
-                    break;
-                case 'g':
-                    $options = $this->createOptionList(1, 12);
-                    array_walk($options, array($this, '_shortHourCallback'));
-                    break;
-                case 'H':
-                    $options = $this->createOptionList(
-                        $this->data['minHour'],
-                        $this->data['maxHour'],
-                        $this->data['minHour'] > $this->data['maxHour'] ? -1 : 1
-                    );
-                    break;
-                case 'i':
-                    $options = $this->createOptionList(0, 59, $this->data['optionIncrement']['i']);
-                    break;
-                case 's':
-                    $options = $this->createOptionList(0, 59, $this->data['optionIncrement']['s']);
-                    break;
-                case 'a':
-                    $options = array('am' => 'am', 'pm' => 'pm');
-                    break;
-                case 'A':
-                    $options = array('AM' => 'AM', 'PM' => 'PM');
-                    break;
-                case 'W':
-                    $options = $this->createOptionList(1, 53);
-                    break;
-                case '\\':
-                    $backslash  = true;
-                    $loadSelect = false;
-                    break;
-                default:
-                    $separator .= (' ' == $sign? '&nbsp;': $sign);
-                    $loadSelect = false;
+                        break;
+                    case 'Y':
+                        $min = $this->getMinYear();
+                        $max = $this->getMaxYear();
+                        $options = $this->createOptionList(
+                            $min,
+                            $max,
+                            $min > $max? -1: 1
+                        );
+                        break;
+                    case 'y':
+                        $min = $this->getMinYear();
+                        $max = $this->getMaxYear();
+                        $options = $this->createOptionList(
+                            $min,
+                            $max,
+                            $min > $max? -1: 1
+                        );
+                        array_walk($options, array($this, '_shortYearCallback'));
+                        break;
+                    case 'h':
+                        $options = $this->createOptionList(1, 12);
+                        break;
+                    case 'g':
+                        $options = $this->createOptionList(1, 12);
+                        array_walk($options, array($this, '_shortHourCallback'));
+                        break;
+                    case 'H':
+                        $min = $this->getMinHour();
+                        $max = $this->getMaxHour();
+                        $options = $this->createOptionList(
+                            $min,
+                            $max,
+                            $min > $max ? -1 : 1
+                        );
+                        break;
+                    case 'i':
+                        $options = $this->createOptionList(0, 59, $this->data['optionIncrement']['i']);
+                        break;
+                    case 's':
+                        $options = $this->createOptionList(0, 59, $this->data['optionIncrement']['s']);
+                        break;
+                    case 'a':
+                        $options = array('am' => 'am', 'pm' => 'pm');
+                        break;
+                    case 'A':
+                        $options = array('AM' => 'AM', 'PM' => 'PM');
+                        break;
+                    case 'W':
+                        $options = $this->createOptionList(1, 53);
+                        break;
+                    case '\\':
+                        $backslash  = true;
+                        $loadSelect = false;
+                        break;
+                    default:
+                        $separator .= (' ' === $sign? '&nbsp;': $sign);
+                        $loadSelect = false;
                 }
 
-                if ($loadSelect) {
+                if ($loadSelect)
+                {
                     if (0 < count($this)) {
                         $separators[] = $separator;
                     }
                     $separator = '';
+
                     // Should we add an empty option to the top of the select?
-                    if (!is_array($this->data['addEmptyOption']) && $this->data['addEmptyOption']
-                        || is_array($this->data['addEmptyOption']) && !empty($this->data['addEmptyOption'][$sign])
-                    ) {
+                    if ($this->hasEmptyOption($sign))
+                    {
                         // Using '+' array operator to preserve the keys
-                        if (is_array($this->data['emptyOptionText']) && !empty($this->data['emptyOptionText'][$sign])) {
-                            $options = array($this->data['emptyOptionValue'] => $this->data['emptyOptionText'][$sign]) + $options;
-                        } else {
-                            $options = array($this->data['emptyOptionValue'] => $this->data['emptyOptionText']) + $options;
-                        }
+                        $options = array($this->getEmptyOptionValue($sign) => $this->getEmptyOptionText($sign)) + $options;
                     }
-                    $this->addSelect($sign, array('id' => self::generateId($this->getName() . "[{$sign}]"))
-                                            + $this->getAttributes())
-                         ->loadOptions($options);
+
+                    $this->addSelect(
+                        $sign,
+                        array('id' => self::generateId($this->getName() . '['.$sign.']'))
+                        + $this->getAttributes()
+                    )
+                        ->loadOptions($options);
                 }
             }
         }
@@ -268,13 +349,148 @@ class HTML_QuickForm2_Element_Date extends HTML_QuickForm2_Container_Group
         $this->setSeparator($separators);
     }
 
+    public function getWeekdayNames(string $key=self::NAMES_WEEKDAYS_LONG) : array
+    {
+        $provider = $this->getMessageProvider();
+        $lang = $this->getLanguage();
+
+        if($provider instanceof HTML_QuickForm2_MessageProvider) {
+            return $this->messageProvider->get(array('date', $key), $lang);
+        }
+
+        return $provider(array('date', $key), $lang);
+    }
+
+    /**
+     * @param string $key Either <code>months_short</code> or <code>months_long</code>.
+     * @return string[]
+     * @throws HTML_QuickForm2_InvalidArgumentException
+     * @see self::NAMES_MONTHS_LONG
+     * @see self::NAMES_MONTHS_SHORT
+     */
+    public function getMonthNames(string $key=self::NAMES_MONTHS_LONG) : array
+    {
+        $provider = $this->getMessageProvider();
+        $lang = $this->getLanguage();
+
+        if($provider instanceof HTML_QuickForm2_MessageProvider)
+        {
+            return $provider->get(array('date', $key), $lang);
+        }
+
+        return $provider(array('date', $key), $lang);
+    }
+
+    public function hasEmptyOption(string $formatSign) : bool
+    {
+        if(empty($this->data[self::SETTING_EMPTY_OPTION_ENABLED])) {
+            return false;
+        }
+
+        if(is_bool($this->data[self::SETTING_EMPTY_OPTION_ENABLED])) {
+            return $this->data[self::SETTING_EMPTY_OPTION_ENABLED];
+        }
+
+        if(
+            is_array($this->data[self::SETTING_EMPTY_OPTION_ENABLED])
+            &&
+            !empty($this->data[self::SETTING_EMPTY_OPTION_ENABLED][$formatSign])
+            &&
+            $this->data[self::SETTING_EMPTY_OPTION_ENABLED][$formatSign] === true
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function getEmptyOptionValue(string $formatSign) : string
+    {
+        if(empty($this->data[self::SETTING_EMPTY_OPTION_VALUE])) {
+            return '';
+        }
+
+        if(is_array($this->data[self::SETTING_EMPTY_OPTION_VALUE])) {
+            return $this->data[self::SETTING_EMPTY_OPTION_VALUE][$formatSign] ?? '';
+        }
+
+        return (string)$this->data[self::SETTING_EMPTY_OPTION_VALUE];
+    }
+
+    protected function getEmptyOptionText(string $formatSign) : string
+    {
+        if(empty($this->data[self::SETTING_EMPTY_OPTION_TEXT])) {
+            return '';
+        }
+
+        if(is_array($this->data[self::SETTING_EMPTY_OPTION_TEXT])) {
+            return $this->data[self::SETTING_EMPTY_OPTION_TEXT][$formatSign] ?? '';
+        }
+
+        return (string)$this->data[self::SETTING_EMPTY_OPTION_TEXT];
+    }
+
+    public function setEmptyOptionForAll(string $text, string $value) : self
+    {
+        return $this->setEmptyOption($text, $value);
+    }
+
+    public function setEmptyOptionForFormat(string $formatSign, string $text, string $value) : self
+    {
+       return $this->setEmptyOption($text, $value, $formatSign);
+    }
+
+    public function preRender() : void
+    {
+        $this->generateSelects();
+
+        parent::preRender();
+    }
+
+    public function getElements() : array
+    {
+        $this->generateSelects();
+
+        return parent::getElements();
+    }
+
+    protected function setEmptyOption(string $text, string $value, ?string $formatSign=null) : self
+    {
+        $this->resetSelects();
+
+        if(empty($formatSign))
+        {
+            $this->data[self::SETTING_EMPTY_OPTION_ENABLED] = true;
+            $this->data[self::SETTING_EMPTY_OPTION_TEXT] = $text;
+            $this->data[self::SETTING_EMPTY_OPTION_VALUE] = $value;
+            return $this;
+        }
+
+        if(!is_array($this->data[self::SETTING_EMPTY_OPTION_ENABLED])) {
+            $this->data[self::SETTING_EMPTY_OPTION_ENABLED] = array();
+        }
+
+        if(!is_array($this->data[self::SETTING_EMPTY_OPTION_TEXT])) {
+            $this->data[self::SETTING_EMPTY_OPTION_TEXT] = array();
+        }
+
+        if(!is_array($this->data[self::SETTING_EMPTY_OPTION_VALUE])) {
+            $this->data[self::SETTING_EMPTY_OPTION_VALUE] = array();
+        }
+
+        $this->data[self::SETTING_EMPTY_OPTION_ENABLED][$formatSign] = true;
+        $this->data[self::SETTING_EMPTY_OPTION_TEXT][$formatSign] = $text;
+        $this->data[self::SETTING_EMPTY_OPTION_VALUE][$formatSign] = $value;
+
+        return $this;
+    }
+
     /**
      * Callback for creating two-digit year list, formerly via create_function()
      *
      * @param string $v
-     * @param string $k
      */
-    private function _shortYearCallback(&$v, $k): void
+    private function _shortYearCallback(string &$v): void
     {
         $v = substr($v,-2);
     }
@@ -282,12 +498,11 @@ class HTML_QuickForm2_Element_Date extends HTML_QuickForm2_Container_Group
     /**
      * Callback for creating hour list without leading zeroes, formerly via create_function()
      *
-     * @param $v
-     * @param $k
+     * @param string|int $v
      */
-    private function _shortHourCallback(&$v, $k): void
+    private function _shortHourCallback(&$v): void
     {
-        $v = intval($v);
+        $v = (int)$v;
     }
 
    /**
@@ -299,7 +514,7 @@ class HTML_QuickForm2_Element_Date extends HTML_QuickForm2_Container_Group
     *
     * @return   array   An array of numeric options.
     */
-    protected function createOptionList($start, $end, $step = 1)
+    protected function createOptionList(int $start, int $end, int $step = 1) : array
     {
         for ($i = $start, $options = array(); $start > $end? $i >= $end: $i <= $end; $i += $step) {
             $options[$i] = sprintf('%02d', $i);
@@ -314,13 +529,19 @@ class HTML_QuickForm2_Element_Date extends HTML_QuickForm2_Container_Group
     *
     * @return   string  String with leading zeros removed
     */
-    protected function trimLeadingZeros($str)
+    protected function trimLeadingZeros(string $str) : string
     {
-        if (0 == strcmp($str, $this->data['emptyOptionValue'])) {
+        if (strcmp($str, $this->data[self::SETTING_EMPTY_OPTION_VALUE]) === 0) {
             return $str;
         }
+
         $trimmed = ltrim($str, '0');
-        return strlen($trimmed)? $trimmed: '0';
+
+        if(!empty($trimmed)) {
+            return $trimmed;
+        }
+
+        return '0';
     }
 
 
@@ -328,8 +549,8 @@ class HTML_QuickForm2_Element_Date extends HTML_QuickForm2_Container_Group
     * Tries to convert the given value to a usable date before setting the
     * element value
     *
-    * @param int|string|array|DateTime $value A timestamp, a DateTime object,
-    *   a string compatible with strtotime() or an array that fits the element names
+    * @param int|string|array|DateTime|DateTimeInterface $value A timestamp, a DateTime object,
+    *   a string compatible with <code>strtotime()</code> or an array that fits the element names.
     *
     * @return $this
     */
@@ -363,6 +584,10 @@ class HTML_QuickForm2_Element_Date extends HTML_QuickForm2_Container_Group
                 // might be a unix epoch, then we fill all possible values
             $arr = explode('-', date('w-j-n-Y-g-G-i-s-a-A-W', (int)$value));
         }
+        else
+        {
+            return $this;
+        }
 
         $value = array(
             'D' => $arr[0],
@@ -395,16 +620,107 @@ class HTML_QuickForm2_Element_Date extends HTML_QuickForm2_Container_Group
     protected function updateValue() : void
     {
         $name = $this->getName();
-        /* @var $ds HTML_QuickForm2_DataSource_NullAware */
-        foreach ($this->getDataSources() as $ds) {
-            if (null !== ($value = $ds->getValue($name))
-                || $ds instanceof HTML_QuickForm2_DataSource_NullAware && $ds->hasValue($name)
+
+        foreach ($this->getDataSources() as $ds)
+        {
+            if (
+                null !== ($value = $ds->getValue($name))
+                ||
+                ($ds instanceof HTML_QuickForm2_DataSource_NullAware && $ds->hasValue($name))
             ) {
                 $this->setValue($value);
                 return;
             }
         }
+
         parent::updateValue();
     }
+
+    private bool $selectsGenerated = false;
+
+    protected function resetSelects() : void
+    {
+        $children = $this->getElements();
+        foreach($children as $child) {
+            $this->removeChild($child);
+        }
+
+        $this->selectsGenerated = false;
+    }
+
+    public function setFormat(string $format) : self
+    {
+        $this->resetSelects();
+
+        return $this->setDataKey(self::SETTING_FORMAT, $format);
+    }
+
+    public function getFormat() : string
+    {
+        return $this->getDataKeyString(self::SETTING_FORMAT);
+    }
+
+    public function setMaxYear(int $year) : self
+    {
+        $this->resetSelects();
+
+        return $this->setDataKey(self::SETTING_MAX_YEAR, $year);
+    }
+
+    public function getMaxYear() : int
+    {
+        return $this->getDataKeyInt(self::SETTING_MAX_YEAR);
+    }
+
+    public function setMinYear(int $year) : self
+    {
+        $this->resetSelects();
+
+        return $this->setDataKey(self::SETTING_MIN_YEAR, $year);
+    }
+
+    public function getMinYear() : int
+    {
+        return $this->getDataKeyInt(self::SETTING_MIN_YEAR);
+    }
+
+    public function setMinHour(int $hour) : self
+    {
+        return $this->setDataKey(self::SETTING_MIN_HOUR, $hour);
+    }
+
+    public function getMinHour() : int
+    {
+        return $this->getDataKeyInt(self::SETTING_MIN_HOUR);
+    }
+
+    public function setMaxHour(int $hour) : self
+    {
+        return $this->setDataKey(self::SETTING_MAX_HOUR, $hour);
+    }
+
+    public function getMaxHour() : int
+    {
+        return $this->getDataKeyInt(self::SETTING_MAX_HOUR);
+    }
+
+    public function setMinMonth(int $month) : self
+    {
+        return $this->setDataKey(self::SETTING_MIN_MONTH, $month);
+    }
+
+    public function getMinMonth() : int
+    {
+        return $this->getDataKeyInt(self::SETTING_MIN_MONTH);
+    }
+
+    public function setMaxMonth(int $month) : self
+    {
+        return $this->setDataKey(self::SETTING_MAX_MONTH, $month);
+    }
+
+    public function getMaxMonth() : int
+    {
+        return $this->getDataKeyInt(self::SETTING_MAX_MONTH);
+    }
 }
-?>

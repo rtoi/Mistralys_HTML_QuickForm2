@@ -36,6 +36,8 @@ use HTML\QuickForm2\Element\Select\SelectOption;
  */
 class HTML_QuickForm2_Element_Select extends HTML_QuickForm2_Element
 {
+    public const SETTING_INTRINSIC_VALIDATION = 'intrinsic_validation';
+
     protected bool $persistent = true;
 
    /**
@@ -64,7 +66,7 @@ class HTML_QuickForm2_Element_Select extends HTML_QuickForm2_Element
     * Enable intrinsic validation by default
     * @var  array
     */
-    protected $data = array('intrinsic_validation' => true);
+    protected $data = array(self::SETTING_INTRINSIC_VALIDATION => true);
 
    /**
     * Class constructor
@@ -183,19 +185,30 @@ class HTML_QuickForm2_Element_Select extends HTML_QuickForm2_Element
     */
     public function getRawValue()
     {
-        if (!empty($this->attributes['disabled']) || 0 === count($this->values)
-            || ($this->data['intrinsic_validation']
-                && (0 === count($this->optionContainer) || 0 === count($this->possibleValues)))
+        if (
+            !empty($this->attributes['disabled']) || 0 === count($this->values)
+            ||
+            (
+                $this->isValidationIntrinsic()
+                &&
+                (
+                    0 === count($this->optionContainer)
+                    ||
+                    0 === count($this->possibleValues)
+                )
+            )
         ) {
             return null;
         }
 
         $values = array();
-        foreach ($this->values as $value) {
-            if (!$this->data['intrinsic_validation'] || !empty($this->possibleValues[$value])) {
+        foreach ($this->values as $value)
+        {
+            if (!empty($this->possibleValues[$value]) || !$this->isValidationIntrinsic()) {
                 $values[] = $value;
             }
         }
+
         if (0 === count($values)) {
             return null;
         }
@@ -220,6 +233,34 @@ class HTML_QuickForm2_Element_Select extends HTML_QuickForm2_Element
         return $lastValue;
     }
 
+    /**
+     * Whether intrinsic validation is enabled for the select.
+     * Default is <code>true</code>.
+     *
+     * @return bool
+     */
+    public function isValidationIntrinsic() : bool
+    {
+        return $this->data[self::SETTING_INTRINSIC_VALIDATION];
+    }
+
+    /**
+     * Sets whether intrinsic validation is enabled. For details
+     * on what this means, see {@see getRawValue()}.
+     *
+     * @param bool $enabled Default is <code>true</code>
+     * @return $this
+     */
+    public function setIntrinsicValidation(bool $enabled) : self
+    {
+        $this->data[self::SETTING_INTRINSIC_VALIDATION] = $enabled;
+        return $this;
+    }
+
+    /**
+     * @param mixed $value
+     * @return $this
+     */
     public function setValue($value) : self
     {
         if (is_array($value)) {

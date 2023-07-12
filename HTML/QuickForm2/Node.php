@@ -1045,4 +1045,19 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
     {
         return $this->data[$name] ?? null;
     }
+
+    public function getDataKeyInt(string $name) : int
+    {
+        return (int)$this->getDataKey($name);
+    }
+
+    public function getDataKeyString(string $name) : string
+    {
+        return (string)$this->getDataKey($name);
+    }
+
+    public function getDataKeyArray(string $name) : array
+    {
+        return (array)$this->getDataKey($name);
+    }
 }

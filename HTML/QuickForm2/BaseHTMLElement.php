@@ -685,4 +685,20 @@ abstract class BaseHTMLElement implements ArrayAccess
     }
 
     // endregion
+
+    /**
+     * Sets the <code>style</code> attribute.
+     *
+     * @param string $style
+     * @return $this
+     */
+    public function setStyle(string $style) : self
+    {
+        return $this->setAttribute('style', $style);
+    }
+
+    public function getStyle() : ?string
+    {
+        return $this->getAttribute('style');
+    }
 }

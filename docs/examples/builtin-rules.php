@@ -30,7 +30,7 @@ body {
 /* Use default styles included with the package */
 
 <?php
-if ('@data_dir@' != '@' . 'data_dir@') {
+if ('@data_dir@' !== '@' . 'data_dir@') {
     $filename = '@data_dir@/HTML_QuickForm2/quickform.css';
 } else {
     $filename = dirname(dirname(__DIR__)) . '/data/quickform.css';
@@ -90,32 +90,42 @@ $form->addDataSource(new HTML_QuickForm2_DataSource_Array(array(
 )));
 
 // override whatever value was submitted
-$form->addElement('hidden', 'MAX_FILE_SIZE')->setValue('102400');
+$form->addHidden('MAX_FILE_SIZE')->setValue('102400');
 
 //
 // Simple fields validation, rule chaining
 //
 
 $fsAuth = $form->addFieldset()->setLabel('Auth credentials');
-$username = $fsAuth->addElement('text', 'testUsername', array('style' => 'width: 200px;'))
-                   ->setLabel('Username (letters only):');
-$email = $fsAuth->addElement('text', 'testEmail', array('style' => 'width: 200px'))
-                ->setLabel('Email:');
 
-$fsPasswords = $fsAuth->addFieldset()
-                      ->setLabel('Supply password only if you want to change it');
+$username = $fsAuth->addText('testUsername')
+    ->setStyle('width: 200px;')
+    ->setLabel('Username (letters only):');
 
-$oldPassword = $fsPasswords->addElement('password', 'oldPassword', array('style' => 'width: 200px;'))
-                           ->setLabel('Old password (<i>qwerty</i>):');
-$newPassword = $fsPasswords->addElement('password', 'newPassword', array('style' => 'width: 200px;'))
-                           ->setLabel('New password (min 6 chars):');
-$repPassword = $fsPasswords->addElement('password', 'newPasswordRepeat', array('style' => 'width: 200px;'))
-                           ->setLabel('Repeat new password:');
+$email = $fsAuth->addText('testEmail')
+    ->setStyle('width: 200px')
+    ->setLabel('Email:');
+
+$fsPasswords = $fsAuth->addFieldset()->setLabel('Supply password only if you want to change it');
+
+$oldPassword = $fsPasswords->addPassword('oldPassword')
+    ->setStyle('width: 200px')
+    ->setLabel('Old password (<i>qwerty</i>):');
+
+$newPassword = $fsPasswords->addPassword('newPassword')
+    ->setStyle('width: 200px;')
+    ->setLabel('New password (min 6 chars):');
+
+$repPassword = $fsPasswords->addPassword('newPasswordRepeat')
+    ->setStyle('width: 200px')
+    ->setLabel('Repeat new password:');
 
 $username->addRule('required', 'Username is required', null,
                    HTML_QuickForm2_Rule::ONBLUR_CLIENT_SERVER);
+
 $username->addRule('regex', 'Username should contain only letters', '/^[a-zA-Z]+$/',
                    HTML_QuickForm2_Rule::ONBLUR_CLIENT_SERVER);
+
 $email->addRule('email', 'Email address is invalid', null,
                 HTML_QuickForm2_Rule::ONBLUR_CLIENT_SERVER);
 
@@ -144,19 +154,38 @@ $newPassword->addRule('nonempty', '', null, HTML_QuickForm2_Rule::ONBLUR_CLIENT_
 //
 
 $fsGrouped = $form->addFieldset()->setLabel('Validating grouped elements');
-$boxGroup = $fsGrouped->addElement('group', 'boxes')->setLabel('Check at least two:');
-$boxGroup->addElement('checkbox', null, array('value' => 'red'))->setContent('<span style="color: #f00;">Red</span>');
-$boxGroup->addElement('checkbox', null, array('value' => 'green'))->setContent('<span style="color: #0f0;">Green</span>');
-$boxGroup->addElement('checkbox', null, array('value' => 'blue'))->setContent('<span style="color: #00f;">Blue</span>');
+$boxGroup = $fsGrouped->addGroup('boxes')->setLabel('Check at least two:');
+
+$boxGroup->addCheckbox()
+    ->setValue('red')
+    ->setContent('<span style="color: #f00;">Red</span>');
+
+$boxGroup->addCheckbox()
+    ->setValue('green')
+    ->setContent('<span style="color: #0f0;">Green</span>');
+
+$boxGroup->addCheckbox()
+    ->setValue('blue')
+    ->setContent('<span style="color: #00f;">Blue</span>');
 
 $boxGroup->addRule('required', 'Check at least two boxes', 2,
                    HTML_QuickForm2_Rule::ONBLUR_CLIENT_SERVER);
 
-$friends = $fsGrouped->addElement('group', 'friends')->setLabel('Friends usernames (letters only):')
-                     ->setSeparator('<br />');
-$friends->addElement('text', '0', array('style' => 'width: 200px;', 'id' => 'friend-1'));
-$friends->addElement('text', '1', array('style' => 'width: 200px;', 'id' => 'friend-2'));
-$friends->addElement('text', '2', array('style' => 'width: 200px;', 'id' => 'friend-3'));
+$friends = $fsGrouped->addGroup( 'friends')
+    ->setLabel('Friends usernames (letters only):')
+    ->setSeparator('<br />');
+
+$friends->addText('0')
+    ->setStyle('width: 200px')
+    ->setId('friend-1');
+
+$friends->addText('1')
+    ->setStyle('width: 200px')
+    ->setId('friend-2');
+
+$friends->addText('2')
+    ->setStyle('width: 200px')
+    ->setId('friend-3');
 
 $friends->addRule('each', 'Friends\' usernames should contain only letters',
                   $friends->createRule('regex', '', '/^[a-zA-Z]+$/'),
@@ -167,8 +196,10 @@ $friends->addRule('each', 'Friends\' usernames should contain only letters',
 //
 
 $fsUpload = $form->addFieldset()->setLabel('Upload picture (try one &gt; 100 kB for fun)');
-$upload = $fsUpload->addElement('file', 'testUpload', array('style' => 'width: 200px'))
-                   ->setLabel('Picture (gif, jpg, png, &lt;=20kB):');
+
+$upload = $fsUpload->addFile('testUpload', array('style' => ''))
+    ->setStyle('width: 200px')
+    ->setLabel('Picture (gif, jpg, png, &lt;=20kB):');
 
 // no longer using special 'uploadedfile' rule for uploads, allow client-side validation
 $upload->addRule('required', 'Please upload picture', null,
@@ -182,12 +213,13 @@ $upload->addRule('mimetype', 'Your browser doesn\'t think that\'s an image',
                  array('image/gif', 'image/png', 'image/jpeg', 'image/pjpeg'));
 $upload->addRule('maxfilesize', 'File is too big, allowed size 20kB', 20480);
 
-$submitGrp = $form->addElement('group')->setSeparator('&nbsp;&nbsp;&nbsp;');
+$submitGrp = $form->addGroup()->setSeparator('&nbsp;&nbsp;&nbsp;');
 
-$submitGrp->addElement('submit', 'testSubmit', array('value' => 'Send'));
-$submitGrp->addElement('checkbox', 'clientSide', array('onclick' => 'enableValidation(this);'))
-          ->setContent('perform client-side validation')
-          ->setAttribute('checked'); // override submit value
+$submitGrp->addSubmit('testSubmit')->setLabel('Send');
+$submitGrp->addCheckbox('clientSide')
+    ->setAttribute('onclick', 'enableValidation(this);')
+    ->setContent('perform client-side validation')
+    ->setChecked(); // override submit value
 
 if ($form->validate()) {
     echo "<pre>\n";

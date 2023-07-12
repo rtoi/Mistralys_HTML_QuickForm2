@@ -70,91 +70,115 @@ $form->addDataSource(new HTML_QuickForm2_DataSource_Array(array(
 
 // text input elements
 $fsText = $form->addFieldset()->setLabel('Text boxes');
-$fsText->addElement(
-    'text', 'textTest', array('style' => 'width: 300px;'), array('label' => 'Test Text:')
-);
-$fsText->addElement(
-    'password', 'pwdTest', array('style' => 'width: 300px;'), array('label' => 'Test Password:')
-);
-$area = $fsText->addElement(
-    'textarea', 'areaTest', array('style' => 'width: 300px;', 'cols' => 50, 'rows' => 7),
-    array('label' => 'Test Textarea:')
-);
+
+$fsText->addText('textTest')
+    ->setStyle('width: 300px')
+    ->setLabel('Test text:');
+
+$fsText->addPassword('pwdTest')
+    ->setStyle('width: 300px')
+    ->setLabel('Test Password:');
+
+$area = $fsText->addTextarea('areaTest')
+    ->setStyle('width:300px')
+    ->setRows(7)
+    ->setColumns(50)
+    ->setLabel('Test Textarea:');
 
 $fsNested = $form->addFieldset()->setLabel('Nested fieldset');
-$fsNested->addElement(
-    'text', 'userTest', array('style' => 'width: 200px'), array('label' => 'Username:')
-);
-$fsNested->addElement(
-    'password', 'passTest', array('style' => 'width: 200px'), array('label' => 'Password:')
-);
+
+$fsNested->addText('userTest')
+    ->setStyle('width: 200px')
+    ->setLabel('Username:');
+
+$fsNested->addPassword('passTest')
+    ->setStyle('width: 200px')
+    ->setLabel('Password:');
+
 // Now we move the fieldset into another fieldset!
 $fsText->insertBefore($fsNested, $area);
 
-
 // selects
 $fsSelect = $form->addFieldset()->setLabel('Selects');
-$fsSelect->addElement(
-    'select', 'selSingleTest', null, array('options' => $options, 'label' => 'Single select:')
-);
-$fsSelect->addElement(
-    'select', 'selMultipleTest', array('multiple' => 'multiple', 'size' => 4),
-    array('options' => $options, 'label' => 'Multiple select:')
-);
+
+$fsSelect->addSelect('selSingleTest')
+    ->loadOptions($options)
+    ->setLabel('Single select:');
+
+$fsSelect->addSelect('selMultipleTest')
+    ->makeMultiple()
+    ->setSize(4)
+    ->loadOptions($options)
+    ->setLabel('Multiple select:');
 
 // checkboxes and radios
 $fsCheck = $form->addFieldset()->setLabel('Checkboxes and radios');
-$fsCheck->addElement(
-    'checkbox', 'boxTest', null, array('content' => 'check me', 'label' => 'Test Checkbox:')
-);
-$fsCheck->addElement(
-    'radio', 'radioTest', array('value' => 1), array('content' => 'select radio #1', 'label' => 'Test radio:')
-);
-$fsCheck->addElement(
-    'radio', 'radioTest', array('value' => 2), array('content' => 'select radio #2', 'label' => '(continued)')
-);
+
+$fsCheck->addCheckbox('boxTest')
+    ->setContent('check me')
+    ->setLabel('Test Checkbox:');
+
+$fsCheck->addRadio('radioTest')
+    ->setValue(1)
+    ->setContent('select radio #1')
+    ->setLabel('Test radio:');
+
+$fsCheck->addRadio('radioTest')
+    ->setValue(2)
+    ->setContent('select radio #2')
+    ->setLabel('(continued)');
 
 $fsCustom = $form->addFieldset()->setLabel('Custom elements');
-$fsCustom->addElement(
-    'date', 'testDate', null,
-    array('format' => 'd-F-Y', 'minYear' => date('Y'), 'maxYear' => 2001)
-)->setLabel('Today is:');
 
-$fsCustom->addElement('hierselect', 'testHierselect', array('style' => 'width: 20em;'))
-         ->setLabel('Hierarchical select:')
-         ->loadOptions(array($main, $secondary))
-         ->setSeparator('<br />');
+$fsCustom->addDate('testDate')
+    ->setFormat('d-F-Y')
+    ->setMaxYear(2001)
+    ->setMinYear((int)date('Y'))
+    ->setLabel('Today is:');
+
+$fsCustom->addHierselect('testHierselect')
+    ->setStyle('width: 20em')
+     ->setLabel('Hierarchical select:')
+     ->loadOptions(array($main, $secondary))
+     ->setSeparator('<br />');
 
 // buttons
 $fsButton = $form->addFieldset()->setLabel('Buttons');
-$testReset = $fsButton->addElement(
-    'reset', 'testReset', array('value' => 'This is a reset button')
-);
-$fsButton->addElement(
-    'inputbutton', 'testInputButton',
-    array('value' => 'Click this button', 'onclick' => "alert('This is a test.');")
-);
-$fsButton->addElement(
-    'button', 'testButton', array('onclick' => "alert('Almost nothing');", 'type' => 'button'),
-    array('content' => '<img src="http://pear.php.net/gifs/pear-icon.gif" '.
-        'width="32" height="32" alt="pear" />This button does almost nothing')
-);
+
+$testReset = $fsButton->addReset('testReset')
+    ->setLabel('This is a reset button');
+
+$fsButton->addInputButton( 'testInputButton')
+    ->setLabel('Click this button')
+    ->setAttribute('onclick', "alert('This is a test.');");
+
+$fsButton->addButton('testButton')
+    ->setAttribute('onclick', "alert('Almost nothing');")
+    ->makeButton()
+    ->setContent(
+        '<img src="https://pear.php.net/gifs/pear-icon.gif" '.
+        'width="32" height="32" alt="pear" />This button does almost nothing'
+    );
+
 // submit buttons in nested fieldset
 $fsSubmit = $fsButton->addFieldset()->setLabel('These buttons can submit the form');
-$fsSubmit->addElement(
-    'submit', 'testSubmit', array('value' => 'Test Submit')
-);
-$fsSubmit->addElement(
-    'button', 'testSubmitButton', array('type' => 'submit'),
-     array('content' => '<img src="http://pear.php.net/gifs/pear-icon.gif" '.
-        'width="32" height="32" alt="pear" />This button submits')
-);
-$fsSubmit->addElement(
-    'image', 'testImage', array('src' => 'http://pear.php.net/gifs/pear-icon.gif')
-);
+
+$fsSubmit->addSubmit('testSubmit')
+    ->setLabel('Test Submit');
+
+$fsSubmit->addButton('testSubmitButton')
+    ->makeSubmit()
+    ->setContent(
+        '<img src="https://pear.php.net/gifs/pear-icon.gif" '.
+       'width="32" height="32" alt="pear" />This button submits'
+    );
+
+$fsSubmit->addImage('testImage')
+    ->setURL('https://pear.php.net/gifs/pear-icon.gif');
+
 
 // outputting form values
-if ('POST' == $_SERVER['REQUEST_METHOD']) {
+if ('POST' === $_SERVER['REQUEST_METHOD']) {
     echo "<pre>\n";
     var_dump($form->getValue());
     echo "</pre>\n<hr />";

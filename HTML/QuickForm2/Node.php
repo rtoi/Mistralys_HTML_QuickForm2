@@ -168,11 +168,11 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
    /**
     * Class constructor
     *
-    * @param string       $name       Element name
-    * @param string|array $attributes HTML attributes (either a string or an array)
-    * @param array        $data       Element data (label, options used for element setup)
+    * @param string|NULL $name Element name
+    * @param array<string,string|int|float|Stringable|NULL>|string|null $attributes HTML attributes (either a string or an array)
+    * @param array<string,mixed> $data Element data (label, options used for element setup)
     */
-    public function __construct($name = null, $attributes = null, array $data = array())
+    public function __construct(?string $name = null, $attributes = null, array $data = array())
     {
         parent::__construct($attributes);
         
@@ -1024,5 +1024,25 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
     public function preRender() : void
     {
         
+    }
+
+    /**
+     * @param string $name
+     * @param mixed|NULL $value
+     * @return $this
+     */
+    protected function setDataKey(string $name, $value) : self
+    {
+        $this->data[$name] = $value;
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @return mixed|null
+     */
+    public function getDataKey(string $name)
+    {
+        return $this->data[$name] ?? null;
     }
 }

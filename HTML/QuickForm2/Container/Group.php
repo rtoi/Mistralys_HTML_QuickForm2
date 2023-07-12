@@ -32,7 +32,8 @@
  */
 class HTML_QuickForm2_Container_Group extends HTML_QuickForm2_Container
 {
-   /**
+    const SETTING_SEPARATOR = 'separator';
+    /**
     * Group name
     * If set, group name will be used as prefix for contained
     * element names, like <code>groupname[elementname]</code>.
@@ -287,25 +288,24 @@ class HTML_QuickForm2_Container_Group extends HTML_QuickForm2_Container
    /**
     * Sets string(s) to separate grouped elements
     *
-    * @param string|array $separator Use a string for one separator, array for
+    * @param string|string[] $separator Use a string for one separator, array for
     *                                alternating separators
     *
     * @return $this
     */
-    public function setSeparator($separator)
+    public function setSeparator($separator) : self
     {
-        $this->data['separator'] = $separator;
-        return $this;
+        return $this->setDataKey(self::SETTING_SEPARATOR, $separator);
     }
 
    /**
     * Returns string(s) to separate grouped elements
     *
-    * @return   string|array    Separator, null if not set
+    * @return string|string[]|NULL Separator, null if not set
     */
     public function getSeparator()
     {
-        return $this->data['separator'] ?? null;
+        return $this->data[self::SETTING_SEPARATOR] ?? null;
     }
 
    /**

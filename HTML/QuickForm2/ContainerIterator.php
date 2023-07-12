@@ -19,6 +19,8 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+declare(strict_types=1);
+
 /**
  * Implements a recursive iterator for the container elements
  *
@@ -44,8 +46,16 @@ class HTML_QuickForm2_ContainerIterator extends RecursiveArrayIterator
         return $this->current() instanceof HTML_QuickForm2_Container;
     }
 
+    /**
+     * @return HTML_QuickForm2_ContainerIterator
+     * @throws HTML_QuickForm2_InvalidArgumentException
+     * @throws HTML_QuickForm2_NotFoundException
+     */
     public function getChildren() : HTML_QuickForm2_ContainerIterator
     {
-        return new HTML_QuickForm2_ContainerIterator($this->current());
+        return new HTML_QuickForm2_ContainerIterator(HTML_QuickForm2_Loader::requireObjectInstanceOf(
+            HTML_QuickForm2_Container::class,
+            $this->current()
+        ));
     }
 }

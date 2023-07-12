@@ -51,7 +51,12 @@ class HTML_QuickForm2_Element_InputReset extends HTML_QuickForm2_Element_Input
         return $this;
     }
 
-   /**
+    public function setLabel($label) : HTML_QuickForm2_Node
+    {
+        return $this->setAttribute('value', $label);
+    }
+
+    /**
     * Reset elements cannot have any submit values
     *
     * This method always returns null

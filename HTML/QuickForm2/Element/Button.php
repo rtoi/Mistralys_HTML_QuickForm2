@@ -38,7 +38,7 @@ class HTML_QuickForm2_Element_Button extends HTML_QuickForm2_Element
    /**
     * Contains options and data used for the element creation
     * - content: Content to be displayed between <button></button> tags
-    * @var  array
+    * @var array<string,mixed>
     */
     protected $data = array('content' => '');
 
@@ -74,9 +74,9 @@ class HTML_QuickForm2_Element_Button extends HTML_QuickForm2_Element
    /**
     * Sets the button's type attribute.
     * @param string $type
-    * @return HTML_QuickForm2_Element_Button
+    * @return $this
     */
-    public function setType($type)
+    public function setType(string $type) : self
     {
         $this->setAttribute('type', $type);
         return $this;
@@ -96,7 +96,6 @@ class HTML_QuickForm2_Element_Button extends HTML_QuickForm2_Element
     * Button's value cannot be set via this method
     *
     * @param mixed $value Element's value, this parameter is ignored
-    *
     * @return $this
     */
     public function setValue($value) : self
@@ -114,17 +113,37 @@ class HTML_QuickForm2_Element_Button extends HTML_QuickForm2_Element
     * This method returns the actual value submitted by the browser. Note that
     * different browsers submit different values!
     *
-    * @return    string|null
+    * @return string|null
     */
     public function getRawValue()
     {
-        if ((empty($this->attributes['type']) || 'submit' == $this->attributes['type'])
-            && !$this->getAttribute('disabled')
+        if (
+            (empty($this->attributes['type']) || 'submit' === $this->attributes['type'])
+            &&
+            !$this->getAttribute('disabled')
         ) {
             return $this->submitValue;
-        } else {
-            return null;
         }
+
+        return null;
+    }
+
+    /**
+     * Sets the <code>type</code> attribute to <code>submit</code.
+     * @return $this
+     */
+    public function makeSubmit() : self
+    {
+        return $this->setType('submit');
+    }
+
+    /**
+     * Sets the <code>type</code> attribute to <code>button</code.
+     * @return $this
+     */
+    public function makeButton() : self
+    {
+        return $this->setType('button');
     }
 
     public function __toString()

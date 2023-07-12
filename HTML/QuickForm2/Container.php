@@ -19,6 +19,9 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use HTML\QuickForm2\Traits\ContainerElementMethodsInterface;
+use HTML\QuickForm2\Traits\ContainerElementMethodsTrait;
+
 /**
  * Abstract base class for simple QuickForm2 containers
  *
@@ -30,35 +33,20 @@
  * @version  Release: @package_version@
  * @link     https://pear.php.net/package/HTML_QuickForm2
  * @implements IteratorAggregate<int,HTML_QuickForm2_Node>
- *
- * @method HTML_QuickForm2_Element_Button        addButton(string $name, $attributes = null, array $data = array())
- * @method HTML_QuickForm2_Element_InputCheckbox addCheckbox(string $name, $attributes = null, array $data = array())
- * @method HTML_QuickForm2_Element_Date          addDate(string $name, $attributes = null, array $data = array())
- * @method HTML_QuickForm2_Container_Fieldset    addFieldset(string $name = '', $attributes = null, array $data = array())
- * @method HTML_QuickForm2_Container_Group       addGroup(string $name = '', $attributes = null, array $data = array())
- * @method HTML_QuickForm2_Element_InputFile     addFile(string $name, $attributes = null, array $data = array())
- * @method HTML_QuickForm2_Element_InputHidden   addHidden(string $name, $attributes = null, array $data = array())
- * @method HTML_QuickForm2_Element_Hierselect    addHierselect(string $name, $attributes = null, array $data = array())
- * @method HTML_QuickForm2_Element_InputImage    addImage(string $name, $attributes = null, array $data = array())
- * @method HTML_QuickForm2_Element_InputButton   addInputButton(string $name, $attributes = null, array $data = array())
- * @method HTML_QuickForm2_Element_InputPassword addPassword(string $name, $attributes = null, array $data = array())
- * @method HTML_QuickForm2_Element_InputRadio    addRadio(string $name, $attributes = null, array $data = array())
- * @method HTML_QuickForm2_Container_Repeat      addRepeat(string $name = '', $attributes = null, array $data = array())
- * @method HTML_QuickForm2_Element_InputReset    addReset(string $name, $attributes = null, array $data = array())
- * @method HTML_QuickForm2_Element_Script        addScript(string $name = '', $attributes = null, array $data = array())
- * @method HTML_QuickForm2_Element_Select        addSelect(string $name, $attributes = null, array $data = array())
- * @method HTML_QuickForm2_Element_Static        addStatic(string $name = '', $attributes = null, array $data = array())
- * @method HTML_QuickForm2_Element_InputSubmit   addSubmit(string $name, $attributes = null, array $data = array())
- * @method HTML_QuickForm2_Element_InputText     addText(string $name, $attributes = null, array $data = array())
- * @method HTML_QuickForm2_Element_Textarea      addTextarea(string $name, $attributes = null, array $data = array())
  */
 abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
-    implements IteratorAggregate, Countable
+    implements
+    ContainerElementMethodsInterface,
+    IteratorAggregate,
+    Countable
 {
+    use ContainerElementMethodsTrait;
+
     public const ERROR_CANNOT_FIND_CHILD_ELEMENT_INDEX = 38501;
     public const ERROR_REMOVE_CHILD_HAS_OTHER_CONTAINER = 38502;
     public const ERROR_UNDEFINED_CLASS_METHOD = 38503;
     public const ERROR_ELEMENT_NOT_FOUND_BY_ID = 38504;
+    public const ERROR_ELEMENT_NOT_FOUND_BY_NAME = 38505;
 
     /**
     * Array of elements contained in this container
@@ -356,7 +344,7 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
     *
     * @param string|HTML_QuickForm2_Node $elementOrType Either type name (treated case-insensitively) or an element instance
     * @param string|NULL $name Element name
-    * @param string|array<string,mixed> $attributes Element attributes
+    * @param array<string,string|int|float|Stringable|NULL>|string|null $attributes Element attributes
     * @param array<mixed> $data Element-specific data
     *
     * @return HTML_QuickForm2_Node Added element
@@ -382,12 +370,12 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
     * 
     * @param string|HTML_QuickForm2_Node $elementOrType Either type name (treated case-insensitively) or an element instance
     * @param string|NULL $name Element name
-    * @param string|array<string,mixed> $attributes Element attributes
+    * @param array<string,string|int|float|Stringable|NULL>|string|null $attributes Element attributes
     * @param array<mixed> $data Element-specific data
     * 
     * @return HTML_QuickForm2_Node
-    * @throws   HTML_QuickForm2_InvalidArgumentException
-    * @throws   HTML_QuickForm2_NotFoundException
+    * @throws HTML_QuickForm2_InvalidArgumentException
+    * @throws HTML_QuickForm2_NotFoundException
     */
     public function prependElement(
         $elementOrType, ?string $name = null, $attributes = null, array $data = array()
@@ -544,17 +532,36 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
         return $found;
     }
 
+    /**
+     * @param string $name
+     * @return HTML_QuickForm2_Node
+     * @throws HTML_QuickForm2_NotFoundException {@see self::ERROR_ELEMENT_NOT_FOUND_BY_NAME}
+     */
+    public function getElementByName(string $name) : HTML_QuickForm2_Node
+    {
+        $elements = $this->getElementsByName($name);
+        $total = count($elements);
+        if($total === 1) {
+            return array_pop($elements);
+        }
+
+        throw new HTML_QuickForm2_NotFoundException(
+            sprintf('Element not found by name (%s total)', $total),
+            self::ERROR_ELEMENT_NOT_FOUND_BY_NAME
+        );
+    }
+
    /**
     * Inserts an element in the container
     *
     * If the reference object is not given, the element will be appended.
     *
     * @param HTML_QuickForm2_Node $element   Element to insert
-    * @param HTML_QuickForm2_Node $reference Reference to insert before
+    * @param HTML_QuickForm2_Node|NULL $reference Reference to insert before
     *
-    * @return   HTML_QuickForm2_Node     Inserted element
+    * @return HTML_QuickForm2_Node Inserted element
     */
-    public function insertBefore(HTML_QuickForm2_Node $element, HTML_QuickForm2_Node $reference = null)
+    public function insertBefore(HTML_QuickForm2_Node $element, ?HTML_QuickForm2_Node $reference = null) : HTML_QuickForm2_Node
     {
         return $this->insertChildAtPosition($element, self::POSITION_INSERT_BEFORE, $reference);
     }

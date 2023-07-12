@@ -1,5 +1,26 @@
 # Changes in HTML_QuickForm2
 
+## v2.2.1 
+- Factory: Added the `ElementFactory` class to ease element creation.
+- Containers: Element methods like `addText()` now have concrete implementations.
+- Containers: Added `getElementByName()` to fetch a unique element.
+- Containers: Added `ElementContainerInterface`.
+- Base HTML Element: Added `setStyle()` and `getStyle()`.
+- Button Element: Added `makeSubmit()` and `makeButton()`.
+- Input Button Element: Added `setLabel()`.
+- Input Reset Element: Added `setLabel()`.
+- Input Submit Element: Added `setLabel()`.
+- Image Element: Added `setURL()`.
+- Select Element: Added `setInstrinsicValidation()`.
+- Checkbox Element: Added `setChecked()`.
+- Date Element: Added option setters and getters.
+- Date Element: Added constants for options.
+- Date Element: Better "empty" select option handling with methods.
+- Date Element: Now using strict typing.
+- Base Node: Added `setDataKey()` and `getDataKey()` with type flavors.
+- Examples: Updated code to make use of chained methods.
+- Examples: Using typed methods instead of the generic `addElement()`.
+
 ## v2.2.0 PHP8 support release (Breaking)
 - Core: Dropped the `PEAR_Exception` package.
 - Core: Now fully PHP8 compatible, without deprecated warnings.

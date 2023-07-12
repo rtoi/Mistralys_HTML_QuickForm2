@@ -51,7 +51,16 @@ class HTML_QuickForm2_Element_InputButton extends HTML_QuickForm2_Element_Input
         return $this;
     }
 
-   /**
+    /**
+     * @param string $label
+     * @return $this
+     */
+    public function setLabel($label) : self
+    {
+        return $this->setAttribute('value', (string)$label);
+    }
+
+    /**
     * Button elements cannot have any submit values
     *
     * This method always returns null
@@ -63,4 +72,3 @@ class HTML_QuickForm2_Element_InputButton extends HTML_QuickForm2_Element_Input
         return null;
     }
 }
-?>

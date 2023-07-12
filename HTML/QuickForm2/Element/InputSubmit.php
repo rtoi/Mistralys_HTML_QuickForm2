@@ -58,7 +58,20 @@ class HTML_QuickForm2_Element_InputSubmit extends HTML_QuickForm2_Element_Input
         return $this;
     }
 
-   /**
+    /**
+     * @param string|string[] $label
+     * @return $this
+     */
+    public function setLabel($label) : self
+    {
+        if(is_array($label)) {
+            $label = implode(' ', $label);
+        }
+
+        return $this->setAttribute('value', $label);
+    }
+
+    /**
     * Returns the element's value
     *
     * The value is only returned if the form was actually submitted and this

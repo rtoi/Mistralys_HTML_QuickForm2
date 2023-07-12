@@ -73,5 +73,15 @@ class HTML_QuickForm2_Element_InputCheckbox extends HTML_QuickForm2_Element_Inpu
             $this->removeAttribute('checked');
         }
     }
+
+    public function setChecked(bool $checked=true) : self
+    {
+        if($checked) {
+            $this->setAttribute('checked');
+        } else {
+            $this->removeAttribute('checked');
+        }
+
+        return $this;
+    }
 }
-?>

@@ -84,15 +84,16 @@ class HTML_QuickForm2_Element_InputImage extends HTML_QuickForm2_Element_Input
     public function __toString()
     {
         if (false === strpos($this->attributes['name'], '[')
-            || '[]' == substr($this->attributes['name'], -2)
+            || '[]' === substr($this->attributes['name'], -2)
         ) {
             return parent::__toString();
-        } else {
-            $this->attributes['name'] .= '[]';
-            $html = parent::__toString();
-            $this->attributes['name']  = substr($this->attributes['name'], 0, -2);
-            return $html;
         }
+
+        $this->attributes['name'] .= '[]';
+        $html = parent::__toString();
+        $this->attributes['name']  = substr($this->attributes['name'], 0, -2);
+
+        return $html;
     }
 
     protected function updateValue() : void
@@ -110,7 +111,7 @@ class HTML_QuickForm2_Element_InputImage extends HTML_QuickForm2_Element_Input
                     return;
 
                 } elseif (false !== strpos($name, '[')) {
-                    if ('[]' == substr($name, -2)) {
+                    if ('[]' === substr($name, -2)) {
                         $name = substr($name, 0, -2);
                     }
                     if (null !== ($value = $ds->getValue($name))) {
@@ -125,5 +126,9 @@ class HTML_QuickForm2_Element_InputImage extends HTML_QuickForm2_Element_Input
         }
         $this->coordinates = null;
     }
+
+    public function setURL(string $url) : self
+    {
+        return $this->setAttribute('src', $url);
+    }
 }
-?>

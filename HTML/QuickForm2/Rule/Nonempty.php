@@ -71,7 +71,7 @@ class HTML_QuickForm2_Rule_Nonempty extends HTML_QuickForm2_Rule
             return count(array_filter($value, 'strlen')) >= $this->getConfig();
         }
 
-        return (bool)strlen($value);
+        return !empty($value);
     }
 
    /**

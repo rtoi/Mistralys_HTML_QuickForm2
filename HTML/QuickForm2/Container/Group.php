@@ -276,7 +276,7 @@ class HTML_QuickForm2_Container_Group extends HTML_QuickForm2_Container
     *
     * @return   HTML_QuickForm2_Node     Inserted element
     */
-    public function insertBefore(HTML_QuickForm2_Node $element, HTML_QuickForm2_Node $reference = null)
+    public function insertBefore(HTML_QuickForm2_Node $element, ?HTML_QuickForm2_Node $reference = null) : HTML_QuickForm2_Node
     {
         if (null === $reference) {
             return $this->appendChild($element);

@@ -92,7 +92,7 @@ class HTML_QuickForm2_Element_TextareaTest extends TestCase
         $el->setRows(13);
         $el->setColumns(875);
 
-        $array = $el->render(HTML_QuickForm2_Renderer::factory('array'))->toArray();
+        $array = $el->renderToArray();
 
         $this->assertStringContainsString('rows="13"', $array['html']);
         $this->assertStringContainsString('cols="875"', $array['html']);

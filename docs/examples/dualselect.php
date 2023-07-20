@@ -44,21 +44,21 @@ class HTML_QuickForm2_Element_DualSelect extends HTML_QuickForm2_Element_Select
         if ($this->frozen) {
             return $this->getFrozenHtml();
 
-        } else {
-            return $this->render(
-                HTML_QuickForm2_Renderer::factory('default')
-                    ->setTemplateForId(
-                        $this->getId(),
-                        "<table class=\"dualselect\" id=\"{id}\">\n" .
-                        "    <tr>\n" .
-                        "       <td style=\"vertical-align: top;\">{select_from}</td>\n" .
-                        "       <td style=\"vertical-align: middle;\">{button_from_to}<br />{button_to_from}</td>\n" .
-                        "       <td style=\"vertical-align: top;\">{select_to}</td>\n" .
-                        "    </tr>\n" .
-                        "</table>"
-                    )
-            )->__toString();
         }
+
+        return (string)$this->render(
+            HTML_QuickForm2_Renderer::createDefault()
+                ->setTemplateForId(
+                    $this->getId(),
+                    "<table class=\"dualselect\" id=\"{id}\">\n" .
+                    "    <tr>\n" .
+                    "       <td style=\"vertical-align: top;\">{select_from}</td>\n" .
+                    "       <td style=\"vertical-align: middle;\">{button_from_to}<br />{button_to_from}</td>\n" .
+                    "       <td style=\"vertical-align: top;\">{select_to}</td>\n" .
+                    "    </tr>\n" .
+                    "</table>"
+                )
+        );
     }
 
     public function render(HTML_QuickForm2_Renderer $renderer) : HTML_QuickForm2_Renderer
@@ -73,8 +73,11 @@ class HTML_QuickForm2_Element_DualSelect extends HTML_QuickForm2_Element_Select
                                    __DIR__ . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR);
             $keepSorted = empty($this->data['keepSorted'])? 'false': 'true';
             $jsBuilder->addElementJavascript("qf.elements.dualselect.init('{$this->getId()}', {$keepSorted});");
+
+            $method = array(HTML_QuickForm2_Renderer_Default_DualSelectPlugin::class, 'renderDualSelect')[1];
+
             // Fall back to using the Default renderer if custom one does not have a plugin
-            if ($renderer->methodExists('renderDualSelect')) {
+            if (is_callable(array($renderer, $method)) && method_exists($renderer, 'renderDualSelect')) {
                 $renderer->renderDualSelect($this);
             } else {
                 $renderer->renderElement($this);
@@ -319,7 +322,7 @@ if ('POST' == $_SERVER['REQUEST_METHOD']) {
     }
 }
 
-$renderer = HTML_QuickForm2_Renderer::factory('default');
+$renderer = HTML_QuickForm2_Renderer::createDefault();
 
 $form->render($renderer);
 echo $renderer->getJavascriptBuilder()->getLibraries(true, true);

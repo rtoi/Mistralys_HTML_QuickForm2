@@ -30,7 +30,7 @@ class HTML_QuickForm2_Renderer_StubTest extends TestCase
     {
         $form     = new HTML_QuickForm2('testHasRequired');
         $text     = $form->addText('anElement');
-        $renderer = HTML_QuickForm2_Renderer::factory('stub');
+        $renderer = HTML_QuickForm2_Renderer::createStub();
 
         $form->render($renderer);
         $this->assertFalse($renderer->hasRequired());
@@ -45,13 +45,13 @@ class HTML_QuickForm2_Renderer_StubTest extends TestCase
         $form     = new HTML_QuickForm2('testGroupErrors');
         $text     = $form->addText('anElement', array('id' => 'anElement'))
                         ->setError('an error');
-        $renderer = HTML_QuickForm2_Renderer::factory('stub');
+        $renderer = HTML_QuickForm2_Renderer::createStub();
 
-        $renderer->setOption('group_errors', false);
+        $renderer->setGroupErrors(false);
         $form->render($renderer);
         $this->assertEquals(array(), $renderer->getErrors());
 
-        $renderer->setOption('group_errors', true);
+        $renderer->setGroupErrors(true);
         $form->render($renderer);
         $this->assertEquals(array('anElement' => 'an error'), $renderer->getErrors());
     }
@@ -60,15 +60,14 @@ class HTML_QuickForm2_Renderer_StubTest extends TestCase
     {
         $form     = new HTML_QuickForm2('testGroupHiddens', 'post', null, false);
         $hidden   = $form->addHidden('aHiddenElement');
-        $renderer = HTML_QuickForm2_Renderer::factory('stub');
+        $renderer = HTML_QuickForm2_Renderer::createStub();
 
-        $renderer->setOption('group_hiddens', false);
+        $renderer->setGroupHiddens(false);
         $form->render($renderer);
         $this->assertEquals(array(), $renderer->getHidden());
 
-        $renderer->setOption('group_hiddens', true);
+        $renderer->setGroupHiddens(true);
         $form->render($renderer);
         $this->assertEquals(array($hidden->__toString()), $renderer->getHidden());
     }
 }
-?>

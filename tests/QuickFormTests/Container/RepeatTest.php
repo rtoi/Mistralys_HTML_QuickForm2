@@ -76,7 +76,7 @@ class HTML_QuickForm2_Container_RepeatTest extends TestCase
         
         $this->expectException(HTML_QuickForm2_NotFoundException::class);
         
-        $repeat->render(HTML_QuickForm2_Renderer::factory('default'));
+        $repeat->render(HTML_QuickForm2_Renderer::createDefault());
     }
 
     public function testElementsAreAddedToPrototype(): void
@@ -220,7 +220,7 @@ class HTML_QuickForm2_Container_RepeatTest extends TestCase
         $text->addRule('required', 'a message');
         $this->assertFalse($form->validate());
 
-        $ary = $repeat->render(HTML_QuickForm2_Renderer::factory('array'))->toArray();
+        $ary = $repeat->renderToArray();
 
         $this->assertSame('', $ary['elements'][1]['elements'][0]['value']);
         $this->assertSame('blah', $ary['elements'][2]['elements'][0]['value']);
@@ -231,7 +231,7 @@ class HTML_QuickForm2_Container_RepeatTest extends TestCase
         $this->assertEquals('a message', $ary['elements'][3]['elements'][0]['error']);
 
         $text->setId('blah-:idx:');
-        $ary = $repeat->render(HTML_QuickForm2_Renderer::factory('array'))->toArray();
+        $ary = $repeat->renderToArray();
         $this->assertEquals('a message', $ary['elements'][1]['elements'][0]['error']);
         $this->assertArrayNotHasKey('error', $ary['elements'][2]['elements'][0]);
         $this->assertEquals('a message', $ary['elements'][3]['elements'][0]['error']);
@@ -263,8 +263,8 @@ class HTML_QuickForm2_Container_RepeatTest extends TestCase
             ->setContent('Content of static element')
             ->setTagName('p');
 
-        $arrayOne = $repeat->render(HTML_QuickForm2_Renderer::factory('array'))->toArray();
-        $arrayTwo = $repeat->render(HTML_QuickForm2_Renderer::factory('array'))->toArray();
+        $arrayOne = $repeat->renderToArray();
+        $arrayTwo = $repeat->renderToArray();
 
         $this->assertEquals(
             $arrayOne['elements'][0]['elements'][0]['html'],
@@ -307,11 +307,11 @@ class HTML_QuickForm2_Container_RepeatTest extends TestCase
             ->addRule('required', 'Required!', null, HTML_QuickForm2_Rule::CLIENT_SERVER);
 
         $repeat->setIndexes(array());
-        $renderer = HTML_QuickForm2_Renderer::factory('array');
+        $renderer = HTML_QuickForm2_Renderer::createArray();
         $renderer->getJavascriptBuilder()->setFormId('fake-repeat');
+
         $repeat->render($renderer);
 
         $this->assertStringContainsString('new qf.Validator', $renderer->getJavascriptBuilder()->getValidator());
     }
 }
-?>

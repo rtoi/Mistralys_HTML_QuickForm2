@@ -62,13 +62,20 @@ class HTML_QuickForm2_Element_Textarea extends HTML_QuickForm2_Element
             return $this->getFrozenHtml();
         }
 
-        return $this->getIndent() . '<textarea' . $this->getAttributes(true) .
-               '>' . preg_replace("/(\r\n|\n|\r)/", '&#010;', htmlspecialchars(
-                    $this->value, ENT_QUOTES, self::getOption('charset')
-               )) . '</textarea>';
+        return
+            $this->getIndent() .
+            '<textarea' . $this->getAttributes(true) .
+               '>' .
+                preg_replace(
+                    "/(\r\n|\n|\r)/",
+                    '&#010;',
+                    htmlspecialchars(
+                        (string)$this->value, ENT_QUOTES, self::getOption('charset'))
+                ) .
+            '</textarea>';
     }
 
-    public function getFrozenHtml()
+    public function getFrozenHtml() : string
     {
         $value = htmlspecialchars($this->value, ENT_QUOTES, self::getOption('charset'));
         if ('off' === $this->getAttribute('wrap')) {

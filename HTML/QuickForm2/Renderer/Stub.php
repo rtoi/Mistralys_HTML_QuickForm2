@@ -1,26 +1,16 @@
 <?php
 /**
- * A stub renderer to use with HTML_QuickForm2 when actual form output is done manually
- *
- * PHP version 5
- *
- * LICENSE
- *
- * This source file is subject to BSD 3-Clause License that is bundled
- * with this package in the file LICENSE and available at the URL
- * https://raw.githubusercontent.com/pear/HTML_QuickForm2/trunk/docs/LICENSE
- *
- * @category  HTML
- * @package   HTML_QuickForm2
- * @author    Alexey Borzov <avb@php.net>
- * @author    Bertrand Mansion <golgote@mamasam.com>
- * @copyright 2006-2020 Alexey Borzov <avb@php.net>, Bertrand Mansion <golgote@mamasam.com>
- * @license   https://opensource.org/licenses/BSD-3-Clause BSD 3-Clause License
- * @link      https://pear.php.net/package/HTML_QuickForm2
+ * @category HTML
+ * @package HTML_QuickForm2
+ * @subpackage Renderer
+ * @see HTML_QuickForm2_Renderer_Stub
  */
 
+declare(strict_types=1);
+
 /**
- * A stub renderer to use with HTML_QuickForm2 when actual form output is done manually
+ * A stub renderer to use with HTML_QuickForm2 when actual form output is
+ * done manually.
  *
  * The rendering step is mandatory if the form uses client-side validation
  * or contains Javascript-backed elements. Using Array or Default renderer
@@ -29,72 +19,82 @@
  *
  * This renderer does almost no form processing, serving as a container for
  * JavascriptBuilder instance. The only processing it does is grouping errors
- * and hidden elements if the relevant 'group_hiddens' and 'group_errors'
- * options are set to true. It also checks whether the form contains required
- * elements (and thus needs a required note).
+ * and hidden elements if the relevant options are set to true:
+ *
+ * - {@see HTML_QuickForm2_Renderer::OPTION_GROUP_ERRORS}
+ * - {@see HTML_QuickForm2_Renderer::OPTION_GROUP_HIDDENS}
+ *
+ * It also checks whether the form contains required elements (and thus
+ * needs a required note).
  *
  * While almost everything in this class is defined as public, its properties
  * and those methods that are not published (i.e. not in array returned by
- * exportMethods()) will be available to renderer plugins only.
+ * {@see self::exportMethods()}) will be available to renderer plugins only.
  *
  * The following methods are published:
- *   - {@link getErrors()}
- *   - {@link getHidden()}
- *   - {@link hasRequired()}
  *
- * @category HTML
- * @package  HTML_QuickForm2
- * @author   Alexey Borzov <avb@php.net>
- * @author   Bertrand Mansion <golgote@mamasam.com>
- * @license  https://opensource.org/licenses/BSD-3-Clause BSD 3-Clause License
- * @version  Release: @package_version@
- * @link     https://pear.php.net/package/HTML_QuickForm2
+ *   - {@see self::getErrors()}
+ *   - {@see self::getHidden()}
+ *   - {@see self::hasRequired()}
+ *
+ * @package HTML_QuickForm2
+ * @subpackage Renderer
+ * @author Alexey Borzov <avb@php.net>
+ * @author Bertrand Mansion <golgote@mamasam.com>
+ *@category HTML
  */
 class HTML_QuickForm2_Renderer_Stub extends HTML_QuickForm2_Renderer
 {
-   /**
-    * Form errors if 'group_errors' option is true
-    * @var array
-    */
-    public $errors = array();
+    public const RENDERER_ID = 'stub';
 
    /**
-    * Hidden elements if 'group_hiddens' option is true
-    * @var array
+    * Form errors if {@see HTML_QuickForm2_Renderer::OPTION_GROUP_ERRORS} option is true.
+    * @var string[]
     */
-    public $hidden = array();
+    public array $errors = array();
+
+   /**
+    * Hidden elements if {@see HTML_QuickForm2_Renderer::OPTION_GROUP_HIDDENS} option is true
+    * @var string[]
+    */
+    public array $hidden = array();
 
    /**
     * Whether the form contains required elements
     * @var bool
     */
-    public $required = false;
+    public bool $required = false;
 
-    protected function exportMethods()
+    public function getID() : string
+    {
+        return self::RENDERER_ID;
+    }
+
+    protected function exportMethods() : array
     {
         return array(
-            'getErrors',
-            'getHidden',
-            'hasRequired'
+            array(self::class, 'getErrors')[1],
+            array(self::class, 'getHidden')[1],
+            array(self::class, 'hasRequired')[1]
         );
     }
 
    /**
-    * Returns validation errors if 'group_errors' option is true
+    * Returns validation errors if {@see HTML_QuickForm2_Renderer::OPTION_GROUP_ERRORS} option is true.
     *
-    * @return array array('element id' => 'error message')
+    * @return string[]
     */
-    public function getErrors()
+    public function getErrors() : array
     {
         return $this->errors;
     }
 
    /**
-    * Returns hidden elements' HTML if 'group_hiddens' option is true
+    * Returns hidden elements' HTML if {@see HTML_QuickForm2_Renderer::OPTION_GROUP_HIDDENS} option is true.
     *
-    * @return array
+    * @return string[]
     */
-    public function getHidden()
+    public function getHidden() : array
     {
         return $this->hidden;
     }
@@ -104,15 +104,18 @@ class HTML_QuickForm2_Renderer_Stub extends HTML_QuickForm2_Renderer
     *
     * @return bool
     */
-    public function hasRequired()
+    public function hasRequired() : bool
     {
         return $this->required;
     }
 
-    public function reset()
+    /**
+     * @return $this
+     */
+    public function reset() : self
     {
-        $this->errors   = array();
-        $this->hidden   = array();
+        $this->errors = array();
+        $this->hidden = array();
         $this->required = false;
 
         return $this;
@@ -128,7 +131,8 @@ class HTML_QuickForm2_Renderer_Stub extends HTML_QuickForm2_Renderer
         if ($element->isRequired()) {
             $this->required = true;
         }
-        if ($this->options['group_errors'] && ($error = $element->getError())) {
+
+        if ($this->isGroupErrorsEnabled() && ($error = $element->getError())) {
             $this->errors[$element->getId()] = $error;
         }
     }
@@ -140,8 +144,8 @@ class HTML_QuickForm2_Renderer_Stub extends HTML_QuickForm2_Renderer
      */
     public function renderHidden(HTML_QuickForm2_Node $element): void
     {
-        if ($this->options['group_hiddens']) {
-            $this->hidden[] = $element->__toString();
+        if ($this->isGroupHiddensEnabled()) {
+            $this->hidden[] = (string)$element;
         }
     }
 

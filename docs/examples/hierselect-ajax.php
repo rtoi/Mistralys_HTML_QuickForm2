@@ -38,7 +38,7 @@ $fsAsync->addElement('hierselect', 'asyncHS', array('style' => 'width: 250px;'))
 
 $form->addElement('submit', 'testSubmit', array('value' => 'Send'));
 
-$renderer = HTML_QuickForm2_Renderer::factory('default');
+$renderer = HTML_QuickForm2_Renderer::createDefault();
 $form->render($renderer);
 
 ?>

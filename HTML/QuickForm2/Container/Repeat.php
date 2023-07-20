@@ -266,25 +266,38 @@ class HTML_QuickForm2_Container_Repeat extends HTML_QuickForm2_Container
     {
         $this->appendIndexTemplates();
         $this->passDataSources = false;
+
         /* @var $child HTML_QuickForm2_Node */
-        foreach ($this->getRecursiveIterator(RecursiveIteratorIterator::LEAVES_ONLY) as $child) {
-            $name = $child->getName();
+
+        foreach ($this->getRecursiveIterator(RecursiveIteratorIterator::LEAVES_ONLY) as $child)
+        {
+            $name = (string)$child->getName();
             if (false === ($pos = strpos($name, '[' . self::INDEX_KEY . ']'))
                 || $child->getAttribute('disabled')
             ) {
                 continue;
             }
             // The list is somewhat future-proof for HTML5 input elements
-            if ($child instanceof HTML_QuickForm2_Element_Input
-                && !($child instanceof HTML_QuickForm2_Element_InputButton
-                     || $child instanceof HTML_QuickForm2_Element_InputCheckable
-                     || $child instanceof HTML_QuickForm2_Element_InputFile
-                     || $child instanceof HTML_QuickForm2_Element_InputImage
-                     || $child instanceof HTML_QuickForm2_Element_InputReset
-                     || $child instanceof HTML_QuickForm2_Element_InputSubmit)
-                || ($child instanceof HTML_QuickForm2_Element_Select
-                    && !$child->getAttribute('multiple'))
-                || $child instanceof HTML_QuickForm2_Element_Textarea
+            if (
+                (
+                    $child instanceof HTML_QuickForm2_Element_Input
+                    &&
+                    !(
+                        $child instanceof HTML_QuickForm2_Element_InputButton
+                        || $child instanceof HTML_QuickForm2_Element_InputCheckable
+                        || $child instanceof HTML_QuickForm2_Element_InputFile
+                        || $child instanceof HTML_QuickForm2_Element_InputImage
+                        || $child instanceof HTML_QuickForm2_Element_InputReset
+                        || $child instanceof HTML_QuickForm2_Element_InputSubmit
+                    )
+                )
+                ||
+                (
+                    $child instanceof HTML_QuickForm2_Element_Select
+                    && !$child->getAttribute('multiple')
+                )
+                ||
+                $child instanceof HTML_QuickForm2_Element_Textarea
             ) {
                 $this->indexField = substr($name, 0, $pos);
                 return true;
@@ -654,12 +667,12 @@ class HTML_QuickForm2_Container_Repeat extends HTML_QuickForm2_Container
     public function render(HTML_QuickForm2_Renderer $renderer) : HTML_QuickForm2_Renderer
     {
         $backup      = $this->backupChildAttributes(true, true);
-        $hiddens     = $renderer->getOption('group_hiddens');
+        $hiddens     = $renderer->isGroupHiddensEnabled();
         $jsBuilder   = $renderer->getJavascriptBuilder();
         $evalBuilder = new HTML_QuickForm2_Container_Repeat_JavascriptBuilder();
 
         $renderer->setJavascriptBuilder($evalBuilder)
-            ->setOption('group_hiddens', false)
+            ->setGroupHiddens(false)
             ->startContainer($this);
 
         // first, render a (hidden) prototype
@@ -699,7 +712,7 @@ class HTML_QuickForm2_Container_Repeat extends HTML_QuickForm2_Container
         }
 
         $renderer->finishContainer($this);
-        $renderer->setOption('group_hiddens', $hiddens);
+        $renderer->setGroupHiddens($hiddens);
         return $renderer;
     }
 }

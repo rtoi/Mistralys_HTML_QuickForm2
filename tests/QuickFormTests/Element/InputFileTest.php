@@ -241,9 +241,7 @@ class InputFileTest extends QuickFormCase
 
         $this->expectExceptionCode(HTML_QuickForm2::ERROR_MULTIPART_REQUIRES_POST);
 
-        $renderer = HTML_QuickForm2_Renderer::factory('Array');
-
-        $form->render($renderer);
+        $form->renderToArray();
     }
 
     public function testRequest16807_4() : void

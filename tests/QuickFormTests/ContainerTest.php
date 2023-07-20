@@ -549,7 +549,7 @@ class ContainerTest extends TestCase
         $element->addRule($ruleElement, HTML_QuickForm2_Rule::CLIENT);
         $this->assertMatchesRegularExpression(
             '/elementCallback.*containerCallback/s',
-            $container->render(HTML_QuickForm2_Renderer::factory('default'))
+            $container->render(HTML_QuickForm2_Renderer::createDefault())
                 ->getJavascriptBuilder()->getFormJavascript()
         );
     }
@@ -565,10 +565,13 @@ class ContainerTest extends TestCase
 
         $container->addRule($ruleContainer, HTML_QuickForm2_Rule::CLIENT);
         $container->toggleFrozen(true);
+
+        $renderer = HTML_QuickForm2_Renderer::createDefault();
+        $container->render($renderer);
+
         $this->assertEquals(
             '',
-            $container->render(HTML_QuickForm2_Renderer::factory('default'))
-                ->getJavascriptBuilder()->getFormJavascript()
+            $renderer->getJavascriptBuilder()->getFormJavascript()
         );
     }
 

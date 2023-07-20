@@ -85,7 +85,7 @@ $fsTwo->addButton('add', array(
 $form->addSubmit('submit', array('value' => 'Send this form'));
 
 /* @var $renderer HTML_QuickForm2_Renderer_Default */
-$renderer = HTML_QuickForm2_Renderer::factory('default');
+$renderer = HTML_QuickForm2_Renderer::createDefault();
 // a custom template for first repeat element, a link for adding repeated
 // elements there will be automatically made active due to repeatAdd class
 $renderer->setTemplateForId(

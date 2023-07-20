@@ -10,10 +10,10 @@
  * with this package in the file LICENSE and available at the URL
  * https://raw.githubusercontent.com/pear/HTML_QuickForm2/trunk/docs/LICENSE
  *
- * @category  HTML
  * @package   HTML_QuickForm2
  * @author    Alexey Borzov <avb@php.net>
  * @author    Bertrand Mansion <golgote@mamasam.com>
+ * @category  HTML
  * @copyright 2006-2020 Alexey Borzov <avb@php.net>, Bertrand Mansion <golgote@mamasam.com>
  * @license   https://opensource.org/licenses/BSD-3-Clause BSD 3-Clause License
  * @link      https://pear.php.net/package/HTML_QuickForm2
@@ -28,163 +28,206 @@
  *       renderer plugins simply add new methods to renderer instances.</li>
  *   <li>Restricts access to renderer properties and methods. Those are defined
  *       as 'public' to allow easy access from plugins, but only methods
- *       with names explicitly returned by Renderer::exportMethods() are
- *       available to the outside world.</li>
+ *       with names explicitly returned by {@see HTML_QuickForm2_Renderer::exportMethods()}
+ *       are available to the outside world.</li>
  * </ol>
  *
- * @category HTML
  * @package  HTML_QuickForm2
  * @author   Alexey Borzov <avb@php.net>
  * @author   Bertrand Mansion <golgote@mamasam.com>
+ * @category HTML
  * @license  https://opensource.org/licenses/BSD-3-Clause BSD 3-Clause License
  * @version  Release: @package_version@
  * @link     https://pear.php.net/package/HTML_QuickForm2
  */
 class HTML_QuickForm2_Renderer_Proxy extends HTML_QuickForm2_Renderer
 {
-   /**
+    public const ERROR_DUPLICATE_METHOD = 142101;
+    public const ERROR_UNKNOWN_METHOD = 142102;
+
+    /**
      * Renderer instance
      */
-    private \HTML_QuickForm2_Renderer $_renderer;
+    protected HTML_QuickForm2_Renderer $_renderer;
 
-   /**
-     * Additional renderer methods to proxy via __call(), as returned by exportMethods()
+    /**
+     * Additional renderer methods to proxy via {@see self::__call()}, as returned by {@see self::exportMethods()}.
+     *
+     * @var array<string,true>
      */
     private array $_rendererMethods = array();
 
-   /**
-    * Reference to a list of registered renderer plugins for that renderer type
-    * @var array
-    */
-    private $_pluginClasses;
+    /**
+     * Reference to a list of registered renderer plugins for that renderer type
+     * @var array
+     */
+    private array $_pluginClasses;
 
-   /**
+    /**
      * Plugins for this renderer
      */
     private array $_plugins = array();
 
-   /**
+    /**
      * Plugin methods to call via __call() magic method
      *
      * Array has the form ('lowercase method name' => 'index in _plugins array')
      */
     private array $_pluginMethods = array();
 
-   /**
-    * Constructor, sets proxied renderer and its plugins
-    *
-    * @param HTML_QuickForm2_Renderer $renderer       Renderer instance to proxy
-    * @param array                    &$pluginClasses Plugins registered for that renderer type
-    */
+    /**
+     * Constructor, sets proxied renderer and its plugins
+     *
+     * @param HTML_QuickForm2_Renderer $renderer Renderer instance to proxy
+     * @param array<string, class-string> &$pluginClasses Plugins registered for that renderer type. See {@see HTML_QuickForm2_Renderer::$_pluginClasses}.
+     *
+     * @see HTML_QuickForm2_Renderer::factory() Proxy classes are instantiated here.
+     */
     protected function __construct(HTML_QuickForm2_Renderer $renderer, array &$pluginClasses)
     {
-        foreach ($renderer->exportMethods() as $method) {
+        parent::__construct();
+
+        foreach ($renderer->exportMethods() as $method)
+        {
             $this->_rendererMethods[strtolower($method)] = true;
         }
-        $this->_renderer      = $renderer;
+
+        $this->_renderer = $renderer;
         $this->_pluginClasses = &$pluginClasses;
     }
 
-   /**
-    * Magic function; call an imported method of a renderer or its plugin
-    *
-    * @param string $name      method name
-    * @param array  $arguments method arguments
-    *
-    * @return   mixed
-    */
-    public function __call($name, $arguments)
+    public function getID() : string
+    {
+        return $this->_renderer->getID();
+    }
+
+    /**
+     * Magic function; call an imported method of a renderer or its plugin
+     *
+     * @param string $name method name
+     * @param array $arguments method arguments
+     *
+     * @return   mixed
+     */
+    public function __call(string $name, $arguments)
     {
         $lower = strtolower($name);
-        if (isset($this->_rendererMethods[$lower])) {
+
+        if (isset($this->_rendererMethods[$lower]))
+        {
             // support fluent interfaces
             $ret = call_user_func_array(array($this->_renderer, $name), $arguments);
-            return $ret === $this->_renderer? $this: $ret;
+            return $ret === $this->_renderer ? $this : $ret;
         }
+
         $this->updatePlugins();
-        if (isset($this->_pluginMethods[$lower])) {
+
+        if (isset($this->_pluginMethods[$lower]))
+        {
             return call_user_func_array(
                 array($this->_plugins[$this->_pluginMethods[$lower]], $name),
                 $arguments
             );
         }
-        trigger_error(
-            "Fatal error: Call to undefined method " . get_class($this->_renderer)
-            . "::" . $name . "()", E_USER_ERROR
+
+        throw new HTML_QuickForm2_InvalidArgumentException(
+            sprintf(
+                'Method [%s] does not exist.',
+                get_class($this->_renderer) . '::' . $name . '()'
+            ),
+            self::ERROR_UNKNOWN_METHOD
         );
     }
 
-   /**
-    * Checks whether a method is available in this object
-    *
-    * A method is considered available if this class has such a public method,
-    * if a proxied renderer publishes such a method, if some plugin has such
-    * a public method.
-    *
-    * @param string $name Method name
-    *
-    * @return bool
-    */
-    public function methodExists($name)
+    /**
+     * Checks whether a method is available in this object
+     *
+     * A method is considered available if this class has such a public method,
+     * if a proxied renderer publishes such a method, if some plugin has such
+     * a public method.
+     *
+     * @param string $name Method name
+     *
+     * @return bool
+     */
+    public function methodExists(string $name) : bool
     {
-        $lower  = strtolower($name);
+        $lower = strtolower($name);
         $exists = parent::methodExists($name) || isset($this->_rendererMethods[$lower]);
-        if (!$exists) {
+        if (!$exists)
+        {
             $this->updatePlugins();
             $exists = isset($this->_pluginMethods[$lower]);
         }
         return $exists;
     }
 
-   /**
-    * Updates the list of plugins for the current renderer instance
-    *
-    * This method checks whether any new plugin classes were registered
-    * since its previous invocation and adds instances of these classes to
-    * the list. Plugins' methods are imported and can be later called as
-    * this object's own.
-    *
-    * @throws   HTML_QuickForm2_InvalidArgumentException if a plugin has already
-    *                   imported name
-    */
-    protected function updatePlugins()
+    /**
+     * Updates the list of plugins for the current renderer instance
+     *
+     * This method checks whether any new plugin classes were registered
+     * since its previous invocation and adds instances of these classes to
+     * the list. Plugins' methods are imported and can be later called as
+     * this object's own.
+     *
+     * @throws   HTML_QuickForm2_InvalidArgumentException if a plugin has already
+     *                   imported name
+     */
+    protected function updatePlugins() : void
     {
-        for ($i = count($this->_plugins); $i < count($this->_pluginClasses); $i++) {
-            list($className, $includeFile) = $this->_pluginClasses[$i];
-            HTML_QuickForm2_Loader::loadClass($className, $includeFile, true);
+        $total = count($this->_pluginClasses);
 
-            $methods    = array();
-            $plugin     = new $className;
+        for ($i = count($this->_plugins); $i < $total; $i++)
+        {
+            $className = $this->_pluginClasses[$i];
+
+            $methods = array();
+            $plugin = new $className;
             $reflection = new ReflectionObject($plugin);
-            foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+            foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method)
+            {
                 $lower = strtolower($method->getName());
-                if ('HTML_QuickForm2_Renderer_Plugin' == $method->getDeclaringClass()->getName()) {
+                if (HTML_QuickForm2_Renderer_Plugin::class === $method->getDeclaringClass()->getName())
+                {
                     continue;
-                } elseif (!isset($this->_rendererMethods[$lower])
-                          && !isset($this->_pluginMethods[$lower])
-                ) {
+                }
+
+                if (
+                    !isset($this->_rendererMethods[$lower])
+                    &&
+                    !isset($this->_pluginMethods[$lower])
+                )
+                {
                     $methods[$lower] = $i;
-                } else {
+                }
+                else
+                {
                     throw new HTML_QuickForm2_InvalidArgumentException(
-                        'Duplicate method name: name ' . $method->getName() . ' in plugin ' .
-                        get_class($plugin) . ' already taken by ' .
-                        (isset($this->_rendererMethods[$lower])?
-                         get_class($this->_renderer):
-                         get_class($this->_plugins[$this->_pluginMethods[$lower]])
-                        )
+                        sprintf(
+                            'Duplicate method name: name [%s] in plugin [%s] already taken by [%s]',
+                            $method->getName(),
+                            get_class($plugin),
+                            (
+                                isset($this->_rendererMethods[$lower]) ?
+                                get_class($this->_renderer) :
+                                get_class($this->_plugins[$this->_pluginMethods[$lower]])
+                            )
+                        ),
+                        self::ERROR_DUPLICATE_METHOD
                     );
                 }
             }
+
             $plugin->setRenderer($this->_renderer);
-            $this->_plugins[$i]    = $plugin;
+            $this->_plugins[$i] = $plugin;
             $this->_pluginMethods += $methods;
         }
     }
 
-   /**#@+
-    * Proxies for methods defined in {@link HTML_QuickForm2_Renderer}
-    */
-    public function setOption($nameOrOptions, $value = null)
+    /**#@+
+     * Proxies for methods defined in {@link HTML_QuickForm2_Renderer}
+     */
+    public function setOption($nameOrOptions, $value = null) : self
     {
         $this->_renderer->setOption($nameOrOptions, $value);
         return $this;
@@ -206,38 +249,38 @@ class HTML_QuickForm2_Renderer_Proxy extends HTML_QuickForm2_Renderer
         return $this;
     }
 
-    public function reset()
+    public function reset() : self
     {
         $this->_renderer->reset();
         return $this;
     }
 
-    public function renderElement(HTML_QuickForm2_Node $element): void
+    public function renderElement(HTML_QuickForm2_Node $element) : void
     {
         $this->_renderer->renderElement($element);
     }
 
-    public function renderHidden(HTML_QuickForm2_Node $element): void
+    public function renderHidden(HTML_QuickForm2_Node $element) : void
     {
         $this->_renderer->renderHidden($element);
     }
 
-    public function startForm(HTML_QuickForm2_Node $form): void
+    public function startForm(HTML_QuickForm2_Node $form) : void
     {
         $this->_renderer->startForm($form);
     }
 
-    public function finishForm(HTML_QuickForm2_Node $form): void
+    public function finishForm(HTML_QuickForm2_Node $form) : void
     {
         $this->_renderer->finishForm($form);
     }
 
-    public function startContainer(HTML_QuickForm2_Node $container): void
+    public function startContainer(HTML_QuickForm2_Node $container) : void
     {
         $this->_renderer->startContainer($container);
     }
 
-    public function finishContainer(HTML_QuickForm2_Node $container): void
+    public function finishContainer(HTML_QuickForm2_Node $container) : void
     {
         $this->_renderer->finishContainer($container);
     }
@@ -251,16 +294,11 @@ class HTML_QuickForm2_Renderer_Proxy extends HTML_QuickForm2_Renderer
     {
         $this->_renderer->finishGroup($group);
     }
-   /**#@-*/
 
-    public function __toString()
+    /**#@-*/
+
+    public function __toString() : string
     {
-        if (method_exists($this->_renderer, '__toString')) {
-            return $this->_renderer->__toString();
-        }
-        trigger_error(
-            "Fatal error: Object of class " . get_class($this->_renderer)
-            . " could not be converted to string", E_USER_ERROR
-        );
+        return (string)$this->_renderer;
     }
 }

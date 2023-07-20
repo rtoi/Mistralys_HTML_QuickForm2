@@ -60,12 +60,10 @@ if ($form->validate()) {
 }
 
 
-$renderer = HTML_QuickForm2_Renderer::factory('default')
-    ->setOption(array(
-        'group_hiddens' => true,
-        'group_errors'  => true,
-        'required_note' => '<strong>Note:</strong> Required fields are marked with an asterisk (<em>*</em>).'
-    ))
+$renderer = HTML_QuickForm2_Renderer::createDefault()
+    ->setGroupHiddens(true)
+    ->setGroupErrors(true)
+    ->setRequiredNote('<strong>Note:</strong> Required fields are marked with an asterisk (<em>*</em>).')
     ->setTemplateForId('submit', '<div class="element">{element} or <a href="/">Cancel</a></div>')
     ->setTemplateForClass(
         'HTML_QuickForm2_Element_Input',

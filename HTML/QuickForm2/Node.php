@@ -22,6 +22,8 @@
 // By default, we generate element IDs with numeric indexes appended even for
 // elements with unique names. If you want IDs to be equal to the element
 // names by default, set this configuration option to false.
+use HTML\QuickForm2\Interfaces\RenderableElementInterface;
+use HTML\QuickForm2\Traits\RenderableElementTrait;
 use HTML\QuickForm2\Traits\RuntimePropertiesInterface;
 use HTML\QuickForm2\Traits\RuntimePropertiesTrait;
 
@@ -49,9 +51,13 @@ if (null === BaseHTMLElement::getOption('language')) {
  * @version  Release: @package_version@
  * @link     https://pear.php.net/package/HTML_QuickForm2
  */
-abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePropertiesInterface
+abstract class HTML_QuickForm2_Node extends BaseHTMLElement
+    implements
+    RuntimePropertiesInterface,
+    RenderableElementInterface
 {
     use RuntimePropertiesTrait;
+    use RenderableElementTrait;
 
     public const ERROR_CANNOT_REMOVE_NAME_ATTRIBUTE = 38601;
     public const ERROR_CANNOT_REMOVE_ID_ATTRIBUTE = 38602;
@@ -918,26 +924,6 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement implements RuntimePr
         }
 
         return $value;
-    }
-
-   /**
-    * Renders the element using the given renderer
-    *
-    * @param HTML_QuickForm2_Renderer $renderer
-    * @return HTML_QuickForm2_Renderer
-    */
-    abstract public function render(HTML_QuickForm2_Renderer $renderer) : HTML_QuickForm2_Renderer;
-
-    /**
-     * Shortcut to use the array renderer to render the element.
-     *
-     * @return array{id:string,html:string,value:mixed,type:string,required:bool,frozen:bool}
-     * @throws HTML_QuickForm2_InvalidArgumentException
-     * @throws HTML_QuickForm2_NotFoundException
-     */
-    public function renderToArray() : array
-    {
-        return $this->render(HTML_QuickForm2_Renderer::factory('array'))->toArray();
     }
 
     /**

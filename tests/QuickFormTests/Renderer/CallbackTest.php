@@ -50,14 +50,14 @@ class HTML_QuickForm2_Renderer_CallbackTest extends TestCase
         }
     }
 
-    public static function _renderTestElementWithError($renderer, $element)
+    public static function _renderTestElementWithError(HTML_QuickForm2_Renderer $renderer, $element) : string
     {
         if (($error = $element->getError()) && $error &&
-            !$renderer->getOption('group_errors')) {
+            !$renderer->isGroupErrorsEnabled()) {
             return 'an error!'.$element.$error;
-        } else {
-            return (string)$element;
         }
+
+        return (string)$element;
     }
 
     public static function _renderTestSingleLabel($renderer, $element)
@@ -93,7 +93,7 @@ class HTML_QuickForm2_Renderer_CallbackTest extends TestCase
         );
 
         $class = get_class($this);
-        $renderer = HTML_Quickform2_Renderer::factory('callback')
+        $renderer = HTML_Quickform2_Renderer::createCallback()
             ->setCallbackForClass(
                 'HTML_QuickForm2_Element_InputText', array($class, '_renderInputText')
             )->setCallbackForClass(
@@ -104,19 +104,19 @@ class HTML_QuickForm2_Renderer_CallbackTest extends TestCase
 
         $this->assertEquals(
             'testRenderElement;id=' . $element->getId() . ',html=' . $element->__toString(),
-            $element->render($renderer->reset())->__toString()
+            (string)$element->render($renderer->reset())
         );
 
         $renderer->setCallbackForId('testRenderElement', null);
         $this->assertEquals(
             'InputText;id=' . $element->getId() . ',html=' . $element->__toString(),
-            $element->render($renderer->reset())->__toString()
+            (string)$element->render($renderer->reset())
         );
 
         $renderer->setCallbackForClass('HTML_QuickForm2_Element_InputText', null);
         $this->assertEquals(
             'Input;id=' . $element->getId() . ',html=' . $element->__toString(),
-            $element->render($renderer->reset())->__toString()
+            (string)$element->render($renderer->reset())
         );
     }
 
@@ -126,20 +126,20 @@ class HTML_QuickForm2_Renderer_CallbackTest extends TestCase
             'text', 'foo', array('id' => 'testRenderRequiredElement')
         );
 
-        $renderer = HTML_Quickform2_Renderer::factory('callback')
+        $renderer = HTML_Quickform2_Renderer::createCallback()
             ->setCallbackForId(
                 'testRenderRequiredElement',
                 array(get_class($this), '_renderTestRenderRequiredElement')
             );
         $this->assertEquals(
-            $element->__toString(),
-            $element->render($renderer->reset())->__toString()
+            (string)$element,
+            (string)$element->render($renderer->reset())
         );
 
         $element->addRule('required', 'error message');
         $this->assertEquals(
             'required!' . $element->__toString() . '<em>*</em>',
-            $element->render($renderer->reset())->__toString()
+            (string)$element->render($renderer->reset())
         );
     }
 
@@ -148,29 +148,29 @@ class HTML_QuickForm2_Renderer_CallbackTest extends TestCase
         $element = HTML_QuickForm2_Factory::createElement(
             'text', 'foo', array('id' => 'testElementWithError')
         );
-        $renderer = HTML_Quickform2_Renderer::factory('callback')
+        $renderer = HTML_Quickform2_Renderer::createCallback()
             ->setCallbackForId(
                 'testElementWithError',
                 array(get_class($this), '_renderTestElementWithError')
             );
 
         $this->assertEquals(
-            $element->__toString(),
-            $element->render($renderer->reset())->__toString()
+            (string)$element,
+            (string)$element->render($renderer->reset())
         );
 
         $element->setError('some message');
         $this->assertEquals(
-            'an error!' . $element->__toString() . 'some message',
-            $element->render(
-                $renderer->reset()->setOption('group_errors', false)
-            )->__toString()
+            'an error!' . $element . 'some message',
+            (string)$element->render(
+                $renderer->reset()->setGroupErrors(false)
+            )
         );
 
         $this->assertEquals(
             $element->__toString(),
             $element->render(
-                $renderer->reset()->setOption('group_errors', true)
+                $renderer->reset()->setGroupErrors(true)
             )->__toString()
         );
     }
@@ -180,20 +180,21 @@ class HTML_QuickForm2_Renderer_CallbackTest extends TestCase
         $element = HTML_QuickForm2_Factory::createElement(
             'text', 'foo', array('id' => 'testSingleLabel')
         );
-        $renderer = HTML_Quickform2_Renderer::factory('callback')
+        $renderer = HTML_Quickform2_Renderer::createCallback()
             ->setCallbackForId(
                 'testSingleLabel',
                 array(get_class($this), '_renderTestSingleLabel')
             );
 
         $this->assertEquals(
-            $element->__toString(),
-            $element->render($renderer->reset())->__toString()
+            (string)$element,
+            (string)$element->render($renderer->reset())
         );
+
         $element->setLabel('the label!');
         $this->assertEquals(
-            'A label: ' . $element->__toString() . 'the label!',
-            $element->render($renderer->reset())->__toString()
+            'A label: ' . $element . 'the label!',
+            (string)$element->render($renderer->reset())
         );
     }
 
@@ -202,21 +203,21 @@ class HTML_QuickForm2_Renderer_CallbackTest extends TestCase
         $element = HTML_QuickForm2_Factory::createElement(
             'text', 'foo', array('id' => 'testMultipleLabels')
         )->setLabel(array('first', 'second'));
-        $renderer = HTML_Quickform2_Renderer::factory('callback')
+        $renderer = HTML_Quickform2_Renderer::createCallback()
             ->setCallbackForId(
                 'testMultipleLabels',
                 array($this, '_renderTestMultipleLabels')
             );
 
         $this->assertEquals(
-            'First label: first' . $element->__toString() . 'Second label: second',
-            $element->render($renderer->reset())->__toString()
+            'First label: first' . $element . 'Second label: second',
+            (string)$element->render($renderer->reset())
         );
 
         $element->setLabel(array('another', 'foo' => 'foo'));
         $this->assertEquals(
-            'First label: another' . $element->__toString() . 'Named label: foo',
-            $element->render($renderer->reset())->__toString()
+            'First label: another' . $element . 'Named label: foo',
+            (string)$element->render($renderer->reset())
         );
     }
 
@@ -225,29 +226,29 @@ class HTML_QuickForm2_Renderer_CallbackTest extends TestCase
         $form = new HTML_QuickForm2('reqnote');
         $element = $form->addText('testReqnote');
 
-        $renderer = HTML_Quickform2_Renderer::factory('callback')
-            ->setOption('required_note', 'This is requi-i-i-ired!');
+        $renderer = HTML_Quickform2_Renderer::createCallback()
+            ->setRequiredNote('This is requi-i-i-ired!');
 
-        $this->assertStringNotContainsString('<div class="reqnote">', $form->render($renderer)->__toString());
+        $this->assertStringNotContainsString('<div class="reqnote">', (string)$form->render($renderer));
 
         $element->addRule('required', 'error message');
-        $this->assertStringContainsString('<div class="reqnote">This is requi-i-i-ired!</div>', $form->render($renderer)->__toString());
+        $this->assertStringContainsString('<div class="reqnote">This is requi-i-i-ired!</div>', (string)$form->render($renderer));
     }
 
     public function testRenderGroupedErrors(): void
     {
-        $form     = new HTML_QuickForm2('groupedErrors');
-        $element  = $form->addText('testGroupedErrors')->setError('Some error');
-        $renderer = HTML_Quickform2_Renderer::factory('callback')
-            ->setOption(array(
-                'group_errors'  => true,
-                'errors_prefix' => 'Your errors:',
-                'errors_suffix' => ''
-            ));
+        $form = new HTML_QuickForm2('groupedErrors');
+
+        $form->addText('testGroupedErrors')->setError('Some error');
+
+        $renderer = HTML_Quickform2_Renderer::createCallback()
+            ->setGroupErrors(true)
+            ->setErrorsPrefix('Your errors:')
+            ->setErrorsSuffix('');
 
         $this->assertStringContainsString(
             '<div class="errors"><p>Your errors:</p><ul><li>Some error</li></ul></div>',
-            $form->render($renderer)->__toString()
+            (string)$form->render($renderer)
         );
     }
 
@@ -256,20 +257,20 @@ class HTML_QuickForm2_Renderer_CallbackTest extends TestCase
         $form     = new HTML_QuickForm2('groupedHiddens');
         $hidden1  = $form->addHidden('hidden1');
         $hidden2  = $form->addHidden('hidden2');
-        $renderer = HTML_Quickform2_Renderer::factory('callback')
-            ->setOption('group_hiddens', false);
+        $renderer = HTML_Quickform2_Renderer::createCallback()
+            ->setGroupHiddens(false);
 
-        $html = $form->render($renderer)->__toString();
+        $html = (string)$form->render($renderer);
         $this->assertStringContainsString('<div style="display: none;">' . $hidden1->__toString() . '</div>', $html);
         $this->assertStringContainsString('<div style="display: none;">' . $hidden2->__toString() . '</div>', $html);
 
-        $renderer->setOption('group_hiddens', true);
-        $html = $form->render($renderer)->__toString();
+        $renderer->setGroupHiddens(true);
+        $html = (string)$form->render($renderer);
 
         // why not ?
         // $this->assertStringNotContainsString('<div style="display: none;">', $html);
 
-        $this->assertStringContainsString($hidden1->__toString() . $hidden2->__toString(), $html);
+        $this->assertStringContainsString($hidden1 . $hidden2, $html);
     }
 
     public static function _renderGroupInputText($renderer, $element)
@@ -298,7 +299,7 @@ class HTML_QuickForm2_Renderer_CallbackTest extends TestCase
         $element = $group->addElement('text', 'bar', array('id' => 'testRenderGroupedElement'));
 
         $class= get_class($this);
-        $renderer = HTML_Quickform2_Renderer::factory('callback')
+        $renderer = HTML_Quickform2_Renderer::createCallback()
             ->setCallbackForClass(
                 'HTML_QuickForm2_Element_InputText',
                 array($class, '_renderGroupInputText')
@@ -314,25 +315,25 @@ class HTML_QuickForm2_Renderer_CallbackTest extends TestCase
             );
 
         $this->assertStringContainsString(
-            'testRenderGroupedElement;id=' . $element->getId() . ',html=' . $element->__toString(),
-            $group->render($renderer->reset())->__toString()
+            'testRenderGroupedElement;id=' . $element->getId() . ',html=' . $element,
+            (string)$group->render($renderer->reset())
         );
 
         $renderer->setCallbackForId('testRenderGroupedElement', null);
         $this->assertStringContainsString(
-            'GroupedElement;id=' . $element->getId() . ',html=' . $element->__toString(),
-            $group->render($renderer->reset())->__toString()
+            'GroupedElement;id=' . $element->getId() . ',html=' . $element,
+            (string)$group->render($renderer->reset())
         );
 
         $renderer->setElementCallbackForGroupId('testRenderGroup', 'HTML_QuickForm2_Element', null);
         $this->assertStringContainsString(
-            'GroupedInput;id=' . $element->getId() . ',html=' . $element->__toString(),
-            $group->render($renderer->reset())->__toString()
+            'GroupedInput;id=' . $element->getId() . ',html=' . $element,
+            (string)$group->render($renderer->reset())
         );
 
         $renderer->setElementCallbackForGroupClass('HTML_QuickForm2_Container_Group', 'HTML_QuickForm2_Element_Input', null);
         $this->assertStringNotContainsString(
-            'IgnoreThis', $group->render($renderer->reset())->__toString()
+            'IgnoreThis', (string)$group->render($renderer->reset())
         );
     }
 
@@ -365,7 +366,7 @@ class HTML_QuickForm2_Renderer_CallbackTest extends TestCase
         $element2 = $group->addElement('text', 'baz');
         $element3 = $group->addElement('text', 'quux');
 
-        $renderer = HTML_Quickform2_Renderer::factory('callback')
+        $renderer = HTML_Quickform2_Renderer::createCallback()
             ->setCallbackForId('testSeparators', array(get_class($this), '_renderTestSeparators'))
             ->setElementCallbackForGroupId(
                 'testSeparators', 'HTML_QuickForm2_Element_InputText', array(get_class($this), '_renderTestSeparators2')
@@ -373,20 +374,20 @@ class HTML_QuickForm2_Renderer_CallbackTest extends TestCase
 
         $this->assertEquals(
             '<foo>' . $element1 . '</foo><foo>' . $element2 . '</foo><foo>' . $element3 . '</foo>',
-            $group->render($renderer->reset())->__toString()
+            (string)$group->render($renderer->reset())
         );
 
         $group->setSeparator('&nbsp;');
         $this->assertEquals(
             '<foo>' . $element1 . '</foo>&nbsp;<foo>' . $element2 . '</foo>&nbsp;<foo>' . $element3 . '</foo>',
-            $group->render($renderer->reset())->__toString()
+            (string)$group->render($renderer->reset())
         );
 
         $group->setSeparator(array('<br />', '&nbsp;'));
         $this->assertEquals(
             '<foo>' . $element1 . '</foo><br /><foo>' . $element2 . '</foo>&nbsp;<foo>' . $element3 . '</foo>',
-            $group->render($renderer->reset())->__toString()
+            (string)$group->render($renderer->reset())
         );
     }
 }
-?>
+

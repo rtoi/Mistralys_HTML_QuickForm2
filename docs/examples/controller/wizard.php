@@ -111,7 +111,7 @@ body {
   </head>
   <body>
 <?php
-    $renderer = HTML_QuickForm2_Renderer::factory('default');
+    $renderer = HTML_QuickForm2_Renderer::createDefault();
     $renderer->setElementTemplateForGroupId(
         'nameGrp', 'html_quickform2_element',
         '<div class="element<qf:error> error</qf:error>"><qf:error><span class="error">{error}</span><br /></qf:error>{element}<br /><label for="{id}"><qf:required><span class="required">* </span></qf:required>{label}</label></div>'

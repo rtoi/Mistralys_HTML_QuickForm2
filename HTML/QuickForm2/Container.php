@@ -711,12 +711,13 @@ abstract class HTML_QuickForm2_Container extends HTML_QuickForm2_Node
 
     public function __toString()
     {
-        $renderer = HTML_QuickForm2_Renderer::factory('default');
+        $renderer = HTML_QuickForm2_Renderer::createDefault();
 
         $this->render($renderer);
 
-        return $renderer->__toString()
-               . $renderer->getJavascriptBuilder()->getSetupCode(null, true);
+        return
+            $renderer.
+            $renderer->getJavascriptBuilder()->getSetupCode(null, true);
     }
 
    /**

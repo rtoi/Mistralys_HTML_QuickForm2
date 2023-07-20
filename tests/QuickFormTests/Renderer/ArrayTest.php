@@ -19,6 +19,7 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use HTML\QuickForm2\ElementFactory;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -39,9 +40,9 @@ class HTML_QuickForm2_Renderer_ArrayTest extends TestCase
         $element  = HTML_QuickForm2_Factory::createElement(
             'text', 'foo', array('id' => 'arrayRenderElement')
         );
-        $renderer = HTML_QuickForm2_Renderer::factory('array');
 
-        $array = $element->render($renderer)->toArray();
+        $renderer = HTML_QuickForm2_Renderer::createArray();
+        $array = $element->renderToArray($renderer);
 
         $this->_assertHasKeys(
             $array,
@@ -50,7 +51,10 @@ class HTML_QuickForm2_Renderer_ArrayTest extends TestCase
 
         $element->setLabel('Foo label:');
         $element->setError('an error!');
-        $array = $element->render($renderer->reset())->toArray();
+
+        $renderer->reset();
+        $array = $element->renderToArray($renderer);
+
         $this->assertArrayHasKey('label', $array);
         $this->assertArrayHasKey('error', $array);
     }
@@ -60,30 +64,34 @@ class HTML_QuickForm2_Renderer_ArrayTest extends TestCase
         $hidden = HTML_QuickForm2_Factory::createElement(
             'hidden', 'bar', array('id' => 'arrayRenderHidden')
         );
-        $renderer = HTML_QuickForm2_Renderer::factory('array')
-            ->setOption('group_hiddens', false);
+        $renderer = HTML_QuickForm2_Renderer::createArray()
+            ->setGroupHiddens(false);
 
-        $array = $hidden->render($renderer)->toArray();
+        $array = $hidden->renderToArray($renderer);
+
         $this->_assertHasKeys(
             $array,
             array('id', 'html', 'value', 'type', 'required', 'frozen')
         );
 
-        $array = $hidden->render(
-                    $renderer->setOption('group_hiddens', true)->reset()
-                 )->toArray();
+        $renderer
+            ->setGroupHiddens(true)
+            ->reset();
+
+        $array = $hidden->renderToArray($renderer);
+
         $this->assertEquals(array('hidden'), array_keys($array));
         $this->assertEquals($hidden->__toString(), $array['hidden'][0]);
     }
 
     public function testRenderContainerSeparately(): void
     {
-        $fieldset = HTML_QuickForm2_Factory::createElement(
-            'fieldset', 'baz', array('id' => 'arrayRenderContainer')
-        );
-        $renderer = HTML_QuickForm2_Renderer::factory('array');
+        $fieldset = ElementFactory::fieldset('baz')
+            ->setId('arrayRenderContainer');
 
-        $array = $fieldset->render($renderer)->toArray();
+        $renderer = HTML_QuickForm2_Renderer::createArray();
+
+        $array = $fieldset->renderToArray($renderer);
         $this->_assertHasKeys(
             $array,
             array('id', 'type', 'required', 'frozen', 'elements', 'attributes')
@@ -93,7 +101,10 @@ class HTML_QuickForm2_Renderer_ArrayTest extends TestCase
         $fieldset->setLabel('a label');
         $fieldset->setError('an error!');
         $text = $fieldset->addText('insideFieldset');
-        $array = $fieldset->render($renderer->reset())->toArray();
+
+        $renderer->reset();
+        $array = $fieldset->renderToArray($renderer);
+
         $this->assertArrayHasKey('label', $array);
         $this->assertArrayHasKey('error', $array);
         $this->assertEquals($array['elements'][0]['html'], $text->__toString());
@@ -101,16 +112,23 @@ class HTML_QuickForm2_Renderer_ArrayTest extends TestCase
 
     public function testRenderNestedContainers(): void
     {
-        $fieldset = HTML_QuickForm2_Factory::createElement(
-            'fieldset', 'quux', array('id' => 'arrayNestedContainers')
-        );
-        $group = $fieldset->addElement('group', 'xyzzy', array('id' => 'arrayInnerContainer'))
-                    ->setSeparator('<br />');
-        $text  = $group->addElement('text', 'foobar', array('id' => 'arrayInnermost'));
-        $renderer = HTML_QuickForm2_Renderer::factory('array');
+        $fieldset = ElementFactory::fieldset('quux')
+        ->setId('arrayNestedContainers');
 
-        $array   = $fieldset->render($renderer)->toArray();
-        $elArray = $text->render($renderer->reset())->toArray();
+        $group = $fieldset->addGroup('xyzzy')
+            ->setId('arrayInnerContainer')
+            ->setSeparator('<br />');
+
+        $text = $group->addText('foobar')
+            ->setId('arrayInnermost');
+
+        $renderer = HTML_QuickForm2_Renderer::createArray();
+
+        $array = $fieldset->renderToArray($renderer);
+
+        $renderer->reset();
+        $elArray = $text->renderToArray($renderer);
+
         $this->assertArrayHasKey('elements', $array['elements'][0]);
         $this->assertArrayHasKey('separator', $array['elements'][0]);
         $this->assertEquals($elArray, $array['elements'][0]['elements'][0]);
@@ -121,12 +139,14 @@ class HTML_QuickForm2_Renderer_ArrayTest extends TestCase
         $form     = new HTML_QuickForm2('arrayGroupedErrors');
         $form->addText('testArrayGroupedErrors')->setError('Some error');
         
-        $renderer = HTML_QuickForm2_Renderer::factory('array')
-        ->setOption('group_errors', false);
+        $renderer = HTML_QuickForm2_Renderer::createArray()
+            ->setGroupErrors(false);
 
         $this->assertArrayNotHasKey('errors', $form->render($renderer)->toArray());
 
-        $array = $form->render($renderer->setOption('group_errors', true))->toArray();
+        $renderer->setGroupErrors(true);
+        $array = $form->renderToArray($renderer);
+
         $this->assertArrayNotHasKey('error', $array['elements'][0]);
         $this->assertContains('Some error', $array['errors']);
     }
@@ -136,13 +156,15 @@ class HTML_QuickForm2_Renderer_ArrayTest extends TestCase
         $form = new HTML_QuickForm2('arrayReqnote');
         $element = $form->addText('testArrayReqnote');
 
-        $renderer = HTML_Quickform2_Renderer::factory('array')
-            ->setOption('required_note', 'This is requi-i-i-ired!');
+        $renderer = HTML_Quickform2_Renderer::createArray()
+            ->setRequiredNote('This is requi-i-i-ired!');
 
-        $this->assertArrayNotHasKey('required_note', $form->render($renderer)->toArray());
+        $this->assertArrayNotHasKey('required_note', $form->renderToArray($renderer));
 
         $element->addRule('required', 'error message');
-        $array = $form->render($renderer)->toArray();
+
+        $array = $form->renderToArray($renderer);
+
         $this->assertEquals('This is requi-i-i-ired!', $array['required_note']);
     }
 
@@ -151,27 +173,42 @@ class HTML_QuickForm2_Renderer_ArrayTest extends TestCase
         $form = new HTML_QuickForm2('arrayStyle');
         $form->addText('foo', array('id' => 'testArrayWithStyle'));
         $form->addText('bar', array('id' => 'testArrayWithoutStyle'));
-        $renderer = HTML_Quickform2_Renderer::factory('array')
+
+        $renderer = HTML_Quickform2_Renderer::createArray()
             ->setStyleForId('testArrayWithStyle', 'weird');
 
-        $array = $form->render($renderer)->toArray();
+        $array = $form->renderToArray($renderer);
+
         $this->assertEquals('weird', $array['elements'][0]['style']);
         $this->assertArrayNotHasKey('style', $array['elements'][1]);
     }
 
     public function testRenderStaticLabels(): void
     {
-        $element  = HTML_QuickForm2_Factory::createElement('text', 'static')
-                        ->setLabel(array('a label', 'another label', 'foo' => 'named label'));
-        $renderer = HTML_QuickForm2_Renderer::factory('array')
-                        ->setOption('static_labels', false);
+        $element  = ElementFactory::text('static')
+            ->setLabel(array(
+                'a label',
+                'another label',
+                'foo' => 'named label'
+            )
+        );
 
-        $array = $element->render($renderer)->toArray();
+        $renderer = HTML_QuickForm2_Renderer::createArray()
+            ->setStaticLabels(false);
+
+        $this->assertFalse($renderer->isStaticLabelsEnabled());
+
+        $array = $element->renderToArray($renderer);
         $this->assertIsArray($array['label']);
 
-        $array = $element->render(
-                    $renderer->setOption('static_labels', true)->reset()
-                 )->toArray();
+        $renderer
+            ->setStaticLabels(true)
+            ->reset();
+
+        $this->assertTrue($renderer->isStaticLabelsEnabled());
+
+        $array = $element->renderToArray($renderer);
+
         $this->assertEquals('a label', $array['label']);
         $this->assertEquals('another label', $array['label_2']);
         $this->assertEquals('named label', $array['label_foo']);

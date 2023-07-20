@@ -149,7 +149,7 @@ body {
   </head>
   <body>
 <?php
-    $renderer = HTML_QuickForm2_Renderer::factory('default');
+    $renderer = HTML_QuickForm2_Renderer::createDefault();
     $renderer->setTemplateForId('tabs', '<div style="float: right;">{content}</div>');
     echo $form->render($renderer);
 ?>

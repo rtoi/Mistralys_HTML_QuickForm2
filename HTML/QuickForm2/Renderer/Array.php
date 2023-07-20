@@ -1,24 +1,12 @@
 <?php
 /**
- * A renderer for HTML_QuickForm2 building an array of form elements
- *
- * PHP version 5
- *
- * LICENSE
- *
- * This source file is subject to BSD 3-Clause License that is bundled
- * with this package in the file LICENSE and available at the URL
- * https://raw.githubusercontent.com/pear/HTML_QuickForm2/trunk/docs/LICENSE
- *
- * @category  HTML
- * @package   HTML_QuickForm2
- * @author    Alexey Borzov <avb@php.net>
- * @author    Bertrand Mansion <golgote@mamasam.com>
- * @author    Thomas Schulz <ths@4bconsult.de>
- * @copyright 2006-2020 Alexey Borzov <avb@php.net>, Bertrand Mansion <golgote@mamasam.com>
- * @license   https://opensource.org/licenses/BSD-3-Clause BSD 3-Clause License
- * @link      https://pear.php.net/package/HTML_QuickForm2
+ * @category HTML
+ * @package HTML_QuickForm2
+ * @subpackage Renderer
+ * @see HTML_QuickForm2_Renderer_Array
  */
+
+declare(strict_types=1);
 
 /**
  * A renderer for HTML_QuickForm2 building an array of form elements
@@ -90,57 +78,72 @@
  * exportMethods()) will be available to renderer plugins only.
  *
  * The following methods are published:
- *   - {@link toArray()}
- *   - {@link setStyleForId()}
+ *   - {@see self::toArray()}
+ *   - {@see self::setStyleForId()}
+ *   - {@see self::setStaticLabels()}
+ *   - {@see self::isStaticLabelsEnabled()}
  *
  * @category HTML
  * @package  HTML_QuickForm2
- * @author   Alexey Borzov <avb@php.net>
- * @author   Bertrand Mansion <golgote@mamasam.com>
- * @author   Thomas Schulz <ths@4bconsult.de>
- * @license  https://opensource.org/licenses/BSD-3-Clause BSD 3-Clause License
- * @version  Release: @package_version@
- * @link     https://pear.php.net/package/HTML_QuickForm2
+ * @subpackage Renderer
+ * @author Alexey Borzov <avb@php.net>
+ * @author Bertrand Mansion <golgote@mamasam.com>
+ * @author Thomas Schulz <ths@4bconsult.de>
+ *
+ * @see \HTML\QuickForm2\Renderer\Proxy\ArrayRendererProxy
  */
 class HTML_QuickForm2_Renderer_Array extends HTML_QuickForm2_Renderer
 {
-   /**
+    public const SETTING_STATIC_LABELS = 'static_labels';
+
+    public const RENDERER_ID = 'array';
+
+    /**
     * An array being generated
     * @var array
     */
-    public $array = array();
+    public array $array = array();
 
    /**
     * Array with references to 'elements' fields of currently processed containers
     * @var array
     */
-    public $containers = array();
+    public array $containers = array();
 
    /**
     * Whether the form contains required elements
     * @var  bool
     */
-    public $hasRequired = false;
+    public bool $hasRequired = false;
 
    /**
     * Additional style information for elements
     * @var array
     */
-    public $styles = array();
+    public array $styles = array();
 
    /**
     * Constructor, adds a new 'static_labels' option
     */
     protected function __construct()
     {
-        $this->options['static_labels'] = false;
+        $this->options[self::SETTING_STATIC_LABELS] = false;
+
+        parent::__construct();
     }
 
-    protected function exportMethods()
+    public function getID() : string
+    {
+        return self::RENDERER_ID;
+    }
+
+    protected function exportMethods() : array
     {
         return array(
-            'toArray',
-            'setStyleForId'
+            array(self::class, 'toArray')[1],
+            array(self::class, 'setStyleForId')[1],
+            array(self::class, 'setStaticLabels')[1],
+            array(self::class, 'isStaticLabelsEnabled')[1]
         );
     }
 
@@ -152,7 +155,7 @@ class HTML_QuickForm2_Renderer_Array extends HTML_QuickForm2_Renderer
     *
     * @return $this
     */
-    public function reset()
+    public function reset() : self
     {
         $this->array       = array();
         $this->containers  = array();
@@ -171,21 +174,24 @@ class HTML_QuickForm2_Renderer_Array extends HTML_QuickForm2_Renderer
         return $this->array;
     }
 
-   /**
-    * Creates an array with fields that are common to all elements
-    *
-    * @param HTML_QuickForm2_Node $element Element being rendered
-    *
-    * @return   array
-    */
-    public function buildCommonFields(HTML_QuickForm2_Node $element)
+    /**
+     * Creates an array with fields that are common to all elements
+     *
+     * @param HTML_QuickForm2_Node $element Element being rendered
+     *
+     * @return array<string,mixed>
+     * @throws HTML_QuickForm2_NotFoundException {@see HTML_QuickForm2_Renderer::ERROR_OPTION_UNKNOWN}
+     */
+    public function buildCommonFields(HTML_QuickForm2_Node $element) : array
     {
         $ary = array(
             'id'     => $element->getId(),
             'frozen' => $element->toggleFrozen()
         );
-        if ($labels = $element->getLabel()) {
-            if (!is_array($labels) || !$this->options['static_labels']) {
+
+        if ($labels = $element->getLabel())
+        {
+            if (!is_array($labels) || !$this->isStaticLabelsEnabled()) {
                 $ary['label'] = $labels;
             } else {
                 foreach ($labels as $key => $label) {
@@ -198,14 +204,17 @@ class HTML_QuickForm2_Renderer_Array extends HTML_QuickForm2_Renderer
                 }
             }
         }
-        if (($error = $element->getError()) && $this->options['group_errors']) {
+
+        if (($error = $element->getError()) && $this->isGroupErrorsEnabled()) {
             $this->array['errors'][$ary['id']] = $error;
         } elseif ($error) {
             $ary['error'] = $error;
         }
+
         if (isset($this->styles[$ary['id']])) {
             $ary['style'] = $this->styles[$ary['id']];
         }
+
         return $ary;
     }
 
@@ -214,9 +223,10 @@ class HTML_QuickForm2_Renderer_Array extends HTML_QuickForm2_Renderer
      *
      * @param HTML_QuickForm2_Node $container Container being rendered
      *
-     * @return array
+     * @return array<string,mixed>
+     * @throws HTML_QuickForm2_NotFoundException {@see HTML_QuickForm2_Renderer::ERROR_OPTION_UNKNOWN}
      */
-    public function buildCommonContainerFields(HTML_QuickForm2_Node $container)
+    public function buildCommonContainerFields(HTML_QuickForm2_Node $container) : array
     {
         return $this->buildCommonFields($container) + array(
             'elements'   => array(),
@@ -273,7 +283,7 @@ class HTML_QuickForm2_Renderer_Array extends HTML_QuickForm2_Renderer
     *
     * @return $this
     */
-    public function setStyleForId($idOrStyles, $style = null)
+    public function setStyleForId($idOrStyles, $style = null) : self
     {
         if (is_array($idOrStyles)) {
             $this->styles = array_merge($this->styles, $idOrStyles);
@@ -299,11 +309,31 @@ class HTML_QuickForm2_Renderer_Array extends HTML_QuickForm2_Renderer
 
     public function renderHidden(HTML_QuickForm2_Node $element): void
     {
-        if ($this->options['group_hiddens']) {
+        if ($this->isGroupHiddensEnabled()) {
             $this->array['hidden'][] = $element->__toString();
         } else {
             $this->renderElement($element);
         }
+    }
+
+    /**
+     *
+     * @param bool $enabled
+     * @return self
+     * @throws HTML_QuickForm2_NotFoundException {@see HTML_QuickForm2_Renderer::ERROR_OPTION_UNKNOWN}
+     */
+    public function setStaticLabels(bool $enabled) : self
+    {
+        return $this->setOption(self::SETTING_STATIC_LABELS, $enabled);
+    }
+
+    /**
+     * @return bool
+     * @throws HTML_QuickForm2_NotFoundException {@see HTML_QuickForm2_Renderer::ERROR_OPTION_UNKNOWN}
+     */
+    public function isStaticLabelsEnabled() : bool
+    {
+        return $this->getOption(self::SETTING_STATIC_LABELS) === true;
     }
 
     public function startForm(HTML_QuickForm2_Node $form): void
@@ -311,10 +341,10 @@ class HTML_QuickForm2_Renderer_Array extends HTML_QuickForm2_Renderer
         $this->reset();
 
         $this->array = $this->buildCommonContainerFields($form);
-        if ($this->options['group_errors']) {
+        if ($this->options[HTML_QuickForm2_Renderer::OPTION_GROUP_ERRORS]) {
             $this->array['errors'] = array();
         }
-        if ($this->options['group_hiddens']) {
+        if ($this->options[HTML_QuickForm2_Renderer::OPTION_GROUP_HIDDENS]) {
             $this->array['hidden'] = array();
         }
         $this->containers  = array(&$this->array['elements']);
@@ -324,7 +354,7 @@ class HTML_QuickForm2_Renderer_Array extends HTML_QuickForm2_Renderer
     {
         $this->finishContainer($form);
         if ($this->hasRequired) {
-            $this->array['required_note'] = $this->options['required_note'];
+            $this->array['required_note'] = $this->getRequiredNote();
         }
         $this->array['javascript'] = $this->getJavascriptBuilder()->getFormJavascript($form->getId());
     }
@@ -354,7 +384,7 @@ class HTML_QuickForm2_Renderer_Array extends HTML_QuickForm2_Renderer
             $ary['separator'] = array();
             for ($i = 0, $count = count($group); $i < $count - 1; $i++) {
                 if (!is_array($separator)) {
-                    $ary['separator'][] = (string)$separator;
+                    $ary['separator'][] = $separator;
                 } else {
                     $ary['separator'][] = $separator[$i % count($separator)];
                 }

@@ -228,7 +228,7 @@ if ($form->validate()) {
     $form->toggleFrozen(true);
 }
 
-$renderer = HTML_QuickForm2_Renderer::factory('default');
+$renderer = HTML_QuickForm2_Renderer::createDefault();
 $form->render($renderer);
 // Output javascript libraries, needed for client-side validation
 echo $renderer->getJavascriptBuilder()->getLibraries(true, true);

@@ -138,14 +138,14 @@ if ($form->validate()) {
     $form->toggleFrozen(true);
 }
 
-if ('@data_dir@' != '@' . 'data_dir@') {
+if ('@data_dir@' !== '@' . 'data_dir@') {
     $filename = '@data_dir@/HTML_QuickForm2/quickform.css';
 } else {
-    $filename = dirname(dirname(dirname(__DIR__))) . '/data/quickform.css';
+    $filename = dirname(__DIR__, 3) . '/data/quickform.css';
 }
 $context['default_styles'] = file_get_contents($filename);
 
-$renderer = HTML_QuickForm2_Renderer::factory('array');
+$renderer = HTML_QuickForm2_Renderer::createArray();
 $form->render($renderer);
 
 $loader   = new Twig_Loader_Filesystem(__DIR__ . '/templates');
@@ -157,4 +157,3 @@ $template->display($context + array(
     'js_libraries' => $renderer->getJavascriptBuilder()->getLibraries(true, true),
     'form'         => $renderer->toArray()
 ));
-?>

@@ -321,7 +321,7 @@ class HTML_QuickForm2_Element_GroupTest extends TestCase
         $element->addRule($ruleElement, HTML_QuickForm2_Rule::CLIENT);
         $this->assertMatchesRegularExpression(
             '/elementCallback.*groupCallback/s',
-            $group->render(HTML_QuickForm2_Renderer::factory('default'))
+            $group->render(HTML_QuickForm2_Renderer::createDefault())
                   ->getJavascriptBuilder()->getFormJavascript()
         );
     }
@@ -339,7 +339,7 @@ class HTML_QuickForm2_Element_GroupTest extends TestCase
         $group->toggleFrozen(true);
         $this->assertEquals(
             '',
-            $group->render(HTML_QuickForm2_Renderer::factory('default'))
+            $group->render(HTML_QuickForm2_Renderer::createDefault())
                   ->getJavascriptBuilder()->getFormJavascript()
         );
     }

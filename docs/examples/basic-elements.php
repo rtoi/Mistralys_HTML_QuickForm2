@@ -187,7 +187,7 @@ if ('POST' === $_SERVER['REQUEST_METHOD']) {
     $form->toggleFrozen(true);
 }
 
-$renderer = HTML_QuickForm2_Renderer::factory('default');
+$renderer = HTML_QuickForm2_Renderer::createDefault();
 $form->render($renderer);
 // Output javascript libraries, needed by hierselect
 echo $renderer->getJavascriptBuilder()->getLibraries(true, true);

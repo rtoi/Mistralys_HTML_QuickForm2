@@ -90,12 +90,12 @@ class HTML_QuickForm2_Container_Group extends HTML_QuickForm2_Container
     public function setValue($value) : self
     {
         // Prepare a mapper for element names as array
-        $prefixLength = $this->prependsName() ? substr_count($this->getName(), '[') + 1 : 0;
+        $prefixLength = $this->prependsName() ? substr_count((string)$this->getName(), '[') + 1 : 0;
         $nameParts = $groupValues = array();
 
         /* @var $child HTML_QuickForm2_Node */
         foreach ($this as $i => $child) {
-            $tokens = explode('[', str_replace(']', '', $child->getName()));
+            $tokens = explode('[', str_replace(']', '', (string)$child->getName()));
             if ($prefixLength) {
                 $tokens = array_slice($tokens, $prefixLength);
             }
@@ -199,7 +199,8 @@ class HTML_QuickForm2_Container_Group extends HTML_QuickForm2_Container
     */
     protected function renameChild(HTML_QuickForm2_Node $element)
     {
-        $tokens = explode('[', str_replace(']', '', $element->getName()));
+        $tokens = explode('[', str_replace(']', '', (string)$element->getName()));
+
         // Child has already been renamed by its group before
         if ($this === $element->getContainer() && strlen($this->previousName)) {
             $gtokens = explode('[', str_replace(']', '', $this->previousName));
@@ -329,11 +330,12 @@ class HTML_QuickForm2_Container_Group extends HTML_QuickForm2_Container
     public function __toString()
     {
         $renderer = $this->render(
-            HTML_QuickForm2_Renderer::factory('default')
+            HTML_QuickForm2_Renderer::createDefault()
                 ->setTemplateForId($this->getId(), '{content}')
         );
 
-        return $renderer->__toString()
-               . $renderer->getJavascriptBuilder()->getSetupCode(null, true);
+        return
+            $renderer.
+            $renderer->getJavascriptBuilder()->getSetupCode(null, true);
     }
 }

@@ -1,23 +1,17 @@
 <?php
 /**
- * Base class for HTML_QuickForm2 renderers
- *
- * PHP version 5
- *
- * LICENSE
- *
- * This source file is subject to BSD 3-Clause License that is bundled
- * with this package in the file LICENSE and available at the URL
- * https://raw.githubusercontent.com/pear/HTML_QuickForm2/trunk/docs/LICENSE
- *
- * @category  HTML
- * @package   HTML_QuickForm2
- * @author    Alexey Borzov <avb@php.net>
- * @author    Bertrand Mansion <golgote@mamasam.com>
- * @copyright 2006-2020 Alexey Borzov <avb@php.net>, Bertrand Mansion <golgote@mamasam.com>
- * @license   https://opensource.org/licenses/BSD-3-Clause BSD 3-Clause License
- * @link      https://pear.php.net/package/HTML_QuickForm2
+ * @category HTML
+ * @package HTML_QuickForm2
+ * @subpackage Renderer
+ * @see HTML_QuickForm2_Renderer
  */
+
+declare(strict_types=1);
+
+use HTML\QuickForm2\Renderer\Proxy\ArrayRendererProxy;
+use HTML\QuickForm2\Renderer\Proxy\CallbackRendererProxy;
+use HTML\QuickForm2\Renderer\Proxy\DefaultRendererProxy;
+use HTML\QuickForm2\Renderer\Proxy\StubRendererProxy;
 
 /**
  * Abstract base class for QuickForm2 renderers
@@ -36,31 +30,54 @@
  * @package  HTML_QuickForm2
  * @author   Alexey Borzov <avb@php.net>
  * @author   Bertrand Mansion <golgote@mamasam.com>
- * @license  https://opensource.org/licenses/BSD-3-Clause BSD 3-Clause License
- * @version  Release: @package_version@
- * @link     https://pear.php.net/package/HTML_QuickForm2
+ * @author   Sebastian Mordziol <s.mordziol@mistralys.eu>
  */
 abstract class HTML_QuickForm2_Renderer
 {
-   /**
+    public const ERROR_RENDERER_TYPE_UNKNOWN = 141801;
+    public const ERROR_RENDERER_TYPE_ALREADY_REGISTERED = 141802;
+    public const ERROR_OPTION_UNKNOWN = 141803;
+    public const ERROR_RENDERER_PLUGIN_ALREADY_REGISTERED = 141804;
+
+    public const OPTION_GROUP_HIDDENS = 'group_hiddens';
+    public const OPTION_REQUIRED_NOTE = 'required_note';
+    public const OPTION_GROUP_ERRORS = 'group_errors';
+    public const OPTION_ERRORS_PREFIX = 'errors_prefix';
+    public const OPTION_ERRORS_SUFFIX = 'errors_suffix';
+
+    /**
      * List of registered renderer types
+     *
+     * @var array<string, array{class:class-string,proxy:class-string}>
      */
     private static array $_types = array(
-        'callback' => array('HTML_QuickForm2_Renderer_Callback', null),
-        'default'  => array('HTML_QuickForm2_Renderer_Default', null),
-        'array'    => array('HTML_QuickForm2_Renderer_Array', null),
-        'stub'     => array('HTML_QuickForm2_Renderer_Stub', null)
+        HTML_QuickForm2_Renderer_Callback::RENDERER_ID => array(
+            'class' => HTML_QuickForm2_Renderer_Callback::class,
+            'proxy' => CallbackRendererProxy::class
+        ),
+        HTML_QuickForm2_Renderer_Default::RENDERER_ID => array(
+            'class' => HTML_QuickForm2_Renderer_Default::class,
+            'proxy' => DefaultRendererProxy::class
+        ),
+        HTML_QuickForm2_Renderer_Array::RENDERER_ID => array(
+            'class' => HTML_QuickForm2_Renderer_Array::class,
+            'proxy' => ArrayRendererProxy::class
+        ),
+        HTML_QuickForm2_Renderer_Stub::RENDERER_ID => array(
+            'class' => HTML_QuickForm2_Renderer_Stub::class,
+            'proxy' => StubRendererProxy::class
+        )
     );
 
    /**
     * List of registered renderer plugins
-    * @var array
+    * @var array<string, array<string, class-string>>
     */
-    private static $_pluginClasses = array(
-        'callback' => array(),
-        'default'  => array(),
-        'array'    => array(),
-        'stub'     => array()
+    private static array $_pluginClasses = array(
+        HTML_QuickForm2_Renderer_Callback::RENDERER_ID => array(),
+        HTML_QuickForm2_Renderer_Default::RENDERER_ID => array(),
+        HTML_QuickForm2_Renderer_Array::RENDERER_ID => array(),
+        HTML_QuickForm2_Renderer_Stub::RENDERER_ID => array()
     );
 
    /**
@@ -68,17 +85,17 @@ abstract class HTML_QuickForm2_Renderer
     * @var  array
     * @see  setOption()
     */
-    protected $options = array(
-        'group_hiddens' => true,
-        'required_note' => '<em>*</em> denotes required fields.',
-        'errors_prefix' => 'Invalid information entered:',
-        'errors_suffix' => 'Please correct these fields.',
-        'group_errors'  => false
+    protected array $options = array(
+        self::OPTION_GROUP_HIDDENS => true,
+        self::OPTION_REQUIRED_NOTE => '<em>*</em> denotes required fields.',
+        self::OPTION_ERRORS_PREFIX => 'Invalid information entered:',
+        self::OPTION_ERRORS_SUFFIX => 'Please correct these fields.',
+        self::OPTION_GROUP_ERRORS => false
     );
 
    /**
     * Javascript builder object
-    * @var  HTML_QuickForm2_JavascriptBuilder|NULL
+    * @var HTML_QuickForm2_JavascriptBuilder|NULL
     */
     protected ?HTML_QuickForm2_JavascriptBuilder $jsBuilder = null;
 
@@ -98,40 +115,104 @@ abstract class HTML_QuickForm2_Renderer
     *
     * @param string $type Type name (treated case-insensitively)
     *
-    * @return   HTML_QuickForm2_Renderer_Proxy  A renderer instance of the given
-    *                   type wrapped by a Proxy
-    * @throws   HTML_QuickForm2_InvalidArgumentException If type name is unknown
-    * @throws   HTML_QuickForm2_NotFoundException If class for the renderer can
-    *           not be found and/or loaded from file
+    * @return HTML_QuickForm2_Renderer_Proxy  A renderer instance of the given
+    *                                         type wrapped by a Proxy
+    * @throws HTML_QuickForm2_InvalidArgumentException {@see self::ERROR_RENDERER_TYPE_UNKNOWN} if type name is unknown
+    * @throws HTML_QuickForm2_NotFoundException {@see HTML_QuickForm2_Loader::ERROR_CLASS_DOES_NOT_EXIST} if class for the renderer can
+    *                                    not be found and/or loaded from file
     */
-    final public static function factory($type)
+    final public static function factory(string $type) : HTML_QuickForm2_Renderer_Proxy
     {
         $type = strtolower($type);
+
         if (!isset(self::$_types[$type])) {
             throw new HTML_QuickForm2_InvalidArgumentException(
-                "Renderer type '$type' is not known"
+                "Renderer type '$type' is not known",
+                self::ERROR_RENDERER_TYPE_UNKNOWN
             );
         }
 
-        list ($className, $includeFile) = self::$_types[$type];
-        HTML_QuickForm2_Loader::loadClass($className, $includeFile, true);
-        return new HTML_QuickForm2_Renderer_Proxy(new $className, self::$_pluginClasses[$type]);
+        $rendererClass = self::$_types[$type]['class'];
+        $proxyClass    = self::$_types[$type]['proxy'];
+
+        return HTML_QuickForm2_Loader::requireObjectInstanceOf(
+            HTML_QuickForm2_Renderer_Proxy::class,
+            new $proxyClass(
+                HTML_QuickForm2_Loader::requireObjectInstanceOf(
+                    HTML_QuickForm2_Renderer::class,
+                    new $rendererClass
+                ),
+                self::$_pluginClasses[$type]
+            )
+        );
+    }
+
+    public static function createArray() : ArrayRendererProxy
+    {
+        return HTML_QuickForm2_Loader::requireObjectInstanceOf(
+            ArrayRendererProxy::class,
+            self::factory(HTML_QuickForm2_Renderer_Array::RENDERER_ID)
+        );
+    }
+
+    public static function createCallback() : CallbackRendererProxy
+    {
+        return HTML_QuickForm2_Loader::requireObjectInstanceOf(
+            CallbackRendererProxy::class,
+            self::factory(HTML_QuickForm2_Renderer_Callback::RENDERER_ID)
+        );
+    }
+
+    public static function createDefault() : DefaultRendererProxy
+    {
+        return HTML_QuickForm2_Loader::requireObjectInstanceOf(
+            DefaultRendererProxy::class,
+            self::factory(HTML_QuickForm2_Renderer_Default::RENDERER_ID)
+        );
+    }
+
+    public static function createStub() : StubRendererProxy
+    {
+        return HTML_QuickForm2_Loader::requireObjectInstanceOf(
+            StubRendererProxy::class,
+            self::factory(HTML_QuickForm2_Renderer_Stub::RENDERER_ID)
+        );
     }
 
    /**
-    * Registers a new renderer type
+    * Registers a new renderer type.
     *
-    * @param string $type        Type name (treated case-insensitively)
-    * @param string $className   Class name
-    * @param string $includeFile File containing the class, leave empty
-    *                            if class already loaded
+    * @param string $type Type name (treated case-insensitively).
+    * @param class-string $className Renderer class name, must extend {@see HTML_QuickForm2_Renderer}.
+    * @param class-string|NULL $proxyClass Custom proxy class name, defaults to {@see HTML_QuickForm2_Renderer_Proxy}.
+    *                              The proxy class is useful to give visibility to the renderer's methods.
+    *                              See the {@see ArrayRendererProxy} class for an example: It implements methods
+    *                              like {@see ArrayRendererProxy::toArray()} which are not present in the proxy class.
+    *                              With a custom proxy class, you can call these methods directly after a simple
+    *                              <code>instanceof</code> check.
     *
-    * @throws   HTML_QuickForm2_InvalidArgumentException if type already registered
+    * @throws HTML_QuickForm2_InvalidArgumentException if type already registered
     */
-    final public static function register($type, $className, $includeFile = null): void
+    final public static function register(string $type, string $className, ?string $proxyClass=null): void
     {
+        if(is_null($proxyClass) || !class_exists($proxyClass)) {
+            $proxyClass = HTML_QuickForm2_Renderer_Proxy::class;
+        }
+
         $type = strtolower($type);
-        self::$_types[$type] = array($className, $includeFile);
+
+        if (isset(self::$_types[$type])) {
+            throw new HTML_QuickForm2_InvalidArgumentException(
+                "Renderer type '$type' is already registered",
+                self::ERROR_RENDERER_TYPE_ALREADY_REGISTERED
+            );
+        }
+
+        self::$_types[$type] = array(
+            'class' => $className,
+            'proxy' => $proxyClass
+        );
+
         if (empty(self::$_pluginClasses[$type])) {
             self::$_pluginClasses[$type] = array();
         }
@@ -141,28 +222,33 @@ abstract class HTML_QuickForm2_Renderer
     * Registers a plugin for a renderer type
     *
     * @param string $type        Renderer type name (treated case-insensitively)
-    * @param string $className   Plugin class name
-    * @param string $includeFile File containing the plugin class, leave empty if class already loaded
+    * @param class-string $className   Plugin class name
     *
     * @throws   HTML_QuickForm2_InvalidArgumentException if plugin is already registered
     */
-    final public static function registerPlugin($type, $className, $includeFile = null)
+    final public static function registerPlugin(string $type, string $className) : void
     {
         $type = strtolower($type);
-        // We don't check self::$_types, since a plugin may be registered
-        // before renderer itself if it goes with some custom element
-        if (empty(self::$_pluginClasses[$type])) {
-            self::$_pluginClasses[$type] = array(array($className, $includeFile));
-        } else {
-            foreach (self::$_pluginClasses[$type] as $plugin) {
-                if (0 == strcasecmp($plugin[0], $className)) {
-                    throw new HTML_QuickForm2_InvalidArgumentException(
-                        "Plugin '$className' for renderer type '$type' is already registered"
-                    );
-                }
-            }
-            self::$_pluginClasses[$type][] = array($className, $includeFile);
+
+        if(!isset(self::$_pluginClasses[$type])) {
+            self::$_pluginClasses[$type] = array();
         }
+
+        foreach (self::$_pluginClasses[$type] as $pluginClass)
+        {
+            if (0 === strcasecmp($pluginClass, $className)) {
+                throw new HTML_QuickForm2_InvalidArgumentException(
+                    sprintf(
+                        "Plugin [%s] for renderer type [%s] is already registered",
+                        $className,
+                        $type
+                    ),
+                    self::ERROR_RENDERER_PLUGIN_ALREADY_REGISTERED
+                );
+            }
+        }
+
+        self::$_pluginClasses[$type][] = $className;
     }
 
    /**
@@ -175,34 +261,22 @@ abstract class HTML_QuickForm2_Renderer
     }
 
    /**
-    * Returns an array of "published" method names that should be callable through proxy
-    *
-    * Methods defined in HTML_QuickForm2_Renderer are proxied automatically,
-    * only additional methods should be returned.
-    *
-    * @return   array
-    */
-    protected function exportMethods()
-    {
-        return array();
-    }
-
-   /**
     * Checks whether a method is available in this object
     *
     * @param string $name Method name
     *
     * @return bool
     */
-    public function methodExists($name)
+    public function methodExists(string $name) : bool
     {
         try {
-            $method = new ReflectionMethod($this, $name);
-            return $method->isPublic();
+            return (new ReflectionMethod($this, $name))->isPublic();
         } catch (ReflectionException $e) {
             return false;
         }
     }
+
+    // region: Handling of options
 
    /**
     * Sets the option(s) affecting renderer behaviour
@@ -225,45 +299,106 @@ abstract class HTML_QuickForm2_Renderer
     * @return   $this
     * @throws   HTML_QuickForm2_NotFoundException in case of unknown option
     */
-    public function setOption($nameOrOptions, $value = null)
+    public function setOption($nameOrOptions, $value = null) : self
     {
-        if (is_array($nameOrOptions)) {
-            foreach ($nameOrOptions as $name => $value) {
-                $this->setOption($name, $value);
+        if (is_array($nameOrOptions))
+        {
+            foreach ($nameOrOptions as $name => $optionValue) {
+                $this->setOption($name, $optionValue);
             }
 
-        } else {
-            if (!array_key_exists($nameOrOptions, $this->options)) {
-                throw new HTML_QuickForm2_NotFoundException(
-                    "Unknown option '{$nameOrOptions}'"
-                );
-            }
-            $this->options[$nameOrOptions] = $value;
+            return $this;
         }
 
+        if (!array_key_exists($nameOrOptions, $this->options)) {
+            throw new HTML_QuickForm2_NotFoundException(
+                sprintf('Unknown option [%s].', $nameOrOptions),
+                self::ERROR_OPTION_UNKNOWN
+            );
+        }
+
+        $this->options[$nameOrOptions] = $value;
+
         return $this;
+    }
+
+    public function setErrorsPrefix(string $prefix) : self
+    {
+        return $this->setOption(self::OPTION_ERRORS_PREFIX, $prefix);
+    }
+
+    public function getErrorsPrefix() : string
+    {
+        return (string)$this->getOption(self::OPTION_ERRORS_PREFIX);
+    }
+
+    public function setErrorsSuffix(string $suffix) : self
+    {
+        return $this->setOption(self::OPTION_ERRORS_SUFFIX, $suffix);
+    }
+
+    public function getErrorsSuffix() : string
+    {
+        return (string)$this->getOption(self::OPTION_ERRORS_SUFFIX);
+    }
+
+    public function setGroupErrors(bool $enabled) : self
+    {
+        return $this->setOption(self::OPTION_GROUP_ERRORS, $enabled);
+    }
+
+    public function isGroupErrorsEnabled() : bool
+    {
+        return $this->getOption(self::OPTION_GROUP_ERRORS) === true;
+    }
+
+    public function setGroupHiddens(bool $enabled) : self
+    {
+        return $this->setOption(self::OPTION_GROUP_HIDDENS, $enabled);
+    }
+
+    public function isGroupHiddensEnabled() : bool
+    {
+        return $this->getOption(self::OPTION_GROUP_HIDDENS) === true;
+    }
+
+    public function setRequiredNote(string $note) : self
+    {
+        return $this->setOption(self::OPTION_REQUIRED_NOTE, $note);
+    }
+
+    public function getRequiredNote() : string
+    {
+        return (string)$this->getOption(self::OPTION_REQUIRED_NOTE);
     }
 
    /**
     * Returns the value(s) of the renderer option(s)
     *
-    * @param string $name parameter name
-    *
+    * @param string|NULL $name parameter name
     * @return   mixed   value of $name parameter, array of all configuration
     *                   parameters if $name is not given
-    * @throws   HTML_QuickForm2_NotFoundException in case of unknown option
+    * @throws HTML_QuickForm2_NotFoundException {@see self::ERROR_OPTION_UNKNOWN} in case of unknown option.
     */
-    public function getOption($name = null)
+    public function getOption(?string $name = null)
     {
-        if (null === $name) {
+        if (null === $name)
+        {
             return $this->options;
-        } elseif (!array_key_exists($name, $this->options)) {
-            throw new HTML_QuickForm2_NotFoundException(
-                "Unknown option '{$name}'"
-            );
         }
-        return $this->options[$name];
+
+        if (array_key_exists($name, $this->options))
+        {
+            return $this->options[$name];
+        }
+
+        throw new HTML_QuickForm2_NotFoundException(
+            sprintf('Unknown option [%s] for renderer [%s].', $name, $this->getID()),
+            self::ERROR_OPTION_UNKNOWN
+        );
     }
+
+    // endregion
 
    /**
     * Returns the javascript builder object
@@ -294,6 +429,36 @@ abstract class HTML_QuickForm2_Renderer
         return $this;
     }
 
+    // region: Abstract & extensible methods
+
+    /**
+     * Returns an array of "published" method names that should
+     * be callable through the renderer's proxy class, i.e.
+     * public methods relevant for using the renderer, like
+     * setting render options.
+     *
+     * Example: {@see HTML_QuickForm2_Renderer_Array::toArray()}.
+     *
+     * NOTE: Only renderer-specific methods should be returned.
+     *
+     * @return string[]
+     */
+    protected function exportMethods() : array
+    {
+        return array();
+    }
+
+    /**
+     * Returns the renderer ID, as used in the {@see self::factory()}
+     * method to create the renderer.
+     *
+     * NOTE: It is recommended to use a class constant for this,
+     * to make referencing the ID easier.
+     *
+     * @return string
+     */
+    abstract public function getID() : string;
+
    /**
     * Resets the accumulated data
     *
@@ -302,7 +467,7 @@ abstract class HTML_QuickForm2_Renderer
     *
     * @return $this
     */
-    abstract public function reset();
+    abstract public function reset() : self;
 
    /**
     * Renders a generic element
@@ -359,4 +524,24 @@ abstract class HTML_QuickForm2_Renderer
     * @param HTML_QuickForm2_Container_Group $group Group being rendered
     */
     abstract public function finishGroup(HTML_QuickForm2_Container_Group $group) : void;
+
+    // endregion
+
+    public static function renderElementsWithSeparator($separator, array $elements) : string
+    {
+        if (!is_array($separator))
+        {
+            return implode((string)$separator, $elements);
+        }
+
+        $content = '';
+        $cSeparator = count($separator);
+        foreach ($elements as $i => $element)
+        {
+            $content .= (0 === $i ? '' : $separator[($i - 1) % $cSeparator]) .
+                $element;
+        }
+
+        return $content;
+    }
 }

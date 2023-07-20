@@ -58,6 +58,9 @@ Some changes in detail:
 * Form: Added `makeMultiPart()` and `isMultiPart()`.
 * Rules: The callback rule now has a method `getCallback()` to retrieve the configured callback.
 * Rules: Added static `setDefaultMessage()` to the required rule.
+* Renderers: Added setters and getters for renderer options.
+* Renderers: Added specialized proxy classes to assist with IDE code completion.
+* Renderers: Added proxy factory methods like `createArray()` and `createCallback()`.
 
 ## Performance tweaks
 
@@ -73,3 +76,8 @@ this was impractical at best anyway, and the new system has big performance gain
 # Documentation
 
 See the main branch for details and documentation: https://github.com/pear/HTML_QuickForm2
+
+Additional documentation is available in the [docs/knowledgebase][] folder,
+in the form of Markdown files. 
+
+[docs/knowledgebase]: docs/knowledgebase

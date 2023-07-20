@@ -1,5 +1,20 @@
 # Changes in HTML_QuickForm2
 
+## v2.3.0 Renderers update (breaking)
+- Renderers: Added specialized proxy classes for better method visibility.
+- Renderers: The `register()` method now accepts a proxy class name.
+- Renderers: Added setters and getters for options.
+- Renderers: Added constants for option names.
+- Renderers: Added factory methods for the proxy classes, e.g. `createArray()`.
+- Elements: Added specialized render methods, e.g. `renderToArray()`.
+- Unit Tests: Updated to use renderer setters and getters. 
+
+### Breaking changes
+
+- The renderer method signatures have changed. If you have any custom
+  renderers, they will have to be adjusted. It is mostly a matter of
+  adding method type hints.
+
 ## v2.2.1 
 - Factory: Added the `ElementFactory` class to ease element creation.
 - Containers: Element methods like `addText()` now have concrete implementations.

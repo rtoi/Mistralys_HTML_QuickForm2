@@ -19,6 +19,8 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+use HTML\QuickForm2\Interfaces\ButtonElementInterface;
+
 /**
  * Class for <button> elements
  *
@@ -33,7 +35,7 @@
  * @version  Release: @package_version@
  * @link     https://pear.php.net/package/HTML_QuickForm2
  */
-class HTML_QuickForm2_Element_Button extends HTML_QuickForm2_Element
+class HTML_QuickForm2_Element_Button extends HTML_QuickForm2_Element implements ButtonElementInterface
 {
    /**
     * Contains options and data used for the element creation
@@ -144,6 +146,11 @@ class HTML_QuickForm2_Element_Button extends HTML_QuickForm2_Element
     public function makeButton() : self
     {
         return $this->setType('button');
+    }
+
+    public function isSubmit() : bool
+    {
+        return $this->getType() === 'submit';
     }
 
     public function __toString()

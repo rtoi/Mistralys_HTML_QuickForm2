@@ -1,36 +1,23 @@
 <?php
 /**
- * Class for <input type="button" /> elements
- *
- * PHP version 5
- *
- * LICENSE
- *
- * This source file is subject to BSD 3-Clause License that is bundled
- * with this package in the file LICENSE and available at the URL
- * https://raw.githubusercontent.com/pear/HTML_QuickForm2/trunk/docs/LICENSE
- *
  * @category  HTML
- * @package   HTML_QuickForm2
- * @author    Alexey Borzov <avb@php.net>
- * @author    Bertrand Mansion <golgote@mamasam.com>
- * @copyright 2006-2020 Alexey Borzov <avb@php.net>, Bertrand Mansion <golgote@mamasam.com>
- * @license   https://opensource.org/licenses/BSD-3-Clause BSD 3-Clause License
- * @link      https://pear.php.net/package/HTML_QuickForm2
+ * @package HTML_QuickForm2
+ * @subpackage Elements
+ * @see HTML_QuickForm2_Element_InputButton
  */
+
+use HTML\QuickForm2\Interfaces\ButtonElementInterface;
 
 /**
  * Class for <input type="button" /> elements
  *
  * @category HTML
- * @package  HTML_QuickForm2
- * @author   Alexey Borzov <avb@php.net>
- * @author   Bertrand Mansion <golgote@mamasam.com>
- * @license  https://opensource.org/licenses/BSD-3-Clause BSD 3-Clause License
- * @version  Release: @package_version@
- * @link     https://pear.php.net/package/HTML_QuickForm2
+ * @package HTML_QuickForm2
+ * @subpackage Elements
+ * @author Alexey Borzov <avb@php.net>
+ * @author Bertrand Mansion <golgote@mamasam.com>
  */
-class HTML_QuickForm2_Element_InputButton extends HTML_QuickForm2_Element_Input
+class HTML_QuickForm2_Element_InputButton extends HTML_QuickForm2_Element_Input implements ButtonElementInterface
 {
     protected array $attributes = array('type' => 'button');
 
@@ -70,5 +57,10 @@ class HTML_QuickForm2_Element_InputButton extends HTML_QuickForm2_Element_Input
     public function getRawValue()
     {
         return null;
+    }
+
+    public function isSubmit() : bool
+    {
+        return true;
     }
 }

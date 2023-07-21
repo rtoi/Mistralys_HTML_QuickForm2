@@ -58,13 +58,28 @@ class HTML_QuickForm2_Renderer_Default extends HTML_QuickForm2_Renderer
      */
     public array $errors = array();
 
+    protected const TEMPLATE_QUICKFORM = <<<'HTML'
+<div class="quickform">
+    {errors}
+    <form{attributes}>
+        <div class="hiddens">
+            {hidden}
+        </div>
+        {content}
+    </form>
+    <qf:reqnote>
+        <div class="reqnote">{reqnote}</div>
+    </qf:reqnote>
+</div>
+HTML;
+
     /**
      * Default templates for elements of the given class
      * @var array<string,string|NULL>
      */
     public array $templatesForClass = array(
         'html_quickform2_element_inputhidden' => '<div style="display: none;">{element}</div>',
-        'html_quickform2' => '<div class="quickform">{errors}<form{attributes}><div>{hidden}{content}</div></form><qf:reqnote><div class="reqnote">{reqnote}</div></qf:reqnote></div>',
+        'html_quickform2' => self::TEMPLATE_QUICKFORM,
         'html_quickform2_container_fieldset' => '<fieldset{attributes}><qf:label><legend id="{id}-legend">{label}</legend></qf:label>{content}</fieldset>',
         'error:prefix' => '<div class="errors"><qf:message><p>{message}</p></qf:message><ul><li>',
         'error:separator' => '</li><li>',
@@ -258,8 +273,19 @@ class HTML_QuickForm2_Renderer_Default extends HTML_QuickForm2_Renderer
     public function renderElement(HTML_QuickForm2_Node $element) : void
     {
         $elTpl = $this->prepareTemplate($this->findTemplate($element), $element);
+        $placeholders = $this->resolvePlaceholders($element);
+
         $this->html[count($this->html) - 1][] = str_replace(
-            array('{element}', '{id}'), array($element, $element->getId()), $elTpl
+            array_keys($placeholders), array_values($placeholders), $elTpl
+        );
+    }
+
+    protected function resolvePlaceholders(HTML_QuickForm2_Node $element) : array
+    {
+        return array(
+            '{element}' => (string)$element,
+            '{id}' => $element->getId(),
+            '{comment}' => $element->getComment()
         );
     }
 
@@ -334,7 +360,7 @@ class HTML_QuickForm2_Renderer_Default extends HTML_QuickForm2_Renderer
     public function finishGroup(HTML_QuickForm2_Container_Group $group) : void
     {
         $gTpl = str_replace(
-            array('{attributes}', '{id}', '{class}'),
+            array('{attributes}', '{id}', '{class}', '{comment}'),
             array($group->getAttributes(true), array_pop($this->groupId),
                 $group->getAttribute('class')),
             $this->prepareTemplate($this->findTemplate($group, '{content}'), $group)
@@ -343,6 +369,16 @@ class HTML_QuickForm2_Renderer_Default extends HTML_QuickForm2_Renderer
         $content = self::renderElementsWithSeparator($group->getSeparator(), array_pop($this->html));
 
         $this->html[count($this->html) - 1][] = str_replace('{content}', $content, $gTpl);
+    }
+
+    protected function resolveGroupPlaceholders(HTML_QuickForm2_Container_Group $group) : array
+    {
+        return array(
+            '{attributes}' => $group->getAttributes(true),
+            '{id}' => array_pop($this->groupId),
+            '{class}' => $group->getAttribute('class'),
+            '{comment}' => $group->getComment()
+        );
     }
 
     /**
@@ -356,18 +392,33 @@ class HTML_QuickForm2_Renderer_Default extends HTML_QuickForm2_Renderer
     }
 
     /**
+     * @param HTML_QuickForm2_Node $form
+     * @return array<string,string>
+     */
+    protected function resolveFormPlaceholders(HTML_QuickForm2_Node $form) : array
+    {
+        return array(
+            '{attributes}' => (string)$form->getAttributes(true),
+            '{hidden}' => $this->hiddenHtml,
+            '{errors}' => $this->outputGroupedErrors()
+        );
+    }
+
+    /**
      * Finishes rendering a form, called after processing contained elements
      *
      * @param HTML_QuickForm2_Node $form Form being rendered
      */
     public function finishForm(HTML_QuickForm2_Node $form) : void
     {
+        $placeholders = $this->resolveFormPlaceholders($form);
+
         $formTpl = str_replace(
-            array('{attributes}', '{hidden}', '{errors}'),
-            array($form->getAttributes(true), $this->hiddenHtml,
-                $this->outputGroupedErrors()),
+            array_keys($placeholders),
+            array_values($placeholders),
             $this->findTemplate($form, '{content}')
         );
+
         $this->hiddenHtml = '';
 
         $note = $this->getRequiredNote();

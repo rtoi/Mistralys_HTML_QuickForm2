@@ -9,6 +9,7 @@
 declare(strict_types=1);
 
 use HTML\QuickForm2\Renderer\Proxy\ArrayRendererProxy;
+use HTML\QuickForm2\Renderer\Proxy\Bootstrap5RendererProxy;
 use HTML\QuickForm2\Renderer\Proxy\CallbackRendererProxy;
 use HTML\QuickForm2\Renderer\Proxy\DefaultRendererProxy;
 use HTML\QuickForm2\Renderer\Proxy\StubRendererProxy;
@@ -66,6 +67,10 @@ abstract class HTML_QuickForm2_Renderer
         HTML_QuickForm2_Renderer_Stub::RENDERER_ID => array(
             'class' => HTML_QuickForm2_Renderer_Stub::class,
             'proxy' => StubRendererProxy::class
+        ),
+        HTML_QuickForm2_Renderer_Bootstrap5::RENDERER_ID => array(
+            'class' => HTML_QuickForm2_Renderer_Bootstrap5::class,
+            'proxy' => Bootstrap5RendererProxy::class
         )
     );
 
@@ -77,7 +82,8 @@ abstract class HTML_QuickForm2_Renderer
         HTML_QuickForm2_Renderer_Callback::RENDERER_ID => array(),
         HTML_QuickForm2_Renderer_Default::RENDERER_ID => array(),
         HTML_QuickForm2_Renderer_Array::RENDERER_ID => array(),
-        HTML_QuickForm2_Renderer_Stub::RENDERER_ID => array()
+        HTML_QuickForm2_Renderer_Stub::RENDERER_ID => array(),
+        HTML_QuickForm2_Renderer_Bootstrap5::RENDERER_ID => array()
     );
 
    /**
@@ -179,6 +185,14 @@ abstract class HTML_QuickForm2_Renderer
         );
     }
 
+    public static function createBootstrap5() : Bootstrap5RendererProxy
+    {
+        return HTML_QuickForm2_Loader::requireObjectInstanceOf(
+            Bootstrap5RendererProxy::class,
+            self::factory(HTML_QuickForm2_Renderer_Bootstrap5::RENDERER_ID)
+        );
+    }
+
    /**
     * Registers a new renderer type.
     *
@@ -258,6 +272,12 @@ abstract class HTML_QuickForm2_Renderer
     */
     protected function __construct()
     {
+        $this->init();
+    }
+
+    protected function init() : void
+    {
+
     }
 
    /**

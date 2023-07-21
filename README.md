@@ -61,6 +61,7 @@ Some changes in detail:
 * Renderers: Added setters and getters for renderer options.
 * Renderers: Added specialized proxy classes to assist with IDE code completion.
 * Renderers: Added proxy factory methods like `createArray()` and `createCallback()`.
+* Renderers: Added a Bootstrap5 renderer.
 
 ## Performance tweaks
 

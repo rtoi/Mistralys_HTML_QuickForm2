@@ -16,13 +16,16 @@ The bundled renderers are:
 - `HTML_QuickForm2_Renderer_Array`  
   Creates an array with rendered elements that can be used
   to build the surrounding form structure manually.
+- `HTML_QuickForm2_Renderer_Bootstrap5`  
+  Renders the form using [Bootstrap5][] optimized markup. Ideal
+  for projects built with Bootstrap.
 - `HTML_QuickForm2_Renderer_Callback`  
   Uses callbacks for all structural form elements to render
   them manually.
 - `HTML_QuickForm2_Renderer_Stub`  
   Does not render anything, but can be used to check if
   the form is valid, and for clientside forms.
-  
+
 ## Creating instances
 
 Each of the renderers has a specialized factory method
@@ -93,3 +96,5 @@ if($renderer instanceof MyRendererProxy)
     $renderer->setOption('myOption', 'myValue');
 }
 ```
+
+[Bootstrap5]: https://getbootstrap.com

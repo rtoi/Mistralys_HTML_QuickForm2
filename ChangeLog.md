@@ -6,6 +6,7 @@
 - Renderers: Added setters and getters for options.
 - Renderers: Added constants for option names.
 - Renderers: Added factory methods for the proxy classes, e.g. `createArray()`.
+- Renderers: Added a first basic Bootstrap5 renderer.
 - Elements: Added specialized render methods, e.g. `renderToArray()`.
 - Unit Tests: Updated to use renderer setters and getters. 
 

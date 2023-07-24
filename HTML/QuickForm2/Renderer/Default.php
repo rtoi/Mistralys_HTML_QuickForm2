@@ -328,16 +328,25 @@ HTML;
     {
         array_pop($this->groupId);
 
-        $cTpl = str_replace(
-            array('{attributes}', '{id}'),
-            array($container->getAttributes(true), $container->getId()),
-            $this->prepareTemplate($this->findTemplate($container, '{content}'), $container)
+        $cTpl = $this->replacePlaceholders(
+            $container,
+            $this->resolveContainerPlaceholders($container),
+            true
         );
+
         $cHtml = array_pop($this->html);
         $break = BaseHTMLElement::getOption('linebreak');
         $indent = str_repeat(BaseHTMLElement::getOption('indent'), count($this->html));
         $this->html[count($this->html) - 1][] = str_replace(
             '{content}', $break . $indent . implode($break . $indent, $cHtml), $cTpl
+        );
+    }
+
+    protected function resolveContainerPlaceholders(HTML_QuickForm2_Node $container) : array
+    {
+        return  array(
+            '{attributes}' => $container->getAttributes(true),
+            '{id}' => $container->getId()
         );
     }
 
@@ -369,6 +378,21 @@ HTML;
         $content = self::renderElementsWithSeparator($group->getSeparator(), array_pop($this->html));
 
         $this->html[count($this->html) - 1][] = str_replace('{content}', $content, $gTpl);
+    }
+
+    protected function replacePlaceholders(HTML_QuickForm2_Node $element, array $placeholders, bool $prepare, string $default='{content}') : string
+    {
+        $tpl = $this->findTemplate($element, $default);
+
+        if($prepare) {
+            $tpl = $this->prepareTemplate($tpl, $element);
+        }
+
+        return str_replace(
+            array_keys($placeholders),
+            array_values($placeholders),
+            $tpl
+        );
     }
 
     protected function resolveGroupPlaceholders(HTML_QuickForm2_Container_Group $group) : array

@@ -9,6 +9,9 @@
 - Renderers: Added a first basic Bootstrap5 renderer.
 - Elements: Added specialized render methods, e.g. `renderToArray()`.
 - Unit Tests: Updated to use renderer setters and getters. 
+- Rules: Fixed an issue with the required rule considering a string `0` as empty.
+- Form: Added the static `resolveTrackVarName()`.
+- Form: Added `getTrackVarName()`.
 
 ### Breaking changes
 

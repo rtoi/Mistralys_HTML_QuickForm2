@@ -30,7 +30,7 @@ class HTML_QuickForm2_ElementTest extends TestCase
     protected function setUp() : void
     {
         $_REQUEST = array(
-            '_qf__form1' => ''
+            HTML_QuickForm2::resolveTrackVarName('form1') => ''
         );
 
         $_POST = array(

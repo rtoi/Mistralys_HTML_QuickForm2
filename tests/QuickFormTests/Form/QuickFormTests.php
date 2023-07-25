@@ -38,7 +38,7 @@ class QuickFormTests extends TestCase
     protected function setUp() : void
     {
         $_REQUEST = array(
-            '_qf__track' => ''
+            HTML_QuickForm2::resolveTrackVarName('track') => ''
         );
 
         $_GET = array(
@@ -223,10 +223,13 @@ class QuickFormTests extends TestCase
      */
     public function testRequest19403() : void
     {
-        $_POST = array('_qf__track' => '');
-        $form = new HTML_QuickForm2('track');
+        $formName = 'track';
+        $trackVarName = HTML_QuickForm2::resolveTrackVarName($formName);
 
-        $this->assertArrayHasKey('_qf__track', $form->getRawValue());
-        $this->assertArrayNotHasKey('_qf__track', $form->getValue());
+        $_POST = array($trackVarName => '');
+        $form = new HTML_QuickForm2($formName);
+
+        $this->assertArrayHasKey($trackVarName, $form->getRawValue());
+        $this->assertArrayNotHasKey($trackVarName, $form->getValue());
     }
 }

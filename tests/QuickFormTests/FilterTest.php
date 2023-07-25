@@ -40,7 +40,7 @@ class HTML_QuickForm2_FilterTest extends TestCase
 {
     protected function setUp() : void
     {
-        $_REQUEST['_qf__filters'] = '';
+        $_REQUEST[HTML_QuickForm2::resolveTrackVarName('filters')] = '';
         $_POST = array(
             'foo' => '  ',
             'bar' => 'VALUE',

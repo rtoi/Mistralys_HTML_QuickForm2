@@ -21,6 +21,7 @@
 
 namespace QuickFormTests\Element;
 
+use HTML_QuickForm2;
 use HTML_QuickForm2_InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use QuickFormTests\CustomClasses\TestInputImplElement;
@@ -100,5 +101,21 @@ class InputTest extends TestCase
         $obj->setAttribute('disabled');
         $this->assertMatchesRegularExpression('/bar/', $obj->__toString());
         $this->assertDoesNotMatchRegularExpression('!<input[^>]*type="hidden"[^>]*/>!', $obj->__toString());
+    }
+
+    /**
+     * The required rule must recognize the string value '0' as non-empty.
+     */
+    public function testZeroValueValidWhenRequired() : void
+    {
+        $formName = 'test';
+        $_REQUEST[HTML_QuickForm2::resolveTrackVarName($formName)] = 'yes';
+        $_POST['foo'] = '0';
+
+        $form = new HTML_QuickForm2($formName);
+        $form->addText('foo')->addRuleRequired('No value');
+
+        $this->assertTrue($form->isSubmitted());
+        $this->assertTrue($form->validate());
     }
 }

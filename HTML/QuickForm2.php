@@ -62,6 +62,7 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
      * @var HTML_QuickForm2_EventHandler
      */
     protected HTML_QuickForm2_EventHandler $eventHandler;
+    protected string $trackVar;
 
    /**
     * Class constructor, form's "id" and "method" attributes can only be set here
@@ -94,12 +95,14 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
         );
 
         parent::setId(empty($id) ? null : $id);
-        
+
+        $this->trackVar = self::resolveTrackVarName($this->getId());
+
         if(!isset($this->attributes['action'])) {
             $this->attributes['action'] = $_SERVER['PHP_SELF'];
         }
 
-        $trackVarFound = isset($_REQUEST['_qf__' . $id]);
+        $trackVarFound = isset($_REQUEST[$this->trackVar]);
         $getNotEmpty = 'get' === $method && !empty($_GET);
         $postNotEmpty = 'post' === $method && (!empty($_POST) || !empty($_FILES));
         
@@ -117,12 +120,20 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
         );
         
         if($trackSubmit) {
-            $this->appendChild(HTML_QuickForm2_Factory::createElement(
-                'hidden', '_qf__' . $id, array('id' => 'qf:' . $id)
-            ));
+            $this->addHidden($this->trackVar, array('id' => 'qf:' . $id));
         }
         
         $this->addFilter(array($this, 'skipInternalFields'));
+    }
+
+    public function getTrackVarName() : string
+    {
+        return $this->trackVar;
+    }
+
+    public static function resolveTrackVarName(string $formID) : string
+    {
+        return '_qf__' . $formID;
     }
 
     /**

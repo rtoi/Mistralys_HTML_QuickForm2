@@ -1,5 +1,9 @@
 # Changes in HTML_QuickForm2
 
+## v2.3.1 Data Source update
+- DataSources: Added methods `getValues()`, `setValue()` and `setValues()`.
+- Form: Added `resolveDataSourceByName()` to replace the foreach loops.
+
 ## v2.3.0 Renderers update (breaking)
 - Renderers: Added specialized proxy classes for better method visibility.
 - Renderers: The `register()` method now accepts a proxy class name.

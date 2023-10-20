@@ -2,6 +2,7 @@
 
 ## v2.3.1 Data Source update
 - DataSources: Added methods `getValues()`, `setValue()` and `setValues()`.
+- DataSources: Added `getInstanceID()` for debugging purposes.
 - Form: Added `resolveDataSourceByName()` to replace the foreach loops.
 
 ## v2.3.0 Renderers update (breaking)

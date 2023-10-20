@@ -19,6 +19,8 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+declare(strict_types=1);
+
 /**
  * Class for static elements that only contain text or markup
  *
@@ -32,22 +34,24 @@
  */
 class HTML_QuickForm2_Element_Static extends HTML_QuickForm2_Element
 {
-   /**
+    public const ERROR_CANNOT_USE_TAG_NAME = 146001;
+
+    /**
     * Name of the tag to wrap around static element's content
-    * @var string
+    * @var string|NULL
     */
-    protected $tagName = null;
+    protected ?string $tagName = null;
 
    /**
     * Whether to output closing tag when $tagName is set and element's content is empty
     * @var bool
     */
-    protected $forceClosingTag = true;
+    protected bool $forceClosingTag = true;
 
    /**
     * Contains options and data used for the element creation
     * - content: Content of the static element
-    * @var  array
+    * @var array{content:string|NULL}
     */
     protected $data = array('content' => '');
 
@@ -129,11 +133,11 @@ class HTML_QuickForm2_Element_Static extends HTML_QuickForm2_Element
    /**
     * Sets the contents of the static element
     *
-    * @param string $content Static content
+    * @param string|NULL $content Static content
     *
     * @return $this
     */
-    function setContent($content)
+    public function setContent(?string $content) : self
     {
         $this->data['content'] = $content;
         return $this;
@@ -142,9 +146,9 @@ class HTML_QuickForm2_Element_Static extends HTML_QuickForm2_Element
    /**
     * Returns the contents of the static element
     *
-    * @return   string
+    * @return string|NULL
     */
-    function getContent()
+    public function getContent() : ?string
     {
         return $this->data['content'];
     }
@@ -158,6 +162,10 @@ class HTML_QuickForm2_Element_Static extends HTML_QuickForm2_Element
     */
     public function setValue($value) : self
     {
+        if($value !== null) {
+            $value = (string)$value;
+        }
+
         $this->setContent($value);
         return $this;
     }
@@ -182,13 +190,15 @@ class HTML_QuickForm2_Element_Static extends HTML_QuickForm2_Element
 
         if (!$this->tagName) {
             return $prefix . $this->getContent();
-        } elseif ('' != $this->getContent()) {
+        }
+
+        if ('' !== $this->getContent()) {
             return $prefix . '<' . $this->tagName . $this->getAttributes(true)
                    . '>' . $this->getContent() . '</' . $this->tagName . '>';
-        } else {
-            return $prefix . '<' . $this->tagName . $this->getAttributes(true)
-                   . ($this->forceClosingTag ? '></' . $this->tagName . '>' : ' />');
         }
+
+        return $prefix . '<' . $this->tagName . $this->getAttributes(true)
+               . ($this->forceClosingTag ? '></' . $this->tagName . '>' : ' />');
     }
 
     public function getJavascriptValue(bool $inContainer = false) : string
@@ -209,42 +219,43 @@ class HTML_QuickForm2_Element_Static extends HTML_QuickForm2_Element
     protected function updateValue() : void
     {
         $name = $this->getName();
-        /* @var $ds HTML_QuickForm2_DataSource_NullAware */
-        foreach ($this->getDataSources() as $ds) {
-            if (!$ds instanceof HTML_QuickForm2_DataSource_Submit
-                && (null !== ($value = $ds->getValue($name))
-                    || $ds instanceof HTML_QuickForm2_DataSource_NullAware && $ds->hasValue($name))
-            ) {
-                $this->setContent($value);
-                return;
-            }
+
+        $ds = $this->resolveDataSourceByName($name);
+
+        if($ds) {
+            $this->setContent($ds->getValue($name));
         }
     }
 
    /**
     * Sets the name of the HTML tag to wrap around static element's content
     *
-    * @param string $name         tag name
-    * @param bool   $forceClosing whether to output closing tag in case of empty contents
+    * @param string|NULL $name Tag name
+    * @param bool $forceClosing Whether to output closing tag in case of empty contents
     *
     * @throws HTML_QuickForm2_InvalidArgumentException when trying to set a tag
     *       name corresponding to a form element
     * @return $this
     */
-    public function setTagName($name, $forceClosing = true)
+    public function setTagName(?string $name, bool $forceClosing = true) : self
     {
         // Prevent people shooting themselves in the proverbial foot
-        if (in_array(strtolower($name),
-                     array('form', 'fieldset', 'button', 'input', 'select', 'textarea'))
+        if (in_array(
+            strtolower($name),
+            array('form', 'fieldset', 'button', 'input', 'select', 'textarea'))
         ) {
             throw new HTML_QuickForm2_InvalidArgumentException(
-                "Do not use tag name '{$name}' with Static element, use proper element class"
+                sprintf(
+                "Do not use tag name '%s' with Static element, use proper element class",
+                    $name
+                ),
+                self::ERROR_CANNOT_USE_TAG_NAME
             );
         }
-        $this->tagName         = (string)$name;
-        $this->forceClosingTag = (bool)$forceClosing;
+
+        $this->tagName = $name;
+        $this->forceClosingTag = $forceClosing;
 
         return $this;
     }
 }
-?>

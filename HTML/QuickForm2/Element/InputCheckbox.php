@@ -19,6 +19,8 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+declare(strict_types=1);
+
 /**
  * Class for <input type="checkbox" /> elements
  *
@@ -49,27 +51,29 @@ class HTML_QuickForm2_Element_InputCheckbox extends HTML_QuickForm2_Element_Inpu
 
     protected function updateValue() : void
     {
+        if(!$this->hasDataSources()) {
+            return;
+        }
+
         $name = $this->getName();
         if ('[]' === substr($name, -2)) {
             $name = substr($name, 0, -2);
         }
-        foreach ($this->getDataSources() as $ds) {
-            if (null !== ($value = $ds->getValue($name))
-                || $ds instanceof HTML_QuickForm2_DataSource_Submit
-                || ($ds instanceof HTML_QuickForm2_DataSource_NullAware && $ds->hasValue($name))
-            ) {
-                if (!is_array($value)) {
-                    $this->setValue($value);
-                } elseif (in_array($this->getAttribute('value'), array_map('strval', $value), true)) {
-                    $this->setAttribute('checked');
-                } else {
-                    $this->removeAttribute('checked');
-                }
-                return;
-            }
+
+        $ds = $this->resolveDataSourceByName($name, true);
+
+        // *some* data sources were searched, but we did not find a value -> uncheck the box
+        if(!$ds) {
+            $this->removeAttribute('checked');
+            return;
         }
-        // if *some* data sources were searched and we did not find a value -> uncheck the box
-        if (!empty($ds)) {
+
+        $value = $ds->getValue($name);
+        if (!is_array($value)) {
+            $this->setValue($value);
+        } elseif (in_array($this->getAttribute('value'), array_map('strval', $value), true)) {
+            $this->setAttribute('checked');
+        } else {
             $this->removeAttribute('checked');
         }
     }

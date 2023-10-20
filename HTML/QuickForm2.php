@@ -241,6 +241,28 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
         return $this->datasources;
     }
 
+    public function resolveDataSourceByName(?string $name, bool $includeSubmit=false): ?HTML_QuickForm2_DataSource
+    {
+        foreach ($this->getDataSources() as $ds)
+        {
+            if(!$includeSubmit && $ds instanceof HTML_QuickForm2_DataSource_Submit) {
+                continue;
+            }
+
+            if (
+                $ds->getValue($name) !== null
+                ||
+                $ds instanceof HTML_QuickForm2_DataSource_Submit
+                ||
+                ($ds instanceof HTML_QuickForm2_DataSource_NullAware && $ds->hasValue($name))
+            ) {
+                return $ds;
+            }
+        }
+
+        return null;
+    }
+
     public function getType() : string
     {
         return 'form';

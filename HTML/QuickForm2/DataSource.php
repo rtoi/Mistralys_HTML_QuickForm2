@@ -34,6 +34,8 @@ declare(strict_types=1);
  */
 interface HTML_QuickForm2_DataSource
 {
+    public function getInstanceID() : int;
+
    /**
     * Returns value for the element with the given name
     *

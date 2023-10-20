@@ -40,6 +40,8 @@ class HTML_QuickForm2_DataSource_Array implements HTML_QuickForm2_DataSource_Nul
      */
     protected array $values;
 
+    private static int $instanceCounter = 0;
+
     /**
      * Class constructor, initializes the values array
      *
@@ -47,7 +49,15 @@ class HTML_QuickForm2_DataSource_Array implements HTML_QuickForm2_DataSource_Nul
      */
     public function __construct(array $values = array())
     {
+        self::$instanceCounter++;
+
+        $this->instanceID = self::$instanceCounter;
         $this->values = $values;
+    }
+
+    public function getInstanceID(): int
+    {
+        return $this->instanceID;
     }
 
     public function getValue(string $name)

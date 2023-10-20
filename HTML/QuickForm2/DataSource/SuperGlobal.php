@@ -46,13 +46,13 @@ class HTML_QuickForm2_DataSource_SuperGlobal
     private static array $_fileKeys = array('name', 'type', 'size', 'tmp_name', 'error');
 
    /**
-    * Class constructor, intializes the internal arrays from superglobals
+    * Class constructor, initializes the internal arrays from super globals.
     *
     * @param string $requestMethod  Request method (GET or POST)
     */
     public function __construct($requestMethod = 'POST')
     {
-        if ('GET' == strtoupper($requestMethod)) {
+        if ('GET' === strtoupper($requestMethod)) {
             parent::__construct($_GET);
         } else {
             parent::__construct($_POST);
@@ -60,7 +60,7 @@ class HTML_QuickForm2_DataSource_SuperGlobal
         }
     }
 
-    public function getUpload($name)
+    public function getUpload(string $name) : ?array
     {
         if (empty($this->files)) {
             return null;

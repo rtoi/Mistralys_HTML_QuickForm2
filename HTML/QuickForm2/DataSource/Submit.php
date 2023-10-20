@@ -19,11 +19,13 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+declare(strict_types=1);
+
 /**
  * Interface for data sources containing submitted values
  *
  * This interface provides method for getting information on uploaded files.
- * Additionally some elements will only consider getting their values from data
+ * Additionally, some elements will only consider getting their values from data
  * sources implementing this interface.
  *
  * @category HTML
@@ -45,6 +47,5 @@ interface HTML_QuickForm2_DataSource_Submit extends HTML_QuickForm2_DataSource
     *
     * @return   array|null  Information on uploaded file, from $_FILES array
     */
-    public function getUpload($name);
+    public function getUpload(string $name) : ?array;
 }
-?>

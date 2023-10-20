@@ -19,12 +19,14 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+declare(strict_types=1);
+
 /**
  * Class presenting the values stored in session by Controller as submitted ones
  *
  * This is a less hackish implementation of loadValues() method in old
  * HTML_QuickForm_Controller. The values need to be presented as submitted so
- * that elements like checkboxes and multiselects do not try to use default
+ * that elements like checkboxes and multi-selects do not try to use default
  * values from subsequent datasources.
  *
  * @category HTML
@@ -46,9 +48,8 @@ class HTML_QuickForm2_DataSource_Session
     *
     * @return null
     */
-    public function getUpload($name)
+    public function getUpload(string $name) : ?array
     {
         return null;
     }
 }
-?>

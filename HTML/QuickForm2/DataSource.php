@@ -19,6 +19,8 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+declare(strict_types=1);
+
 /**
  * Interface for data sources used by HTML_QuickForm2 objects
  *
@@ -41,6 +43,23 @@ interface HTML_QuickForm2_DataSource
     *
     * @return   mixed   Element's value
     */
-    public function getValue($name);
+    public function getValue(string $name);
+
+    /**
+     * @return array<string,mixed>
+     */
+    public function getValues() : array;
+
+    /**
+     * @param array<string,mixed> $values
+     * @return $this
+     */
+    public function setValues(array $values): self;
+
+    /**
+     * @param string $name
+     * @param mixed $value
+     * @return $this
+     */
+    public function setValue(string $name, $value) : self;
 }
-?>

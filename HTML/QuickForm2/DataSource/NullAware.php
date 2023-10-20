@@ -48,6 +48,5 @@ interface HTML_QuickForm2_DataSource_NullAware extends HTML_QuickForm2_DataSourc
      *
      * @return bool
      */
-    public function hasValue($name);
+    public function hasValue(string $name) : bool;
 }
-?>

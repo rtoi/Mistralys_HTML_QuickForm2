@@ -19,6 +19,8 @@
  * @link      https://pear.php.net/package/HTML_QuickForm2
  */
 
+declare(strict_types=1);
+
 /**
  * Array-based data source for HTML_QuickForm2 objects
  *
@@ -32,28 +34,28 @@
  */
 class HTML_QuickForm2_DataSource_Array implements HTML_QuickForm2_DataSource_NullAware
 {
-   /**
-    * Array containing elements' values
-    * @var array
-    */
-    protected $values;
+    /**
+     * Array containing elements' values
+     * @var array<string,mixed>
+     */
+    protected array $values;
 
-   /**
-    * Class constructor, initializes the values array
-    *
-    * @param array $values Array containing the elements' values
-    */
+    /**
+     * Class constructor, initializes the values array
+     *
+     * @param array<string,mixed> $values Array containing the elements' values
+     */
     public function __construct(array $values = array())
     {
         $this->values = $values;
     }
 
-    public function getValue($name)
+    public function getValue(string $name)
     {
         if (empty($this->values)) {
             return null;
         }
-        
+
         if (strpos($name, '[')) {
             $tokens = explode('[', str_replace(']', '', $name));
             $value = $this->values;
@@ -65,43 +67,59 @@ class HTML_QuickForm2_DataSource_Array implements HTML_QuickForm2_DataSource_Nul
                 $value = $value[$token];
             } while (!empty($tokens));
             return $value;
-        } elseif (isset($this->values[$name])) {
-            return $this->values[$name];
-        } 
-        
-        return null;
+        }
+
+        return $this->values[$name] ?? null;
     }
 
-    public function hasValue($name)
+    public function hasValue(string $name) : bool
     {
         if (empty($this->values)) {
             return false;
-
-        } elseif (!strpos($name, '[')) {
-            return array_key_exists($name, $this->values);
-
-        } else {
-            $tokens = explode('[', str_replace(']', '', $name));
-            $value  = $this->values;
-            do {
-                $token = array_shift($tokens);
-                if (!is_array($value) || !array_key_exists($token, $value)) {
-                    return false;
-                }
-                $value = $value[$token];
-            } while (!empty($tokens));
-            return true;
         }
+
+        if (!strpos($name, '[')) {
+            return array_key_exists($name, $this->values);
+        }
+
+        $tokens = explode('[', str_replace(']', '', $name));
+        $value  = $this->values;
+        do {
+            $token = array_shift($tokens);
+            if (!is_array($value) || !array_key_exists($token, $value)) {
+                return false;
+            }
+            $value = $value[$token];
+        } while (!empty($tokens));
+
+        return true;
     }
-    
-   /**
-    * Sets the values by merging them with the existing
-    * values, if any. 
-    * 
-    * @param array $values
-    */
-    public function setValues($values): void
+
+    public function getValues() : array
+    {
+        return $this->values;
+    }
+
+    /**
+     * @param string $name
+     * @param mixed $value
+     * @return $this
+     */
+    public function setValue(string $name, $value) : self
+    {
+        $this->values[$name] = $value;
+        return $this;
+    }
+
+    /**
+     * Sets the values by merging them with the existing
+     * values, if any.
+     *
+     * @param array<string,mixed> $values
+     */
+    public function setValues(array $values): self
     {
         $this->values = array_merge($this->values, $values);
+        return $this;
     }
 }

@@ -585,6 +585,7 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement
     * Returns the data sources for this element
     *
     * @return HTML_QuickForm2_DataSource[]
+    * @see HTML_QuickForm2::getDataSources()
     */
     protected function getDataSources() : array
     {
@@ -593,6 +594,26 @@ abstract class HTML_QuickForm2_Node extends BaseHTMLElement
         }
 
         return $this->container->getDataSources();
+    }
+
+    public function hasDataSources() : bool
+    {
+        return !empty($this->getDataSources());
+    }
+
+    /**
+     * @param string $name
+     * @param bool $includeSubmit
+     * @return HTML_QuickForm2_DataSource|null
+     * @see HTML_QuickForm2::resolveDataSourceByName()
+     */
+    public function resolveDataSourceByName(?string $name, bool $includeSubmit=false) : ?HTML_QuickForm2_DataSource
+    {
+        if (empty($this->container)) {
+            return null;
+        }
+
+        return $this->container->resolveDataSourceByName($name, $includeSubmit);
     }
 
    /**

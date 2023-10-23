@@ -114,9 +114,11 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
         }
 
         $this->dataReason = array(
+            'trackSubmit' => $trackSubmit,
             'trackVarFound' => $trackVarFound,
             'getNotEmpty' => $getNotEmpty,
-            'postNotEmpty' => $postNotEmpty
+            'postNotEmpty' => $postNotEmpty,
+            'manualSubmit' => false
         );
         
         if($trackSubmit) {
@@ -124,6 +126,27 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
         }
         
         $this->addFilter(array($this, 'skipInternalFields'));
+    }
+
+    /**
+     * Manually submits the form with the specified data source.
+     * Typically, the data source {@see \HTML\QuickForm2\DataSource\ManualSubmitDataSource}
+     * is used for this.
+     *
+     * @param HTML_QuickForm2_DataSource_Submit $dataSource
+     * @return $this
+     */
+    public function submitManually(HTML_QuickForm2_DataSource_Submit $dataSource) : self
+    {
+        $this->clearDataSources();
+        $this->addDataSource($dataSource);
+
+        $this->dataReason['trackVarFound'] = false;
+        $this->dataReason['getNotEmpty'] = false;
+        $this->dataReason['postNotEmpty'] = false;
+        $this->dataReason['manualSubmit'] = true;
+
+        return $this;
     }
 
     public function getTrackVarName() : string
@@ -201,6 +224,13 @@ class HTML_QuickForm2 extends HTML_QuickForm2_Container
     public function addDataSource(HTML_QuickForm2_DataSource $datasource) : self
     {
         $this->datasources[] = $datasource;
+        $this->updateValue();
+        return $this;
+    }
+
+    public function clearDataSources() : self
+    {
+        $this->datasources = array();
         $this->updateValue();
         return $this;
     }

@@ -16,6 +16,10 @@ abstract class QuickFormCase extends TestCase
 
         // Ensure the default message is empty
         HTML_QuickForm2_Rule_Required::setDefaultMessage('');
+
+        $_REQUEST = array();
+        $_POST = array();
+        $_GET = array();
     }
 
     /**

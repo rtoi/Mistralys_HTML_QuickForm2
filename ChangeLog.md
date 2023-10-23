@@ -1,5 +1,10 @@
 # Changes in HTML_QuickForm2
 
+## v2.3.2 Data Source update
+- DataSources: Added `clearDataSources()`.
+- Form: Added `submitManually()` to formalize manual submission.
+- Select: Fixed ignoring submitted empty values when any data source has a value.
+
 ## v2.3.1 Data Source update
 - DataSources: Added methods `getValues()`, `setValue()` and `setValues()`.
 - DataSources: Added `getInstanceID()` for debugging purposes.

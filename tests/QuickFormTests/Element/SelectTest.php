@@ -39,6 +39,7 @@ class SelectTest extends TestCase
 {
     protected function setUp(): void
     {
+        $_REQUEST = array();
         $_POST = array(
             'single1' => '1'
         );
@@ -311,34 +312,70 @@ class SelectTest extends TestCase
         );
     }
 
+    /**
+     * Data submitted via POST must always take precedence over
+     * any other data sources.
+     *
+     * If the submitted form values do not contain a value for the
+     * select element, it must not have a value, even if other data
+     * sources have a value for it.
+     */
     public function testSelectMultipleNoOptionsSelectedOnSubmit(): void
     {
         $options = array('1' => 'Option 1', '2' => 'Option 2');
 
         $formPost = new HTML_QuickForm2('multiple', 'post', null, false);
+
         $single1 = $formPost->appendChild(new HTML_QuickForm2_Element_Select('single1', null, array('options' => $options)));
         $single2 = $formPost->appendChild(new HTML_QuickForm2_Element_Select('single2', null, array('options' => $options)));
         $multiple = $formPost->appendChild(new HTML_QuickForm2_Element_Select('mult', array('multiple'), array('options' => $options)));
+
+        // Ensure that the test's prerequisites are met.
+        $this->assertTrue($formPost->isSubmitted());
+        $this->assertArrayHasKey('single1', $_POST);
+        $this->assertArrayNotHasKey('single2', $_POST);
+        $this->assertArrayNotHasKey('mult', $_POST);
+
+        // Only one of the select elements has a value in the submitted data.
         $this->assertEquals('1', $single1->getValue());
         $this->assertNull($single2->getValue());
         $this->assertNull($multiple->getValue());
 
+        // Add a data source with values for all elements.
         $formPost->addDataSource(new HTML_QuickForm2_DataSource_Array(array(
             'single1' => '2',
             'single2' => '2',
             'mult' => array('1', '2')
         )));
+
+        // Nothing must change in the returned values: The submitted
+        // data must still take precedence over the data source we
+        // added.
         $this->assertEquals('1', $single1->getValue());
-        $this->assertEquals('2', $single2->getValue());
+        $this->assertNull($single2->getValue());
         $this->assertNull($multiple->getValue());
+    }
+
+    /**
+     * When the form has not been submitted, any data source
+     * that has a value for the element is automatically used.
+     */
+    public function testSelectMultiple() : void
+    {
+        $options = array('1' => 'Option 1', '2' => 'Option 2');
 
         $formGet = new HTML_QuickForm2('multiple2', 'get', null, false);
         $multiple2 = $formGet->appendChild(new HTML_QuickForm2_Element_Select('mult2', array('multiple'), array('options' => $options)));
+
+        $this->assertFalse($formGet->isSubmitted());
+        $this->assertArrayNotHasKey('mult2', $_GET);
+
         $this->assertNull($multiple2->getValue());
 
         $formGet->addDataSource(new HTML_QuickForm2_DataSource_Array(array(
             'mult2' => array('1', '2')
         )));
+
         $this->assertEquals(array('1', '2'), $multiple2->getValue());
     }
 
@@ -495,5 +532,27 @@ class SelectTest extends TestCase
         $el->setSize(33);
 
         $this->assertStringContainsString('size="33"', (string)$el);
+    }
+
+    public function testGlobalsTakePrecedence() : void
+    {
+        $_REQUEST[HTML_QuickForm2::resolveTrackVarName('globals-precedence')] = 'yes';
+
+        $form = new HTML_QuickForm2('globals-precedence', 'post', null, true);
+
+        // Form element defaults data source
+        $form->addDataSource(new HTML_QuickForm2_DataSource_Array(array(
+            'foo' => 'bar'
+        )));
+
+        $el = new HTML_QuickForm2_Element_Select('foo');
+        $el->addOption('bar', 'bar');
+
+        $form->addElement($el);
+
+        $this->assertTrue($form->isSubmitted());
+        $values = $form->getValues();
+
+        $this->assertEmpty($values['foo']);
     }
 }

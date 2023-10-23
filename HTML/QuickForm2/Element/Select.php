@@ -394,12 +394,17 @@ class HTML_QuickForm2_Element_Select extends HTML_QuickForm2_Element
 
     protected function updateValue() : void
     {
-        if (!$this->getAttribute('multiple')) {
-            parent::updateValue();
+        $name = $this->getName();
+
+        if (!$this->getAttribute('multiple'))
+        {
+            $ds = $this->resolveDataSourceByName($name, true);
+
+            if($ds) {
+                $this->setValue($ds->getValue($name));
+            }
             return;
         }
-
-        $name = $this->getName();
 
         foreach ($this->getDataSources() as $ds)
         {

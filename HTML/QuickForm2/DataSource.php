@@ -41,11 +41,11 @@ interface HTML_QuickForm2_DataSource
     *
     * If data source doesn't have a requested value it should return null
     *
-    * @param string $name Element's name
+    * @param string|NULL $name Element's name
     *
     * @return   mixed   Element's value
     */
-    public function getValue(string $name);
+    public function getValue(?string $name);
 
     /**
      * @return array<string,mixed>

@@ -60,13 +60,13 @@ class HTML_QuickForm2_DataSource_Array implements HTML_QuickForm2_DataSource_Nul
         return $this->instanceID;
     }
 
-    public function getValue(string $name)
+    public function getValue(?string $name)
     {
-        if (empty($this->values)) {
+        if ($name === null || $name === '' || empty($this->values)) {
             return null;
         }
 
-        if (strpos($name, '[')) {
+        if (strpos((string)$name, '[')) {
             $tokens = explode('[', str_replace(']', '', $name));
             $value = $this->values;
             do {
@@ -82,9 +82,9 @@ class HTML_QuickForm2_DataSource_Array implements HTML_QuickForm2_DataSource_Nul
         return $this->values[$name] ?? null;
     }
 
-    public function hasValue(string $name) : bool
+    public function hasValue(?string $name) : bool
     {
-        if (empty($this->values)) {
+        if ($name === null || $name === '' || empty($this->values)) {
             return false;
         }
 

@@ -44,9 +44,9 @@ interface HTML_QuickForm2_DataSource_NullAware extends HTML_QuickForm2_DataSourc
      *
      * Will return true even if the value is null, similar to array_key_exists()
      *
-     * @param string $name Element's name
+     * @param string|NULL $name Element's name
      *
      * @return bool
      */
-    public function hasValue(string $name) : bool;
+    public function hasValue(?string $name) : bool;
 }

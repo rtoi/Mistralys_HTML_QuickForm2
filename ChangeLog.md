@@ -1,5 +1,8 @@
 # Changes in HTML_QuickForm2
 
+## v2.3.3 Data Source update
+- DataSources: Fixed a PHP8 notice in the `Array` data source.
+
 ## v2.3.2 Data Source update
 - DataSources: Added `clearDataSources()`.
 - Form: Added `submitManually()` to formalize manual submission.
@@ -18,7 +21,7 @@
 - Renderers: Added factory methods for the proxy classes, e.g. `createArray()`.
 - Renderers: Added a first basic Bootstrap5 renderer.
 - Elements: Added specialized render methods, e.g. `renderToArray()`.
-- Unit Tests: Updated to use renderer setters and getters. 
+- Unit Tests: Updated to use renderer setters and getters.
 - Rules: Fixed an issue with the required rule considering a string `0` as empty.
 - Form: Added the static `resolveTrackVarName()`.
 - Form: Added `getTrackVarName()`.
@@ -29,7 +32,7 @@
   renderers, they will have to be adjusted. It is mostly a matter of
   adding method type hints.
 
-## v2.2.1 
+## v2.2.1
 - Factory: Added the `ElementFactory` class to ease element creation.
 - Containers: Element methods like `addText()` now have concrete implementations.
 - Containers: Added `getElementByName()` to fetch a unique element.
@@ -78,11 +81,11 @@
 ### Breaking changes
 
 - The `HTML_QuickForm2_Exception` no longer extends `PEAR_Exception`, but
-  simply the vanilla `Exception` class with a slightly more lenient 
-  constructor. Please check if you use `PEAR_Exception` instead of the 
+  simply the vanilla `Exception` class with a slightly more lenient
+  constructor. Please check if you use `PEAR_Exception` instead of the
   QuickForm exception.
-- Some error exception error messages have changed. If you relied on 
-  matching the text to detect the exact exception, please switch to 
+- Some error exception error messages have changed. If you relied on
+  matching the text to detect the exact exception, please switch to
   the new exception codes.
 - If you have any custom elements, they will have to be adjusted because
   method return types and property types have been added in the base
@@ -124,12 +127,12 @@
 ## v2.1.3
 - Select Element: Added support for selects with a custom OptGroup class.
 - Select Element: Added runtime properties.
-- Select Element: Added `initSelect()` to avoid overriding the constructor 
+- Select Element: Added `initSelect()` to avoid overriding the constructor
   when extending the class.
 - Traits: Added the `RuntimePropertiesTrait` and matching interface.
 - Unit Tests: Tests now run correctly in PHPUnit versions up to 9.6.
 
-## v2.1.2 
+## v2.1.2
 - This release integrates all essential changesets from the main branch.
 - Removed obsolete `magic_quotes_gpc()` calls.
 - Date elements now accept `DateTimeInterface` values.
@@ -138,7 +141,7 @@
 ## v2.1.1
 - Added Travis CI build status to the readme.
 
-## v2.1.0 
+## v2.1.0
 - HTML_QuickForm2 runs under PHP 7.2+ without warnings / deprecated messages
 - Tests run correctly on PHPUnit versions up to 5
 - It is possible to automatically add `nonce` attributes to inline
@@ -154,14 +157,14 @@
   compatible, all classes reside in separate files.
 
 
-## v2.0.2 
+## v2.0.2
 - [Bug #20295] was incorrectly fixed for Static elements, this led to removing
   their contents when DataSources did not contain values for them.
 
-## v2.0.1 
+## v2.0.1
 
-This is the first release installable with composer, changelogs for older versions 
-are available in `package.xml` file or [on PEAR website] 
+This is the first release installable with composer, changelogs for older versions
+are available in `package.xml` file or [on PEAR website]
 
 ### Bug fixes
 

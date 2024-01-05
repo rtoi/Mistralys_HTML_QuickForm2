@@ -1,5 +1,8 @@
 # Changes in HTML_QuickForm2
 
+## v2.3.4 PHP8 compatibility
+- DataSources: Fixed a PHP8 notice in the `Array` data source.
+
 ## v2.3.3 Data Source update
 - DataSources: Fixed a PHP8 notice in the `Array` data source.
 

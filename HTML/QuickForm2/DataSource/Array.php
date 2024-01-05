@@ -41,9 +41,10 @@ class HTML_QuickForm2_DataSource_Array implements HTML_QuickForm2_DataSource_Nul
     protected array $values;
 
     private static int $instanceCounter = 0;
+    private int $instanceID;
 
     /**
-     * Class constructor, initializes the values array
+     * Class constructor, initializes the value array
      *
      * @param array<string,mixed> $values Array containing the elements' values
      */
@@ -66,7 +67,7 @@ class HTML_QuickForm2_DataSource_Array implements HTML_QuickForm2_DataSource_Nul
             return null;
         }
 
-        if (strpos((string)$name, '[')) {
+        if (strpos($name, '[')) {
             $tokens = explode('[', str_replace(']', '', $name));
             $value = $this->values;
             do {

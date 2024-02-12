@@ -1,5 +1,10 @@
 # Changes in HTML_QuickForm2
 
+## v2.3.5 Typing fix
+- HTML Elements: Fixed a PHP typing error in `BaseHTMLElement`.
+- HTML Elements: Improved `BaseHTMLElement::getAttributesString()`.
+- HTML Elements: Now sanitizing attribute names, and ignoring non-scalar values.
+
 ## v2.3.4 PHP8 compatibility
 - DataSources: Fixed a PHP8 notice in the `Array` data source.
 

@@ -263,22 +263,62 @@ abstract class BaseHTMLElement implements ArrayAccess
     }
 
     /**
-     * Creates HTML attribute string from array
+     * @var array<string,string>|NULL
+     */
+    private static ?array $sanitizeSearch = null;
+
+    /**
+     * @var array<string,string>|NULL
+     */
+    private static ?array $sanitizeReplace = null;
+    /**
+     * @var array<string,string>
+     */
+    private static array $sanitizeAttributeChars = array(
+        ' ' => '_',
+        '"' => '',
+        "'" => '',
+        '>' => '_',
+        '=' => '_',
+    );
+
+    /**
+     * Creates HTML attribute string from an array.
      *
-     * @param array<string,string> $attributes Attribute array
+     * @param array<string,string|int|float|Stringable|NULL|mixed> $attributes Attribute array
      * @return string Attribute string
      */
     public static function getAttributesString(array $attributes) : string
     {
+        if(!isset(self::$sanitizeReplace, self::$sanitizeSearch)) {
+            self::$sanitizeSearch = array_keys(self::$sanitizeAttributeChars);
+            self::$sanitizeReplace = array_values(self::$sanitizeAttributeChars);
+        }
+
         $str = '';
         $charset = self::getOption(self::OPTION_CHARSET);
 
-        foreach ($attributes as $key => $value) {
+        foreach ($attributes as $key => $value)
+        {
+            $key = str_replace(self::$sanitizeSearch, self::$sanitizeReplace, $key);
+
+            if($value === null) {
+                $value = '';
+            } else if($value === true) {
+                $value = 'true';
+            } else if ($value === false) {
+                $value = 'false';
+            }
+
+            if(!is_scalar($value)) {
+                continue;
+            }
+
             $str .=
                 ' ' .
                 $key .
                 '="' .
-                htmlspecialchars($value, ENT_QUOTES, $charset) .
+                htmlspecialchars((string)$value, ENT_QUOTES, $charset) .
                 '"';
         }
 

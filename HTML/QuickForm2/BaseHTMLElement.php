@@ -303,7 +303,7 @@ abstract class BaseHTMLElement implements ArrayAccess
             $key = str_replace(self::$sanitizeSearch, self::$sanitizeReplace, $key);
 
             if($value === null) {
-                $value = '';
+                $str .= ' ' . $key;
             } else if($value === true) {
                 $value = 'true';
             } else if ($value === false) {
@@ -336,12 +336,10 @@ abstract class BaseHTMLElement implements ArrayAccess
     public function setAttribute(string $name, $value = null) : self
     {
         $name = strtolower($name);
-        if (is_null($value)) {
-            $value = $name;
+        if (!is_null($value)) {
+            $value = (string)$value;
         }
-
-        $value = (string)$value;
-
+    
         if (in_array($name, $this->watchedAttributes, true)) {
             $this->onAttributeChange($name, $value);
         } else {

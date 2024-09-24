@@ -67,7 +67,7 @@ class HTML_QuickForm2_Element_Input extends HTML_QuickForm2_Element
         if ($this->frozen) {
             return $this->getFrozenHtml();
         } else {
-            return '<input' . $this->getAttributes(true) . ' />';
+            return '<input' . $this->getAttributes(true) . '>';
         }
     }
 

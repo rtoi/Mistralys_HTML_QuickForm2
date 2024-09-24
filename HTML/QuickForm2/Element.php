@@ -56,7 +56,7 @@ abstract class HTML_QuickForm2_Element extends HTML_QuickForm2_Node
             'name'  => $this->getName(),
             'value' => $value,
             'id'    => $this->getId()
-        )) . ' />';
+        )) . '>';
     }
 
    /**

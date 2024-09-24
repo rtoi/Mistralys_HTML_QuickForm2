@@ -58,6 +58,17 @@ class HTML_QuickForm2_Element_InputSubmit extends HTML_QuickForm2_Element_Input
         return $this;
     }
 
+   /**
+    * For InputSubmit getValue returns value of 'value' attribute; 
+    *
+    * @return mixed
+    */
+    public function getValue()
+    {
+        return $this->getAttribute('value');
+    }
+
+
     /**
      * @param string|string[] $label
      * @return $this

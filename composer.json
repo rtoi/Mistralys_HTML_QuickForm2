@@ -1,5 +1,5 @@
 {
-    "name":        "mistralys/html_quickform2",
+    "name":        "ergo/html_quickform2",
     "description": "Provides methods to create, validate and render HTML forms in PHP.",
     "type":        "library",
     "keywords":    ["forms", "validation", "javascript", "wizard", "quickform"],
@@ -20,20 +20,40 @@
             "email": "s.mordziol@mistralys.eu",
             "name": "Sebastian Mordziol",
             "role": "Lead"
-        }
+        },
+        {
+            "email": "risto@ergonomiapalvelu.fi",
+            "name": "Risto Toivonen",
+            "role": "Lead"
+        }        
     ],
-    "support": {
-        "issues": "https://github.com/Mistralys/HTML_QuickForm2/issues",
-        "source": "https://github.com/Mistralys/HTML_QuickForm2",
-        "docs":   "https://pear.php.net/manual/en/package.html.html-quickform2.php"
-    },
+    "repositories" : [
+        {
+            "name" : "ergo/array-smarty",
+            "type" : "path",
+            "url" : "/home/rtoi/workspace/pear/array-smarty"      
+        },
+        {
+            "name" : "sjweh/lib8",
+            "type" : "hg",
+            "url" : "ssh://hg@ns394019.ovh.net/sjweh_lib8"
+        },
+        {
+            "name" : "pear/http",
+            "type" : "git",
+            "url" : "https://github.com/webmaster-flw/HTTP.git"
+        }        
+    ],
+    "minimum-stability" : "dev",
     "require": {
         "symfony/polyfill-php80": ">=v1.27.0",
-        "php": ">=7.4"
+        "php": ">=7.4",
+        "ergo/array-smarty" : "*"
     },
     "require-dev": {
         "phpunit/phpunit": ">=9.6",
-        "phpstan/phpstan": ">=1.10"
+        "phpstan/phpstan": ">=1.10",
+        "sjweh/lib8" : "*"
     },
     "autoload": {
         "classmap": [

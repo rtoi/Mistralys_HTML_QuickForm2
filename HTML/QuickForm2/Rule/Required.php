@@ -111,5 +111,12 @@ class HTML_QuickForm2_Rule_Required extends HTML_QuickForm2_Rule_Nonempty
     {
         return self::$defaultMessage;
     }
+    
+    public function setOwner(HTML_QuickForm2_Node $owner): void
+    {
+        parent::setOwner($owner);
+        
+        $owner->setAttribute('required');
+    }    
 }
 

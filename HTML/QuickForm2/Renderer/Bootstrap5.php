@@ -111,6 +111,6 @@ class HTML_QuickForm2_Renderer_Bootstrap5 extends HTML_QuickForm2_Renderer_Defau
             return '';
         }
 
-        return '<div class="form-submits">{submits}' . implode(' ', $this->submits) . '</div>';
+        return '<div class="form-submits">' . implode(' ', $this->submits) . '</div>';
     }
 }
